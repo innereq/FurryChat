@@ -13,6 +13,10 @@ import 'package:flutter/material.dart';
 import 'chat_list.dart';
 
 class Login extends StatefulWidget {
+  Login({Key key, String this.username: null}) : super(key:key);
+
+  final String username;
+
   @override
   _LoginState createState() => _LoginState();
 }
@@ -101,6 +105,19 @@ class _LoginState extends State<Login> {
     }
   }
 
+ @override
+  void initState() {
+    super.initState();
+    usernameController.text = widget?.username;
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,7 +147,7 @@ class _LoginState extends State<Login> {
               title: TextField(
                 readOnly: loading,
                 autocorrect: false,
-                autofocus: true,
+                autofocus: widget.username != null ? false : true,
                 onChanged: (t) => _checkWellKnownWithCoolDown(t, context),
                 controller: usernameController,
                 decoration: InputDecoration(
@@ -150,6 +167,7 @@ class _LoginState extends State<Login> {
               title: TextField(
                 readOnly: loading,
                 autocorrect: false,
+                autofocus: widget.username != null ? true : false,
                 controller: passwordController,
                 obscureText: !showPassword,
                 onSubmitted: (t) => login(context),
