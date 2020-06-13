@@ -1,17 +1,6 @@
-![](https://i.imgur.com/wi7RlVt.png)
+# FurryChat
 
-<p align="center">
-<a target="new" href="https://play.google.com/store/apps/details?id=chat.fluffy.fluffychat">
-  <img height="66px" src="https://christianpauly.gitlab.io/fluffychat-website/assets/images/google-play-badge.png" />
-  </a>
-  <a target="new" href="https://christianpauly.gitlab.io/fluffychat-website/en/fdroid.html">
-  <img height="66px" src="https://christianpauly.gitlab.io/fluffychat-website/assets/images/fdroid_button.png " />
-  </a>
-  <br>
-  <a href="https://christianpauly.gitlab.io/fluffychat-flutter" target="new">Open FluffyChat in the browser</a> - <a href="https://matrix.to/#/#fluffychat:matrix.org" target="new">Join the community</a> - <a href="https://metalhead.club/@krille" target="new">Follow me on Mastodon</a> - <a href="https://gitlab.com/ChristianPauly/fluffychat-website" target="new">Translate the website</a> - <a href="https://christianpauly.gitlab.io/fluffychat-website/faq.html" target="new">FAQ</a> - <a href="https://christianpauly.gitlab.io/fluffychat-website/" target="new">Website</a>
- </p>
-<br>
-<br>
+An experimental fork of FluffyChat.
 
 # Features
  * Single and group chats
@@ -63,6 +52,12 @@ sudo apt install ninja-build
 4. `flutter config --enable-web`
 
 5. `flutter run`
+
+### Docker
+
+Don't even ask.
+
+`docker run -ti --privileged -v /dev/bus/usb:/dev/bus/usb -v ${PWD}:/build -v /home/inex/.pub-cache:/home/inex/.pub-cache -v /home/inex/flutter:/home/inex/flutter -d flutter-fluffy:1.0`
 
 ## How to add translations for your language
 

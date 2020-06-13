@@ -336,7 +336,7 @@ class L10n extends MatrixLocalizations {
 
   String get fileSize => Intl.message("File size");
 
-  String get fluffychat => Intl.message("FluffyChat");
+  String get fluffychat => Intl.message("FurryChat");
 
   String get forward => Intl.message('Forward');
 
@@ -373,6 +373,8 @@ class L10n extends MatrixLocalizations {
       );
 
   String get help => Intl.message("Help");
+
+  String get homeserverOrMXID => Intl.message("Homeserver or MXID");
 
   String get homeserverIsNotCompatible =>
       Intl.message("Homeserver is not compatible");
