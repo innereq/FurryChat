@@ -86,10 +86,6 @@ class _SignUpState extends State<SignUp> {
               horizontal:
                   max((MediaQuery.of(context).size.width - 600) / 2, 0)),
           children: <Widget>[
-            Hero(
-              tag: 'loginBanner',
-              child: Image.asset('assets/fluffychat-banner.png'),
-            ),
             ListTile(
               leading: CircleAvatar(
                 backgroundImage: avatar == null ? null : FileImage(avatar),
@@ -109,9 +105,12 @@ class _SignUpState extends State<SignUp> {
                       Icons.close,
                       color: Colors.red,
                     ),
-              title: Text(avatar == null
-                  ? L10n.of(context).setAProfilePicture
-                  : L10n.of(context).discardPicture),
+              title: Padding(
+                padding: const EdgeInsets.all(11.0),
+                child: Text(avatar == null
+                    ? L10n.of(context).setAProfilePicture
+                    : L10n.of(context).discardPicture),
+              ),
               onTap: avatar == null
                   ? setAvatarAction
                   : () => setState(() => avatar = null),
@@ -131,9 +130,11 @@ class _SignUpState extends State<SignUp> {
                 controller: usernameController,
                 onSubmitted: (s) => signUpAction(context),
                 decoration: InputDecoration(
-                    hintText: L10n.of(context).username,
-                    errorText: usernameError,
-                    labelText: L10n.of(context).chooseAUsername),
+                  hintText: L10n.of(context).username,
+                  errorText: usernameError,
+                  labelText: L10n.of(context).chooseAUsername,
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
             SizedBox(height: 20),

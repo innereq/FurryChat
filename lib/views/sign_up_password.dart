@@ -127,11 +127,8 @@ class _SignUpPasswordState extends State<SignUpPassword> {
         padding: EdgeInsets.symmetric(
             horizontal: max((MediaQuery.of(context).size.width - 600) / 2, 0)),
         children: <Widget>[
+          SizedBox(height: 10),
           ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(Icons.lock, color: Theme.of(context).primaryColor),
-            ),
             title: TextField(
               controller: passwordController,
               obscureText: !showPassword,
@@ -139,15 +136,17 @@ class _SignUpPasswordState extends State<SignUpPassword> {
               autocorrect: false,
               onSubmitted: (t) => _signUpAction(context),
               decoration: InputDecoration(
-                  hintText: '****',
-                  errorText: passwordError,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                        showPassword ? Icons.visibility_off : Icons.visibility),
-                    onPressed: () =>
-                        setState(() => showPassword = !showPassword),
-                  ),
-                  labelText: L10n.of(context).password),
+                icon: Icon(Icons.lock_outline),
+                hintText: '****',
+                errorText: passwordError,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                      showPassword ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => showPassword = !showPassword),
+                ),
+                labelText: L10n.of(context).password,
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
           SizedBox(height: 20),

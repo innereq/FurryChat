@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'chat_list.dart';
 
 class Login extends StatefulWidget {
-  Login({Key key, String this.username: null}) : super(key:key);
+  Login({Key key, String this.username: null}) : super(key: key);
 
   final String username;
 
@@ -105,7 +105,7 @@ class _LoginState extends State<Login> {
     }
   }
 
- @override
+  @override
   void initState() {
     super.initState();
     usernameController.text = widget?.username;
@@ -136,14 +136,10 @@ class _LoginState extends State<Login> {
       body: Builder(builder: (context) {
         return ListView(
           padding: EdgeInsets.symmetric(
-              horizontal:
-                  max((MediaQuery.of(context).size.width - 600) / 2, 0)),
+              horizontal: max((MediaQuery.of(context).size.width - 600) / 2, 0),
+              vertical: 8.0),
           children: <Widget>[
             ListTile(
-              leading: CircleAvatar(
-                child: Icon(Icons.account_box,
-                    color: Theme.of(context).primaryColor),
-              ),
               title: TextField(
                 readOnly: loading,
                 autocorrect: false,
@@ -151,19 +147,19 @@ class _LoginState extends State<Login> {
                 onChanged: (t) => _checkWellKnownWithCoolDown(t, context),
                 controller: usernameController,
                 decoration: InputDecoration(
-                    hintText:
-                        '@${L10n.of(context).username.toLowerCase()}:domain',
-                    errorText: usernameError,
-                    labelText: L10n.of(context).username),
+                  icon: Icon(Icons.person_outline),
+                  hintText:
+                      '@${L10n.of(context).username.toLowerCase()}:domain',
+                  errorText: usernameError,
+                  labelText: L10n.of(context).username,
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
             ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? Color(0xff121212)
-                    : Colors.white,
-                child: Icon(Icons.lock, color: Theme.of(context).primaryColor),
-              ),
               title: TextField(
                 readOnly: loading,
                 autocorrect: false,
@@ -172,16 +168,18 @@ class _LoginState extends State<Login> {
                 obscureText: !showPassword,
                 onSubmitted: (t) => login(context),
                 decoration: InputDecoration(
-                    hintText: '****',
-                    errorText: passwordError,
-                    suffixIcon: IconButton(
-                      icon: Icon(showPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility),
-                      onPressed: () =>
-                          setState(() => showPassword = !showPassword),
-                    ),
-                    labelText: L10n.of(context).password),
+                  icon: Icon(Icons.lock_outline),
+                  hintText: '****',
+                  errorText: passwordError,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        showPassword ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () =>
+                        setState(() => showPassword = !showPassword),
+                  ),
+                  labelText: L10n.of(context).password,
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
             SizedBox(height: 20),
