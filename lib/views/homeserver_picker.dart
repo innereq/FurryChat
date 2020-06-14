@@ -152,7 +152,9 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      (_isMXID ? L10n.of(context).login.toUpperCase() : L10n.of(context).connect.toUpperCase()),
+                      (_isMXID
+                          ? L10n.of(context).login.toUpperCase()
+                          : L10n.of(context).connect.toUpperCase()),
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     onPressed: () =>
