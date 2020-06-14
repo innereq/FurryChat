@@ -44,6 +44,7 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
       if (success != false) {
         await Navigator.of(context).push(AppRoute(Login(
           username: homeserver,
+          wellknown: wellknown,
         )));
       }
     } else {
@@ -57,7 +58,9 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
               ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
               : homeserver));
       if (success != false) {
-        await Navigator.of(context).push(AppRoute(SignUp()));
+        await Navigator.of(context).push(AppRoute(SignUp(
+          wellknown: wellknown,
+        )));
       }
     }
   }

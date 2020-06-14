@@ -13,9 +13,14 @@ import 'package:flutter/material.dart';
 import 'chat_list.dart';
 
 class Login extends StatefulWidget {
-  Login({Key key, String this.username: null}) : super(key: key);
+  Login(
+      {Key key,
+      String this.username: null,
+      WellKnownInformations this.wellknown: null})
+      : super(key: key);
 
   final String username;
+  final WellKnownInformations wellknown;
 
   @override
   _LoginState createState() => _LoginState();
@@ -28,6 +33,7 @@ class _LoginState extends State<Login> {
   String passwordError;
   bool loading = false;
   bool showPassword = false;
+  WellKnownInformations newWellknown;
 
   void login(BuildContext context) async {
     var matrix = Matrix.of(context);
@@ -72,6 +78,29 @@ class _LoginState extends State<Login> {
       }
     }
     setState(() => loading = false);
+    if (newWellknown != null) {
+      if (newWellknown.jitsiHomeserver?.baseUrl != null) {
+        if (!newWellknown.jitsiHomeserver.baseUrl.startsWith('https://')) {
+          newWellknown.jitsiHomeserver.baseUrl =
+              'https://${newWellknown.jitsiHomeserver.baseUrl}';
+        }
+        Matrix.of(context).store.setItem('chat.fluffy.jitsi_instance',
+            'https://${Uri.parse(newWellknown.jitsiHomeserver.baseUrl).host}/');
+        Matrix.of(context).jitsiInstance =
+            'https://${Uri.parse(newWellknown.jitsiHomeserver.baseUrl).host}/';
+      }
+    } else if (widget.wellknown != null) {
+      if (widget.wellknown.jitsiHomeserver?.baseUrl != null) {
+        if (!widget.wellknown.jitsiHomeserver.baseUrl.startsWith('https://')) {
+          widget.wellknown.jitsiHomeserver.baseUrl =
+              'https://${widget.wellknown.jitsiHomeserver.baseUrl}';
+        }
+        Matrix.of(context).store.setItem('chat.fluffy.jitsi_instance',
+            'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/');
+        Matrix.of(context).jitsiInstance =
+            'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/';
+      }
+    }
     await Navigator.of(context).pushAndRemoveUntil(
         AppRoute.defaultRoute(context, ChatListView()), (r) => false);
   }
@@ -100,8 +129,10 @@ class _LoginState extends State<Login> {
             Matrix.of(context).client.checkServer(newDomain));
         setState(() => usernameError = null);
       }
+      newWellknown = wellKnownInformations;
     } catch (e) {
       setState(() => usernameError = e.toString());
+      newWellknown = null;
     }
   }
 

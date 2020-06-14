@@ -15,7 +15,9 @@ class SignUpPassword extends StatefulWidget {
   final File avatar;
   final String username;
   final String displayname;
-  const SignUpPassword(this.username, {this.avatar, this.displayname});
+  final WellKnownInformations wellknown;
+  const SignUpPassword(this.username,
+      {this.avatar, this.displayname, this.wellknown});
   @override
   _SignUpPasswordState createState() => _SignUpPasswordState();
 }
@@ -106,6 +108,18 @@ class _SignUpPasswordState extends State<SignUpPassword> {
         );
       } catch (exception) {
         BotToast.showText(text: L10n.of(context).couldNotSetAvatar);
+      }
+    }
+    if (widget.wellknown != null) {
+      if (widget.wellknown.jitsiHomeserver?.baseUrl != null) {
+        if (!widget.wellknown.jitsiHomeserver.baseUrl.startsWith('https://')) {
+          widget.wellknown.jitsiHomeserver.baseUrl =
+              'https://${widget.wellknown.jitsiHomeserver.baseUrl}';
+        }
+        Matrix.of(context).store.setItem('chat.fluffy.jitsi_instance',
+            'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/');
+        Matrix.of(context).jitsiInstance =
+            'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/';
       }
     }
     await Navigator.of(context).pushAndRemoveUntil(

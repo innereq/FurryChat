@@ -12,6 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SignUp extends StatefulWidget {
+  SignUp({Key key, WellKnownInformations this.wellknown: null})
+      : super(key: key);
+
+  final WellKnownInformations wellknown;
+
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -60,8 +65,12 @@ class _SignUpState extends State<SignUp> {
     setState(() => loading = false);
     await Navigator.of(context).push(
       AppRoute(
-        SignUpPassword(preferredUsername,
-            avatar: avatar, displayname: usernameController.text),
+        SignUpPassword(
+          preferredUsername,
+          avatar: avatar,
+          displayname: usernameController.text,
+          wellknown: widget.wellknown,
+        ),
       ),
     );
   }
