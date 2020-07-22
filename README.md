@@ -61,6 +61,12 @@ Don't even ask.
 
 ## How to add translations for your language
 
+You can use Weblate to translate the app to your language:
+
+https://hosted.weblate.org/projects/fluffychat/
+
+
+
 1. Replace the non-translated string in the codebase:
 ```
 Text("Hello world"),

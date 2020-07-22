@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
     if (!kIsWeb) {
       try {
         await FirebaseController.setupFirebase(
-          matrix.client,
+          matrix,
           matrix.widget.clientName,
         );
       } catch (exception) {
@@ -174,7 +174,8 @@ class _LoginState extends State<Login> {
               title: TextField(
                 readOnly: loading,
                 autocorrect: false,
-                autofocus: widget.username != null ? false : true,
+                autofocus: true,
+                keyboardType: TextInputType.emailAddress,
                 onChanged: (t) => _checkWellKnownWithCoolDown(t, context),
                 controller: usernameController,
                 decoration: InputDecoration(
@@ -231,7 +232,7 @@ class _LoginState extends State<Login> {
                           L10n.of(context).login.toUpperCase(),
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
-                  onPressed: () => loading ? null : login(context),
+                  onPressed: loading ? null : () => login(context),
                 ),
               ),
             ),

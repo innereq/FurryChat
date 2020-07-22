@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:link_text/link_text.dart';
+import 'package:memoryfilepicker/memoryfilepicker.dart';
 import './settings_emotes.dart';
 
 class ChatDetails extends StatefulWidget {
@@ -100,7 +101,7 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   void setAvatarAction(BuildContext context) async {
-    final tempFile = await ImagePicker.pickImage(
+    final tempFile = await MemoryFilePicker.getImage(
         source: ImageSource.gallery,
         imageQuality: 50,
         maxWidth: 1600,
@@ -109,8 +110,8 @@ class _ChatDetailsState extends State<ChatDetails> {
     final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
       widget.room.setAvatar(
         MatrixFile(
-          bytes: await tempFile.readAsBytes(),
-          path: tempFile.path,
+          bytes: tempFile.bytes,
+          name: tempFile.path,
         ),
       ),
     );

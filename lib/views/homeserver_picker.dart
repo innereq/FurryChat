@@ -19,7 +19,8 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
     final homeserver = await SimpleDialogs(context).enterText(
         titleText: L10n.of(context).enterYourHomeserver,
         hintText: Matrix.defaultHomeserver,
-        prefixText: 'https://');
+        prefixText: 'https://',
+        keyboardType: TextInputType.url);
     if (homeserver?.isEmpty ?? true) return;
     _checkHomeserverAction(homeserver, context);
   }
@@ -48,6 +49,12 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
         )));
       }
     } else {
+
+      homeserver = homeserver.trim();
+      if (homeserver.endsWith('/')) {
+        homeserver = homeserver.substring(0, homeserver.length - 1);
+      
+      }
       wellknown = await SimpleDialogs(context).tryRequestWithLoadingDialog(
           Matrix.of(context)
               .client

@@ -8,17 +8,17 @@ class SimpleDialogs {
 
   const SimpleDialogs(this.context);
 
-  Future<String> enterText({
-    String titleText,
-    String confirmText,
-    String cancelText,
-    String hintText,
-    String labelText,
-    String prefixText,
-    String suffixText,
-    bool password = false,
-    bool multiLine = false,
-  }) async {
+  Future<String> enterText(
+      {String titleText,
+      String confirmText,
+      String cancelText,
+      String hintText,
+      String labelText,
+      String prefixText,
+      String suffixText,
+      bool password = false,
+      bool multiLine = false,
+      TextInputType keyboardType}) async {
     var textEditingController = TextEditingController();
     final controller = textEditingController;
     String input;
@@ -32,12 +32,13 @@ class SimpleDialogs {
           autocorrect: false,
           onSubmitted: (s) {
             input = s;
-            Navigator.of(context).pop();
+            Navigator.of(c).pop();
           },
           minLines: multiLine ? 3 : 1,
           maxLines: multiLine ? 3 : 1,
           obscureText: password,
           textInputAction: multiLine ? TextInputAction.newline : null,
+          keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hintText,
             labelText: labelText,
@@ -54,7 +55,7 @@ class SimpleDialogs {
                 cancelText?.toUpperCase() ??
                     L10n.of(context).close.toUpperCase(),
                 style: TextStyle(color: Colors.blueGrey)),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(c).pop(),
           ),
           FlatButton(
             child: Text(
@@ -63,7 +64,7 @@ class SimpleDialogs {
             ),
             onPressed: () {
               input = controller.text;
-              Navigator.of(context).pop();
+              Navigator.of(c).pop();
             },
           ),
         ],
@@ -90,7 +91,7 @@ class SimpleDialogs {
                 cancelText?.toUpperCase() ??
                     L10n.of(context).close.toUpperCase(),
                 style: TextStyle(color: Colors.blueGrey)),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(c).pop(),
           ),
           FlatButton(
             child: Text(
@@ -99,7 +100,7 @@ class SimpleDialogs {
             ),
             onPressed: () {
               confirmed = true;
-              Navigator.of(context).pop();
+              Navigator.of(c).pop();
             },
           ),
         ],
@@ -124,7 +125,7 @@ class SimpleDialogs {
               okText ?? L10n.of(context).ok.toUpperCase(),
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(c).pop();
             },
           ),
         ],
@@ -167,7 +168,12 @@ class SimpleDialogs {
           children: <Widget>[
             CircularProgressIndicator(),
             SizedBox(width: 16),
-            Text(L10n.of(context).loadingPleaseWait),
+            Expanded(
+                child: Text(
+              L10n.of(context).loadingPleaseWait,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            )),
           ],
         ),
       ),

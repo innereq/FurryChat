@@ -49,11 +49,6 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        externalNativeBuild {
-            cmake {
-                arguments "-DOLM_TESTS=NO"
-            }
-        }
     }
 
     signingConfigs {
@@ -77,15 +72,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-    externalNativeBuild {
-        // Encapsulates your CMake build configurations.
-        cmake {
-            // Provides a relative path to your CMake build script.
-            path "../../ios/olm/CMakeLists.txt"
-            version "3.10.2"
-        }
-    }
 }
 
 flutter {
@@ -98,6 +84,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation "net.zetetic:android-database-sqlcipher:4.4.0" // needed for moor_ffi w/ sqlcipher
 }
 
 //apply plugin: "com.google.gms.google-services"

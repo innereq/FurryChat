@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.0"
+  asn1lib:
+    dependency: transitive
+    description:
+      name: asn1lib
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.4"
   async:
     dependency: transitive
     description:
@@ -36,6 +43,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.4.1"
+  base58check:
+    dependency: transitive
+    description:
+      name: base58check
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -127,15 +141,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.3"
-  encrypted_moor:
-    dependency: "direct main"
+  encrypt:
+    dependency: transitive
     description:
-      path: "extras/encryption"
-      ref: HEAD
-      resolved-ref: "6f930b011577e5bc8a5e5511691c8fcc43869a1c"
-      url: "https://github.com/simolus3/moor.git"
-    source: git
-    version: "1.0.0"
+      name: encrypt
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -158,12 +170,19 @@ packages:
     source: hosted
     version: "0.1.3"
   file_picker:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.3+2"
+    version: "1.12.0"
+  file_picker_platform_interface:
+    dependency: transitive
+    description:
+      name: file_picker_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -222,7 +241,21 @@ packages:
       name: flutter_matrix_html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.8"
+    version: "0.1.2"
+  flutter_olm:
+    dependency: "direct main"
+    description:
+      name: flutter_olm
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.8"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -244,13 +277,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
-  flutter_speed_dial:
-    dependency: "direct main"
-    description:
-      name: flutter_speed_dial
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.5"
   flutter_svg:
     dependency: transitive
     description:
@@ -325,12 +351,19 @@ packages:
     source: hosted
     version: "2.1.12"
   image_picker:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.2+3"
+    version: "0.6.7+2"
+  image_picker_platform_interface:
+    dependency: transitive
+    description:
+      name: image_picker_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   intl:
     dependency: "direct main"
     description:
@@ -397,12 +430,17 @@ packages:
   matrix_file_e2ee:
     dependency: transitive
     description:
-      path: "."
-      ref: "1.x.y"
-      resolved-ref: "32edeff765369a7a77a0822f4b19302ca24a017b"
-      url: "https://gitlab.com/famedly/libraries/matrix_file_e2ee.git"
-    source: git
-    version: "1.0.3"
+      name: matrix_file_e2ee
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
+  memoryfilepicker:
+    dependency: "direct main"
+    description:
+      name: memoryfilepicker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   meta:
     dependency: transitive
     description:
@@ -431,6 +469,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.2"
+  moor_ffi:
+    dependency: "direct main"
+    description:
+      name: moor_ffi
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
   multi_server_socket:
     dependency: transitive
     description:
@@ -462,12 +507,10 @@ packages:
   olm:
     dependency: transitive
     description:
-      path: "."
-      ref: "1.x.y"
-      resolved-ref: f66975bd1b5cb1865eba5efe6e3a392aa5e396a5
-      url: "https://gitlab.com/famedly/libraries/dart-olm.git"
-    source: git
-    version: "1.1.1"
+      name: olm
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.1"
   open_file:
     dependency: "direct main"
     description:
@@ -489,6 +532,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.10"
+  password_hash:
+    dependency: transitive
+    description:
+      name: password_hash
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   path:
     dependency: transitive
     description:
@@ -551,7 +601,7 @@ packages:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   pointycastle:
     dependency: transitive
     description:
@@ -655,20 +705,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
-  sqflite_common:
-    dependency: transitive
-    description:
-      name: sqflite_common
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
-  sqflite_sqlcipher:
-    dependency: transitive
-    description:
-      name: sqflite_sqlcipher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0+6"
   stack_trace:
     dependency: transitive
     description:
@@ -738,7 +774,7 @@ packages:
       name: universal_html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.12"
+    version: "1.2.3"
   universal_io:
     dependency: transitive
     description:

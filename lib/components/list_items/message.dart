@@ -1,6 +1,5 @@
 import 'package:bubble/bubble.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:famedlysdk/encryption.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:fluffychat/components/message_content.dart';
 import 'package:fluffychat/components/reply_content.dart';
@@ -31,6 +30,10 @@ class Message extends StatelessWidget {
       this.onAvatarTab,
       this.selected,
       this.timeline});
+
+  /// Indicates wheither the user may use a mouse instead
+  /// of touchscreen.
+  static bool useMouse = false;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +121,7 @@ class Message extends StatelessWidget {
                     ),
                     if (event.type == EventTypes.Encrypted &&
                         event.messageType == MessageTypes.BadEncrypted &&
-                        event.content['body'] == DecryptError.UNKNOWN_SESSION)
+                        event.content['can_request_session'] == true)
                       RaisedButton(
                         color: color.withAlpha(100),
                         child: Text(
@@ -169,7 +172,8 @@ class Message extends StatelessWidget {
     }
 
     return InkWell(
-      onTap: longPressSelect ? () => null : () => onSelect(event),
+      onHover: (b) => useMouse = true,
+      onTap: !useMouse && longPressSelect ? () => null : () => onSelect(event),
       splashColor: Theme.of(context).primaryColor.withAlpha(100),
       onLongPress: !longPressSelect ? null : () => onSelect(event),
       child: AnimatedContainer(

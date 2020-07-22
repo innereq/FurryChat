@@ -3,23 +3,20 @@ import 'dart:io';
 
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
+import 'package:fluffychat/components/connection_status_header.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:fluffychat/components/list_items/presence_list_item.dart';
 import 'package:fluffychat/components/list_items/public_room_list_item.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:share/share.dart';
-
-import '../components/theme_switcher.dart';
 import '../components/adaptive_page_layout.dart';
 import '../components/list_items/chat_list_item.dart';
 import '../components/matrix.dart';
 import '../l10n/l10n.dart';
 import '../utils/app_route.dart';
 import '../utils/url_launcher.dart';
-import '../utils/client_presence_extension.dart';
 import 'archive.dart';
 import 'homeserver_picker.dart';
 import 'new_group.dart';
@@ -55,6 +52,7 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   bool get searchMode => searchController.text?.isNotEmpty ?? false;
   final TextEditingController searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
   Timer coolDown;
   PublicRoomsResponse publicRoomsResponse;
   bool loadingPublicRooms = false;
@@ -140,7 +138,7 @@ class _ChatListState extends State<ChatList> {
       'msgtype': 'chat.fluffy.shared_file',
       'file': MatrixFile(
         bytes: file.readAsBytesSync(),
-        path: file.path,
+        name: file.path,
       ),
     };
   }
@@ -290,7 +288,7 @@ class _ChatListState extends State<ChatList> {
                           ),
                         ),
                   appBar: AppBar(
-                    elevation: _scrolledToTop ? 0 : null,
+                    //elevation: _scrolledToTop ? 0 : null,
                     leading: selectMode != SelectMode.share
                         ? null
                         : IconButton(
@@ -301,31 +299,26 @@ class _ChatListState extends State<ChatList> {
                     titleSpacing: 0,
                     title: selectMode == SelectMode.share
                         ? Text(L10n.of(context).share)
-                        : Container(
-                            padding: EdgeInsets.all(8),
-                            height: 42,
-                            margin: EdgeInsets.only(right: 8),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              borderRadius: BorderRadius.circular(90),
-                            ),
+                        : Padding(
+                            padding:
+                                EdgeInsets.only(top: 8, bottom: 8, right: 8),
                             child: TextField(
                               autocorrect: false,
                               controller: searchController,
+                              focusNode: _searchFocusNode,
                               decoration: InputDecoration(
-                                suffixIcon: loadingPublicRooms
-                                    ? Container(
-                                        alignment: Alignment.centerRight,
-                                        child: Container(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                      )
-                                    : Icon(Icons.search),
                                 contentPadding: EdgeInsets.all(9),
                                 border: InputBorder.none,
                                 hintText: L10n.of(context).searchForAChat,
+                                suffixIcon: searchMode
+                                    ? IconButton(
+                                        icon: Icon(Icons.backspace),
+                                        onPressed: () => setState(() {
+                                          searchController.clear();
+                                          _searchFocusNode.unfocus();
+                                        }),
+                                      )
+                                    : null,
                               ),
                             ),
                           ),
@@ -334,39 +327,14 @@ class _ChatListState extends State<ChatList> {
                       (AdaptivePageLayout.columnMode(context) ||
                               selectMode == SelectMode.share)
                           ? null
-                          : SpeedDial(
+                          : FloatingActionButton(
                               child: Icon(Icons.add),
-                              overlayColor: blackWhiteColor(context),
-                              foregroundColor: Colors.white,
                               backgroundColor: Theme.of(context).primaryColor,
-                              children: [
-                                SpeedDialChild(
-                                  child: Icon(Icons.people_outline),
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.blue,
-                                  label: L10n.of(context).createNewGroup,
-                                  labelStyle: TextStyle(
-                                      fontSize: 18.0, color: Colors.black),
-                                  onTap: () => Navigator.of(context)
-                                      .pushAndRemoveUntil(
-                                          AppRoute.defaultRoute(
-                                              context, NewGroupView()),
-                                          (r) => r.isFirst),
-                                ),
-                                SpeedDialChild(
-                                  child: Icon(Icons.person_add),
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.green,
-                                  label: L10n.of(context).newPrivateChat,
-                                  labelStyle: TextStyle(
-                                      fontSize: 18.0, color: Colors.black),
-                                  onTap: () => Navigator.of(context)
-                                      .pushAndRemoveUntil(
-                                          AppRoute.defaultRoute(
-                                              context, NewPrivateChatView()),
-                                          (r) => r.isFirst),
-                                ),
-                              ],
+                              onPressed: () => Navigator.of(context)
+                                  .pushAndRemoveUntil(
+                                      AppRoute.defaultRoute(
+                                          context, NewPrivateChatView()),
+                                      (r) => r.isFirst),
                             ),
                   body: StreamBuilder(
                       stream: Matrix.of(context).client.onSync.stream,
@@ -409,50 +377,66 @@ class _ChatListState extends State<ChatList> {
                                   (publicRoomsResponse?.chunk?.length ?? 0);
                               final totalCount =
                                   rooms.length + publicRoomsCount;
+                              final directChats =
+                                  rooms.where((r) => r.isDirectChat).toList();
+                              final presences =
+                                  Matrix.of(context).client.presences;
+                              directChats.sort((a, b) =>
+                                  presences[b.directChatMatrixID]
+                                              ?.presence
+                                              ?.statusMsg !=
+                                          null
+                                      ? 1
+                                      : b.lastEvent.originServerTs.compareTo(
+                                          a.lastEvent.originServerTs));
                               return ListView.separated(
                                   controller: _scrollController,
-                                  separatorBuilder:
-                                      (BuildContext context, int i) =>
-                                          i == totalCount - publicRoomsCount
-                                              ? Material(
-                                                  elevation: 2,
-                                                  child: ListTile(
-                                                    title: Text(L10n.of(context)
-                                                        .publicRooms),
-                                                  ),
-                                                )
-                                              : Container(),
+                                  separatorBuilder: (BuildContext context,
+                                          int i) =>
+                                      i == totalCount - publicRoomsCount
+                                          ? ListTile(
+                                              title: Text(
+                                                L10n.of(context).publicRooms +
+                                                    ':',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                              ),
+                                            )
+                                          : Container(),
                                   itemCount: totalCount + 1,
                                   itemBuilder: (BuildContext context, int i) {
                                     if (i == 0) {
-                                      return (Matrix.of(context)
-                                                  .client
-                                                  .statusList
-                                                  .isEmpty ||
-                                              selectMode == SelectMode.share)
-                                          ? Container()
-                                          : PreferredSize(
-                                              preferredSize:
-                                                  Size.fromHeight(89),
-                                              child: Container(
-                                                height: 81,
-                                                child: ListView.builder(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  itemCount: Matrix.of(context)
-                                                      .client
-                                                      .statusList
-                                                      .length,
-                                                  itemBuilder: (BuildContext
-                                                              context,
-                                                          int i) =>
-                                                      PresenceListItem(
-                                                          Matrix.of(context)
-                                                              .client
-                                                              .statusList[i]),
+                                      return Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          ConnectionStatusHeader(),
+                                          (directChats.isEmpty ||
+                                                  selectMode ==
+                                                      SelectMode.share)
+                                              ? Container()
+                                              : PreferredSize(
+                                                  preferredSize:
+                                                      Size.fromHeight(90),
+                                                  child: Container(
+                                                    height: 82,
+                                                    child: ListView.builder(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      itemCount:
+                                                          directChats.length,
+                                                      itemBuilder: (BuildContext
+                                                                  context,
+                                                              int i) =>
+                                                          PresenceListItem(
+                                                              directChats[i]),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            );
+                                        ],
+                                      );
                                     }
                                     i--;
                                     return i < rooms.length

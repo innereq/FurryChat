@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:famedlysdk/famedlysdk.dart';
@@ -8,11 +7,12 @@ import 'package:fluffychat/utils/app_route.dart';
 import 'package:fluffychat/views/auth_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:memoryfilepicker/memoryfilepicker.dart';
 
 import 'chat_list.dart';
 
 class SignUpPassword extends StatefulWidget {
-  final File avatar;
+  final MemoryFile avatar;
   final String username;
   final String displayname;
   final WellKnownInformations wellknown;
@@ -102,8 +102,8 @@ class _SignUpPasswordState extends State<SignUpPassword> {
       try {
         await matrix.client.setAvatar(
           MatrixFile(
-            bytes: await widget.avatar.readAsBytes(),
-            path: widget.avatar.path,
+            bytes: widget.avatar.bytes,
+            name: widget.avatar.path,
           ),
         );
       } catch (exception) {
@@ -181,7 +181,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
                         L10n.of(context).createAccountNow.toUpperCase(),
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                onPressed: () => loading ? null : _signUpAction(context),
+                onPressed: loading ? null : () => _signUpAction(context),
               ),
             ),
           ),

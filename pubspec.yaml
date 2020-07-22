@@ -11,7 +11,7 @@ description: Chat with your friends.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.14.0+40
+version: 0.15.1+42
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -29,12 +29,9 @@ dependencies:
 
   localstorage: ^3.0.1+4
   bubble: ^1.1.9+1
-  file_picker: ^1.4.3+2
-  image_picker: ^0.6.2+3
-  flutter_speed_dial: ^1.2.5
+  memoryfilepicker: ^0.1.1
   url_launcher: ^5.4.1
   url_launcher_web: ^0.1.0
-  sqflite: ^1.2.0
   flutter_advanced_networkimage: any
   firebase_messaging: ^6.0.13
   flutter_local_notifications: ^1.4.3
@@ -52,20 +49,19 @@ dependencies:
   open_file: ^3.0.1
   mime_type: ^0.3.0
   bot_toast: ^3.0.0
-  flutter_matrix_html: ^0.0.8
+  flutter_matrix_html: ^0.1.1
   moor: ^3.0.2
   random_string: ^2.0.1
   flutter_typeahead: ^1.8.1
+  flutter_olm: ^1.0.1
 
   intl: ^0.16.0
   intl_translation: ^0.17.9
   flutter_localizations:
     sdk: flutter
 
-  encrypted_moor:
-    git:
-      url: https://github.com/simolus3/moor.git
-      path: extras/encryption 
+  moor_ffi: ^0.5.0 # 0.6.0 and  up have a bug that it doesn't build with --profile, see https://github.com/simolus3/moor/issues/581
+  sqflite: ^1.1.7 # Still used to obtain the database location
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +89,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/sounds/
     - assets/js/
     - assets/js/package/
 

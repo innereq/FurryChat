@@ -1,3 +1,31 @@
+# Version 0.16.0 - 2020-07-??
+### Features
+- Implement web notifications
+### Changes
+- Various performance improvements
+- Added languages: Galician, Croatian, Japanese, Russian
+### Fixes:
+- Various fixes, including key verification fixes
+
+# Version 0.15.1 - 2020-06-26
+### Fixes:
+- Fix a big with account data being stored incorrectly
+
+# Version 0.15.0 - 2020-06-26
+### Features:
+- New room list app bar design
+- Chat app bar transparent
+- Implement web file picker
+- Minor design and UX improvements
+- Implement Cross Signing
+- Restore keys from online key backup
+- Added translations: Czech, Spanish, Slovakian
+### Changes:
+- Show presences of users sharing a direct chat
+- Big refactoring
+### Fixes:
+- Various fixes, including e2ee fixes and olm session recovery
+
 # Version 0.14.0 - 2020-05-20
 ### Features:
 - Implement image viewer

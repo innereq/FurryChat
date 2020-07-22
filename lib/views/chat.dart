@@ -3,10 +3,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:fluffychat/components/adaptive_page_layout.dart';
 import 'package:fluffychat/components/avatar.dart';
 import 'package:fluffychat/components/chat_settings_popup_menu.dart';
+import 'package:fluffychat/components/connection_status_header.dart';
 import 'package:fluffychat/components/dialogs/presence_dialog.dart';
 import 'package:fluffychat/components/dialogs/recording_dialog.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
@@ -20,9 +20,9 @@ import 'package:fluffychat/utils/room_status_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bot_toast/bot_toast.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:memoryfilepicker/memoryfilepicker.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'chat_details.dart';
 import 'chat_list.dart';
@@ -91,11 +91,11 @@ class _ChatState extends State<_Chat> {
   void requestHistory() async {
     if (_canLoadMore) {
       setState(() => _loadingHistory = true);
-      try {
-        await timeline.requestHistory(historyCount: _loadHistoryCount);
-      } catch (e) {
-        debugPrint('Error loading history: ' + e.toString());
-      }
+
+      await SimpleDialogs(context).tryRequestWithErrorToast(
+        timeline.requestHistory(historyCount: _loadHistoryCount),
+      );
+
       if (mounted) setState(() => _loadingHistory = false);
     }
   }
@@ -157,9 +157,6 @@ class _ChatState extends State<_Chat> {
       if (timeline.events.isNotEmpty) {
         unawaited(room.sendReadReceipt(timeline.events.first.eventId));
       }
-      if (timeline.events.length < _loadHistoryCount) {
-        requestHistory();
-      }
     }
     updateView();
     return true;
@@ -187,51 +184,39 @@ class _ChatState extends State<_Chat> {
   }
 
   void sendFileAction(BuildContext context) async {
-    if (kIsWeb) {
-      BotToast.showText(text: L10n.of(context).notSupportedInWeb);
-      return;
-    }
-    var file = await FilePicker.getFile();
+    var file = await MemoryFilePicker.getFile();
     if (file == null) return;
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
       room.sendFileEvent(
-        MatrixFile(bytes: await file.readAsBytes(), path: file.path),
+        MatrixFile(bytes: file.bytes, name: file.path),
       ),
     );
   }
 
   void sendImageAction(BuildContext context) async {
-    if (kIsWeb) {
-      BotToast.showText(text: L10n.of(context).notSupportedInWeb);
-      return;
-    }
-    var file = await ImagePicker.pickImage(
+    var file = await MemoryFilePicker.getImage(
         source: ImageSource.gallery,
         imageQuality: 50,
         maxWidth: 1600,
         maxHeight: 1600);
     if (file == null) return;
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.sendImageEvent(
-        MatrixFile(bytes: await file.readAsBytes(), path: file.path),
+      room.sendFileEvent(
+        MatrixImageFile(bytes: await file.bytes, name: file.path),
       ),
     );
   }
 
   void openCameraAction(BuildContext context) async {
-    if (kIsWeb) {
-      BotToast.showText(text: L10n.of(context).notSupportedInWeb);
-      return;
-    }
-    var file = await ImagePicker.pickImage(
+    var file = await MemoryFilePicker.getImage(
         source: ImageSource.camera,
         imageQuality: 50,
         maxWidth: 1600,
         maxHeight: 1600);
     if (file == null) return;
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.sendImageEvent(
-        MatrixFile(bytes: await file.readAsBytes(), path: file.path),
+      room.sendFileEvent(
+        MatrixImageFile(bytes: file.bytes, name: file.path),
       ),
     );
   }
@@ -246,8 +231,9 @@ class _ChatState extends State<_Chat> {
     if (result == null) return;
     final audioFile = File(result);
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.sendAudioEvent(
-        MatrixFile(bytes: audioFile.readAsBytesSync(), path: audioFile.path),
+      room.sendFileEvent(
+        MatrixAudioFile(
+            bytes: audioFile.readAsBytesSync(), name: audioFile.path),
       ),
     );
   }
@@ -462,202 +448,206 @@ class _ChatState extends State<_Chat> {
                 fit: BoxFit.cover,
               ),
             ),
-          SafeArea(
-            child: Column(
-              children: <Widget>[
-                if (_loadingHistory) LinearProgressIndicator(),
-                Expanded(
-                  child: FutureBuilder<bool>(
-                    future: getTimeline(),
-                    builder: (BuildContext context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
+          Column(
+            children: <Widget>[
+              Expanded(
+                child: FutureBuilder<bool>(
+                  future: getTimeline(),
+                  builder: (BuildContext context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-                      if (room.notificationCount != null &&
-                          room.notificationCount > 0 &&
-                          timeline != null &&
-                          timeline.events.isNotEmpty) {
-                        room.sendReadReceipt(timeline.events.first.eventId);
-                      }
+                    if (room.notificationCount != null &&
+                        room.notificationCount > 0 &&
+                        timeline != null &&
+                        timeline.events.isNotEmpty) {
+                      room.sendReadReceipt(timeline.events.first.eventId);
+                    }
 
-                      if (timeline.events.isEmpty) return Container();
+                    if (timeline.events.isEmpty) return Container();
 
-                      return ListView.builder(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: max(
-                                0,
-                                (MediaQuery.of(context).size.width -
-                                        AdaptivePageLayout.defaultMinWidth *
-                                            3.5) /
-                                    2),
-                          ),
-                          reverse: true,
-                          itemCount: timeline.events.length + 2,
-                          controller: _scrollController,
-                          itemBuilder: (BuildContext context, int i) {
-                            return i == timeline.events.length + 1
-                                ? _canLoadMore && !_loadingHistory
-                                    ? FlatButton(
-                                        child: Text(
-                                          L10n.of(context).loadMore,
-                                          style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                            decoration:
-                                                TextDecoration.underline,
+                    return ListView.builder(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: max(
+                              0,
+                              (MediaQuery.of(context).size.width -
+                                      AdaptivePageLayout.defaultMinWidth *
+                                          3.5) /
+                                  2),
+                        ),
+                        reverse: true,
+                        itemCount: timeline.events.length + 2,
+                        controller: _scrollController,
+                        itemBuilder: (BuildContext context, int i) {
+                          return i == timeline.events.length + 1
+                              ? _loadingHistory
+                                  ? Container(
+                                      height: 50,
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.all(8),
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : _canLoadMore
+                                      ? FlatButton(
+                                          child: Text(
+                                            L10n.of(context).loadMore,
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              fontWeight: FontWeight.bold,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
                                           ),
+                                          onPressed: requestHistory,
+                                        )
+                                      : Container()
+                              : i == 0
+                                  ? AnimatedContainer(
+                                      height: seenByText.isEmpty ? 0 : 24,
+                                      duration: seenByText.isEmpty
+                                          ? Duration(milliseconds: 0)
+                                          : Duration(milliseconds: 500),
+                                      alignment:
+                                          timeline.events.first.senderId ==
+                                                  client.userID
+                                              ? Alignment.topRight
+                                              : Alignment.topLeft,
+                                      child: Text(
+                                        seenByText,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
                                         ),
-                                        onPressed: requestHistory,
-                                      )
-                                    : Container()
-                                : i == 0
-                                    ? AnimatedContainer(
-                                        height: seenByText.isEmpty ? 0 : 24,
-                                        duration: seenByText.isEmpty
-                                            ? Duration(milliseconds: 0)
-                                            : Duration(milliseconds: 500),
-                                        alignment:
-                                            timeline.events.first.senderId ==
-                                                    client.userID
-                                                ? Alignment.topRight
-                                                : Alignment.topLeft,
-                                        child: Text(
-                                          seenByText,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                          ),
-                                        ),
-                                        padding: EdgeInsets.only(
-                                          left: 8,
-                                          right: 8,
-                                          bottom: 8,
-                                        ),
-                                      )
-                                    : Message(timeline.events[i - 1],
-                                        onAvatarTab: (Event event) {
-                                        sendController.text +=
-                                            ' ${event.senderId}';
-                                      }, onSelect: (Event event) {
-                                        if (!event.redacted) {
-                                          if (selectedEvents.contains(event)) {
-                                            setState(
-                                              () =>
-                                                  selectedEvents.remove(event),
-                                            );
-                                          } else {
-                                            setState(
-                                              () => selectedEvents.add(event),
-                                            );
-                                          }
-                                          selectedEvents.sort(
-                                            (a, b) => a.originServerTs
-                                                .compareTo(b.originServerTs),
+                                      ),
+                                      padding: EdgeInsets.only(
+                                        left: 8,
+                                        right: 8,
+                                        bottom: 8,
+                                      ),
+                                    )
+                                  : Message(timeline.events[i - 1],
+                                      onAvatarTab: (Event event) {
+                                      sendController.text +=
+                                          ' ${event.senderId}';
+                                    }, onSelect: (Event event) {
+                                      if (!event.redacted) {
+                                        if (selectedEvents.contains(event)) {
+                                          setState(
+                                            () => selectedEvents.remove(event),
+                                          );
+                                        } else {
+                                          setState(
+                                            () => selectedEvents.add(event),
                                           );
                                         }
-                                      },
-                                        longPressSelect: selectedEvents.isEmpty,
-                                        selected: selectedEvents
-                                            .contains(timeline.events[i - 1]),
-                                        timeline: timeline,
-                                        nextEvent: i >= 2
-                                            ? timeline.events[i - 2]
-                                            : null);
-                          });
-                    },
-                  ),
+                                        selectedEvents.sort(
+                                          (a, b) => a.originServerTs
+                                              .compareTo(b.originServerTs),
+                                        );
+                                      }
+                                    },
+                                      longPressSelect: selectedEvents.isEmpty,
+                                      selected: selectedEvents
+                                          .contains(timeline.events[i - 1]),
+                                      timeline: timeline,
+                                      nextEvent: i >= 2
+                                          ? timeline.events[i - 2]
+                                          : null);
+                        });
+                  },
                 ),
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  height: replyEvent != null ? 56 : 0,
-                  child: Material(
-                    color: Theme.of(context).secondaryHeaderColor,
-                    child: Row(
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.close),
-                          onPressed: () => setState(() => replyEvent = null),
-                        ),
-                        Expanded(
-                          child: ReplyContent(replyEvent),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Divider(
-                  height: 1,
+              ),
+              ConnectionStatusHeader(),
+              AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                height: replyEvent != null ? 56 : 0,
+                child: Material(
                   color: Theme.of(context).secondaryHeaderColor,
-                  thickness: 1,
+                  child: Row(
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () => setState(() => replyEvent = null),
+                      ),
+                      Expanded(
+                        child: ReplyContent(replyEvent),
+                      ),
+                    ],
+                  ),
                 ),
-                room.canSendDefaultMessages &&
-                        room.membership == Membership.join
-                    ? Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .backgroundColor
-                              .withOpacity(0.8),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: selectMode
-                              ? <Widget>[
-                                  Container(
-                                    height: 56,
-                                    child: FlatButton(
-                                      onPressed: () =>
-                                          forwardEventsAction(context),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(Icons.keyboard_arrow_left),
-                                          Text(L10n.of(context).forward),
-                                        ],
-                                      ),
+              ),
+              Divider(
+                height: 1,
+                color: Theme.of(context).secondaryHeaderColor,
+                thickness: 1,
+              ),
+              room.canSendDefaultMessages && room.membership == Membership.join
+                  ? Container(
+                      decoration: BoxDecoration(
+                        color:
+                            Theme.of(context).backgroundColor.withOpacity(0.8),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: selectMode
+                            ? <Widget>[
+                                Container(
+                                  height: 56,
+                                  child: FlatButton(
+                                    onPressed: () =>
+                                        forwardEventsAction(context),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Icon(Icons.keyboard_arrow_left),
+                                        Text(L10n.of(context).forward),
+                                      ],
                                     ),
                                   ),
-                                  selectedEvents.length == 1
-                                      ? selectedEvents.first.status > 0
-                                          ? Container(
-                                              height: 56,
-                                              child: FlatButton(
-                                                onPressed: () => replyAction(),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Text(
-                                                        L10n.of(context).reply),
-                                                    Icon(Icons
-                                                        .keyboard_arrow_right),
-                                                  ],
-                                                ),
+                                ),
+                                selectedEvents.length == 1
+                                    ? selectedEvents.first.status > 0
+                                        ? Container(
+                                            height: 56,
+                                            child: FlatButton(
+                                              onPressed: () => replyAction(),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Text(L10n.of(context).reply),
+                                                  Icon(Icons
+                                                      .keyboard_arrow_right),
+                                                ],
                                               ),
-                                            )
-                                          : Container(
-                                              height: 56,
-                                              child: FlatButton(
-                                                onPressed: () =>
-                                                    sendAgainAction(),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    Text(L10n.of(context)
-                                                        .tryToSendAgain),
-                                                    SizedBox(width: 4),
-                                                    Icon(Icons.send, size: 16),
-                                                  ],
-                                                ),
+                                            ),
+                                          )
+                                        : Container(
+                                            height: 56,
+                                            child: FlatButton(
+                                              onPressed: () =>
+                                                  sendAgainAction(),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Text(L10n.of(context)
+                                                      .tryToSendAgain),
+                                                  SizedBox(width: 4),
+                                                  Icon(Icons.send, size: 16),
+                                                ],
                                               ),
-                                            )
-                                      : Container(),
-                                ]
-                              : <Widget>[
-                                  if (!kIsWeb && inputText.isEmpty)
-                                    PopupMenuButton<String>(
+                                            ),
+                                          )
+                                    : Container(),
+                              ]
+                            : <Widget>[
+                                if (inputText.isEmpty)
+                                  Container(
+                                    height: 56,
+                                    alignment: Alignment.center,
+                                    child: PopupMenuButton<String>(
                                       icon: Icon(Icons.add),
                                       onSelected: (String choice) async {
                                         if (choice == 'file') {
@@ -700,99 +690,114 @@ class _ChatState extends State<_Chat> {
                                             contentPadding: EdgeInsets.all(0),
                                           ),
                                         ),
-                                        PopupMenuItem<String>(
-                                          value: 'camera',
-                                          child: ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundColor: Colors.purple,
-                                              foregroundColor: Colors.white,
-                                              child: Icon(Icons.camera_alt),
+                                        if (!kIsWeb)
+                                          PopupMenuItem<String>(
+                                            value: 'camera',
+                                            child: ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundColor: Colors.purple,
+                                                foregroundColor: Colors.white,
+                                                child: Icon(Icons.camera_alt),
+                                              ),
+                                              title: Text(
+                                                  L10n.of(context).openCamera),
+                                              contentPadding: EdgeInsets.all(0),
                                             ),
-                                            title: Text(
-                                                L10n.of(context).openCamera),
-                                            contentPadding: EdgeInsets.all(0),
                                           ),
-                                        ),
-                                        PopupMenuItem<String>(
-                                          value: 'voice',
-                                          child: ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundColor: Colors.red,
-                                              foregroundColor: Colors.white,
-                                              child: Icon(Icons.mic),
+                                        if (!kIsWeb)
+                                          PopupMenuItem<String>(
+                                            value: 'voice',
+                                            child: ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundColor: Colors.red,
+                                                foregroundColor: Colors.white,
+                                                child: Icon(Icons.mic),
+                                              ),
+                                              title: Text(L10n.of(context)
+                                                  .voiceMessage),
+                                              contentPadding: EdgeInsets.all(0),
                                             ),
-                                            title: Text(
-                                                L10n.of(context).voiceMessage),
-                                            contentPadding: EdgeInsets.all(0),
                                           ),
-                                        ),
                                       ],
                                     ),
-                                  EncryptionButton(room),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4.0),
-                                      child: InputBar(
-                                        room: room,
-                                        minLines: 1,
-                                        maxLines: kIsWeb ? 1 : 8,
-                                        keyboardType: kIsWeb
-                                            ? TextInputType.text
-                                            : TextInputType.multiline,
-                                        onSubmitted: (String text) {
-                                          send();
-                                          FocusScope.of(context)
-                                              .requestFocus(inputFocus);
-                                        },
-                                        focusNode: inputFocus,
-                                        controller: sendController,
-                                        decoration: InputDecoration(
-                                          hintText:
-                                              L10n.of(context).writeAMessage,
-                                          border: InputBorder.none,
-                                        ),
-                                        onChanged: (String text) {
-                                          typingCoolDown?.cancel();
-                                          typingCoolDown =
-                                              Timer(Duration(seconds: 2), () {
-                                            typingCoolDown = null;
-                                            currentlyTyping = false;
-                                            room.sendTypingInfo(false);
-                                          });
-                                          typingTimeout ??=
-                                              Timer(Duration(seconds: 30), () {
-                                            typingTimeout = null;
-                                            currentlyTyping = false;
-                                          });
-                                          if (!currentlyTyping) {
-                                            currentlyTyping = true;
-                                            room.sendTypingInfo(true,
-                                                timeout: Duration(seconds: 30)
-                                                    .inMilliseconds);
-                                          }
-                                          setState(() => inputText = text);
-                                        },
+                                  ),
+                                Container(
+                                  height: 56,
+                                  alignment: Alignment.center,
+                                  child: EncryptionButton(room),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: InputBar(
+                                      room: room,
+                                      minLines: 1,
+                                      maxLines: kIsWeb ? 1 : 8,
+                                      keyboardType: kIsWeb
+                                          ? TextInputType.text
+                                          : TextInputType.multiline,
+                                      onSubmitted: (String text) {
+                                        send();
+                                        FocusScope.of(context)
+                                            .requestFocus(inputFocus);
+                                      },
+                                      focusNode: inputFocus,
+                                      controller: sendController,
+                                      decoration: InputDecoration(
+                                        hintText:
+                                            L10n.of(context).writeAMessage,
+                                        hintMaxLines: 1,
+                                        border: InputBorder.none,
                                       ),
+                                      onChanged: (String text) {
+                                        typingCoolDown?.cancel();
+                                        typingCoolDown =
+                                            Timer(Duration(seconds: 2), () {
+                                          typingCoolDown = null;
+                                          currentlyTyping = false;
+                                          room.sendTypingInfo(false);
+                                        });
+                                        typingTimeout ??=
+                                            Timer(Duration(seconds: 30), () {
+                                          typingTimeout = null;
+                                          currentlyTyping = false;
+                                        });
+                                        if (!currentlyTyping) {
+                                          currentlyTyping = true;
+                                          room.sendTypingInfo(true,
+                                              timeout: Duration(seconds: 30)
+                                                  .inMilliseconds);
+                                        }
+                                        setState(() => inputText = text);
+                                      },
                                     ),
                                   ),
-                                  if (!kIsWeb && inputText.isEmpty)
-                                    IconButton(
+                                ),
+                                if (!kIsWeb && inputText.isEmpty)
+                                  Container(
+                                    height: 56,
+                                    alignment: Alignment.center,
+                                    child: IconButton(
                                       icon: Icon(Icons.mic),
                                       onPressed: () =>
                                           voiceMessageAction(context),
                                     ),
-                                  if (kIsWeb || inputText.isNotEmpty)
-                                    IconButton(
+                                  ),
+                                if (kIsWeb || inputText.isNotEmpty)
+                                  Container(
+                                    height: 56,
+                                    alignment: Alignment.center,
+                                    child: IconButton(
                                       icon: Icon(Icons.send),
                                       onPressed: () => send(),
                                     ),
-                                ],
-                        ),
-                      )
-                    : Container(),
-              ],
-            ),
+                                  ),
+                              ],
+                      ),
+                    )
+                  : Container(),
+            ],
           ),
         ],
       ),

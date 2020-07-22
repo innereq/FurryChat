@@ -8,7 +8,20 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<L10n> {
 
   @override
   bool isSupported(Locale locale) {
-    return ['en', 'de', 'hu', 'pl', 'fr'].contains(locale.languageCode);
+    return [
+      'en',
+      'de',
+      'hu',
+      'pl',
+      'fr',
+      'cs',
+      'es',
+      'sk',
+      'gl',
+      'hr',
+      'ja',
+      'ru',
+    ].contains(locale.languageCode);
   }
 
   @override
@@ -46,6 +59,8 @@ class L10n extends MatrixLocalizations {
 
   String get about => Intl.message("About");
 
+  String get accept => Intl.message("Accept");
+
   String acceptedTheInvitation(String username) => Intl.message(
         "$username accepted the invitation",
         name: "acceptedTheInvitation",
@@ -81,6 +96,22 @@ class L10n extends MatrixLocalizations {
 
   String get areYouSure => Intl.message("Are you sure?");
 
+  String get askSSSSCache => Intl.message(
+      "Please enter your secure store passphrase or recovery key to cache the keys.",
+      name: "askSSSSCache");
+
+  String get askSSSSSign => Intl.message(
+      "To be able to sign the other person, please enter your secure store passphrase or recovery key.",
+      name: "askSSSSSign");
+
+  String get askSSSSVerify => Intl.message(
+      "Please enter your secure store passphrase or recovery key to verify your session.",
+      name: "askSSSSVerify");
+
+  String askVerificationRequest(String username) =>
+      Intl.message("Accept this verification request from $username?",
+          name: "askVerificationRequest", args: [username]);
+
   String get authentication => Intl.message("Authentication");
 
   String get avatarHasBeenChanged => Intl.message("Avatar has been changed");
@@ -95,11 +126,16 @@ class L10n extends MatrixLocalizations {
         args: [username, targetName],
       );
 
+  String get blockDevice => Intl.message("Block Device");
+
   String byDefaultYouWillBeConnectedTo(String homeserver) => Intl.message(
         'By default you will be connected to $homeserver',
         name: 'byDefaultYouWillBeConnectedTo',
         args: [homeserver],
       );
+
+  String get cachedKeys =>
+      Intl.message("Successfully cached keys!", name: "cachedKeys");
 
   String get cancel => Intl.message("Cancel");
 
@@ -177,7 +213,7 @@ class L10n extends MatrixLocalizations {
       );
 
   String changedTheProfileAvatar(String username) => Intl.message(
-        "$username changed the profile avatar",
+        "$username changed their avatar",
         name: "changedTheProfileAvatar",
         args: [username],
       );
@@ -215,6 +251,14 @@ class L10n extends MatrixLocalizations {
   String get chooseAUsername => Intl.message("Choose a username");
 
   String get close => Intl.message("Close");
+
+  String get compareEmojiMatch => Intl.message(
+      "Compare and make sure the following emoji match those of the other device:",
+      name: "compareEmojiMatch");
+
+  String get compareNumbersMatch => Intl.message(
+      "Compare and make sure the following numbers match those of the other device:",
+      name: "compareNumbersMatch");
 
   String get confirm => Intl.message("Confirm");
 
@@ -261,7 +305,13 @@ class L10n extends MatrixLocalizations {
 
   String get createNewGroup => Intl.message("Create new group");
 
-  String get currentlyActive => Intl.message('Currenlty active');
+  String get crossSigningDisabled =>
+      Intl.message("Cross-Signing is disabled", name: "crossSigningDisabled");
+
+  String get crossSigningEnabled =>
+      Intl.message("Cross-Signing is enabled", name: "crossSigningEnabled");
+
+  String get currentlyActive => Intl.message('Currently active');
 
   String dateAndTimeOfDay(String date, String timeOfDay) => Intl.message(
         "$date, $timeOfDay",
@@ -318,6 +368,8 @@ class L10n extends MatrixLocalizations {
 
   String get enableEncryptionWarning => Intl.message(
       "You won't be able to disable the encryption anymore. Are you sure?");
+
+  String get encryption => Intl.message("Encryption");
 
   String get encryptionAlgorithm => Intl.message("Encryption algorithm");
 
@@ -383,6 +435,10 @@ class L10n extends MatrixLocalizations {
 
   String get identity => Intl.message("Identity");
 
+  String get incorrectPassphraseOrKey =>
+      Intl.message("Incorrect passphrase or recovery key",
+          name: "incorrectPassphraseOrKey");
+
   String get inviteContact => Intl.message("Invite contact");
 
   String inviteContactToGroup(String groupName) => Intl.message(
@@ -407,6 +463,10 @@ class L10n extends MatrixLocalizations {
 
   String get invitedUsersOnly => Intl.message("Invited users only");
 
+  String get isDeviceKeyCorrect =>
+      Intl.message("Is the following device key correct?",
+          name: "isDeviceKeyCorrect");
+
   String get isTyping => Intl.message("is typing...");
 
   String get editJitsiInstance => Intl.message('Edit Jitsi instance');
@@ -416,6 +476,13 @@ class L10n extends MatrixLocalizations {
         name: "joinedTheChat",
         args: [username],
       );
+
+  String get joinRoom => Intl.message('Join room');
+
+  String get keysCached => Intl.message("Keys are cached", name: "keysCached");
+
+  String get keysMissing =>
+      Intl.message("Keys are missing", name: "keysMissing");
 
   String kicked(String username, String targetName) => Intl.message(
         "$username kicked $targetName",
@@ -495,6 +562,17 @@ class L10n extends MatrixLocalizations {
 
   String get newPrivateChat => Intl.message("New private chat");
 
+  String get newVerificationRequest =>
+      Intl.message("New verification request!", name: "newVerificationRequest");
+
+  String get noCrossSignBootstrap => Intl.message(
+      "Fluffychat currently does not support enabling Cross-Signing. Please enable it from within Riot.",
+      name: "noCrossSignBootstrap");
+
+  String get noMegolmBootstrap => Intl.message(
+      "Fluffychat currently does not support enabling Online Key Backup. Please enable it from within Riot.",
+      name: "noMegolmBootstrap");
+
   String get noGoogleServicesWarning => Intl.message(
       "It seems that you have no google services on your phone. That's a good decision for your privacy! To receive push notifications in FluffyChat we recommend using microG: https://microg.org/");
 
@@ -513,6 +591,14 @@ class L10n extends MatrixLocalizations {
 
   String get ok => Intl.message('ok');
 
+  String get onlineKeyBackupDisabled =>
+      Intl.message("Online Key Backup is disabled",
+          name: "onlineKeyBackupDisabled");
+
+  String get onlineKeyBackupEnabled =>
+      Intl.message("Online Key Backup is enabled",
+          name: "onlineKeyBackupEnabled");
+
   String get oopsSomethingWentWrong =>
       Intl.message("Oops something went wrong...");
 
@@ -524,6 +610,9 @@ class L10n extends MatrixLocalizations {
 
   String get participatingUserDevices =>
       Intl.message("Participating user devices");
+
+  String get passphraseOrKey =>
+      Intl.message("passphrase or recovery key", name: "passphraseOrKey");
 
   String get password => Intl.message("Password");
 
@@ -547,6 +636,8 @@ class L10n extends MatrixLocalizations {
       Intl.message("Please enter your username");
 
   String get publicRooms => Intl.message("Public Rooms");
+
+  String get reject => Intl.message("Reject");
 
   String get rejoin => Intl.message("Rejoin");
 
@@ -664,6 +755,9 @@ class L10n extends MatrixLocalizations {
         args: [username],
       );
 
+  String get sessionVerified =>
+      Intl.message("Session is verified", name: "sessionVerified");
+
   String get setAProfilePicture => Intl.message("Set a profile picture");
 
   String get setGroupDescription => Intl.message("Set group description");
@@ -675,6 +769,8 @@ class L10n extends MatrixLocalizations {
   String get settings => Intl.message("Settings");
 
   String get signUp => Intl.message("Sign up");
+
+  String get skip => Intl.message("Skip");
 
   String get changeTheme => Intl.message("Change your style");
 
@@ -692,11 +788,17 @@ class L10n extends MatrixLocalizations {
 
   String get startYourFirstChat => Intl.message("Start your first chat :-)");
 
+  String get submit => Intl.message("Submit");
+
   String get sunday => Intl.message("Sunday");
 
   String get donate => Intl.message("Donate");
 
   String get tapToShowMenu => Intl.message("Tap to show menu");
+
+  String get theyDontMatch => Intl.message("They Don't Match");
+
+  String get theyMatch => Intl.message("They Match");
 
   String get thisRoomHasBeenArchived =>
       Intl.message("This room has been archived.");
@@ -728,12 +830,18 @@ class L10n extends MatrixLocalizations {
         args: [username, targetName],
       );
 
+  String get unblockDevice => Intl.message("Unblock Device");
+
   String get unmuteChat => Intl.message('Unmute chat');
 
   String get unknownDevice => Intl.message("Unknown device");
 
   String get unknownEncryptionAlgorithm =>
       Intl.message("Unknown encryption algorithm");
+
+  String get unknownSessionVerify =>
+      Intl.message("Unknown session, please verify",
+          name: "unknownSessionVerify");
 
   String unknownEvent(String type) => Intl.message(
         "Unknown event '$type'",
@@ -789,6 +897,23 @@ class L10n extends MatrixLocalizations {
 
   String get verify => Intl.message("Verify");
 
+  String get verifyManual =>
+      Intl.message("Verify Manually", name: "verifyManual");
+
+  String get verifiedSession =>
+      Intl.message("Successfully verified session!", name: "verifiedSession");
+
+  String get verifyStart =>
+      Intl.message("Start Verification", name: "verifyStart");
+
+  String get verifySuccess =>
+      Intl.message("You successfully verified!", name: "verifySuccess");
+
+  String get verifyTitle =>
+      Intl.message("Verifying other account", name: "verifyTitle");
+
+  String get verifyUser => Intl.message("Verify User");
+
   String get videoCall => Intl.message('Video call');
 
   String get visibleForAllParticipants =>
@@ -800,6 +925,18 @@ class L10n extends MatrixLocalizations {
       Intl.message("Visibility of the chat history");
 
   String get voiceMessage => Intl.message("Voice message");
+
+  String get waitingPartnerAcceptRequest =>
+      Intl.message("Waiting for partner to accept the request...",
+          name: "waitingPartnerAcceptRequest");
+
+  String get waitingPartnerEmoji =>
+      Intl.message("Waiting for partner to accept the emoji...",
+          name: "waitingPartnerEmoji");
+
+  String get waitingPartnerNumbers =>
+      Intl.message("Waiting for partner to accept the numbers...",
+          name: "waitingPartnerNumbers");
 
   String get wallpaper => Intl.message("Wallpaper");
 
