@@ -1,27 +1,37 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:fluffychat/utils/matrix_locals.dart';
 import 'package:fluffychat/views/chat.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:pedantic/pedantic.dart';
 
-import '../../l10n/l10n.dart';
 import '../../utils/app_route.dart';
 import '../../utils/date_time_extension.dart';
 import '../../views/chat.dart';
-import '../theme_switcher.dart';
 import '../avatar.dart';
+import '../dialogs/send_file_dialog.dart';
 import '../dialogs/simple_dialogs.dart';
 import '../matrix.dart';
+import '../theme_switcher.dart';
 
 class ChatListItem extends StatelessWidget {
   final Room room;
   final bool activeChat;
+  final bool selected;
   final Function onForget;
+  final Function onTap;
+  final Function onLongPress;
 
-  const ChatListItem(this.room, {this.activeChat = false, this.onForget});
+  const ChatListItem(this.room,
+      {this.activeChat = false,
+      this.selected = false,
+      this.onTap,
+      this.onLongPress,
+      this.onForget});
 
   void clickAction(BuildContext context) async {
+    if (onTap != null) return onTap();
     if (!activeChat) {
       if (room.membership == Membership.invite &&
           await SimpleDialogs(context)
@@ -73,11 +83,12 @@ class ChatListItem extends StatelessWidget {
         if (Matrix.of(context).shareContent != null) {
           if (Matrix.of(context).shareContent['msgtype'] ==
               'chat.fluffy.shared_file') {
-            await SimpleDialogs(context).tryRequestWithErrorToast(
-              room.sendFileEvent(
-                Matrix.of(context).shareContent['file'],
-              ),
-            );
+            await showDialog(
+                context: context,
+                builder: (context) => SendFileDialog(
+                      file: Matrix.of(context).shareContent['file'],
+                      room: room,
+                    ));
           } else {
             unawaited(room.sendEvent(Matrix.of(context).shareContent));
           }
@@ -92,7 +103,7 @@ class ChatListItem extends StatelessWidget {
     }
   }
 
-  Future<bool> archiveAction(BuildContext context) async {
+  Future<void> archiveAction(BuildContext context) async {
     {
       if ([Membership.leave, Membership.ban].contains(room.membership)) {
         final success = await SimpleDialogs(context)
@@ -103,70 +114,59 @@ class ChatListItem extends StatelessWidget {
         return success;
       }
       final confirmed = await SimpleDialogs(context).askConfirmation();
-      if (!confirmed) {
-        return false;
-      }
-      final success = await SimpleDialogs(context)
-          .tryRequestWithLoadingDialog(room.leave());
-      if (success == false) {
-        return false;
-      }
-      return true;
+      if (!confirmed) return;
+      await SimpleDialogs(context).tryRequestWithLoadingDialog(room.leave());
+      return;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-      key: Key(room.id),
-      secondaryActions: <Widget>[
-        if ([Membership.join, Membership.invite].contains(room.membership))
-          IconSlideAction(
-            caption: L10n.of(context).leave,
-            color: Colors.red,
-            icon: Icons.archive,
-            onTap: () => archiveAction(context),
-          ),
-        if ([Membership.leave, Membership.ban].contains(room.membership))
-          IconSlideAction(
-            caption: L10n.of(context).delete,
-            color: Colors.red,
-            icon: Icons.delete_forever,
-            onTap: () => archiveAction(context),
-          ),
-      ],
-      actionPane: SlidableDrawerActionPane(),
-      dismissal: SlidableDismissal(
-        child: SlidableDrawerDismissal(),
-        onWillDismiss: (actionType) => archiveAction(context),
-      ),
+    final isMuted = room.pushRuleState != PushRuleState.notify;
+    return Center(
       child: Material(
-        color: chatListItemColor(context, activeChat),
+        color: chatListItemColor(context, activeChat, selected),
         child: ListTile(
+          onLongPress: onLongPress,
           leading: Avatar(room.avatar, room.displayname),
           title: Row(
             children: <Widget>[
               Expanded(
                 child: Text(
-                  room.getLocalizedDisplayname(L10n.of(context)),
+                  room.getLocalizedDisplayname(MatrixLocals(L10n.of(context))),
                   maxLines: 1,
-                  overflow: TextOverflow.fade,
+                  overflow: TextOverflow.ellipsis,
                   softWrap: false,
                 ),
               ),
-              SizedBox(width: 4),
-              room.pushRuleState == PushRuleState.notify
-                  ? Container()
-                  : Icon(
-                      Icons.notifications_off,
-                      color: Colors.grey[400],
-                      size: 16,
-                    ),
-              Text(
-                room.timeCreated.localizedTimeShort(context),
-                style: TextStyle(
-                  color: Color(0xFF555555),
-                  fontSize: 13,
+              room.isFavourite
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 4.0),
+                      child: Icon(
+                        Icons.favorite,
+                        color: Colors.grey[400],
+                        size: 16,
+                      ),
+                    )
+                  : Container(),
+              isMuted
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 4.0),
+                      child: Icon(
+                        Icons.notifications_off,
+                        color: Colors.grey[400],
+                        size: 16,
+                      ),
+                    )
+                  : Container(),
+              Padding(
+                padding: const EdgeInsets.only(left: 4.0),
+                child: Text(
+                  room.timeCreated.localizedTimeShort(context),
+                  style: TextStyle(
+                    color: Color(0xFF555555),
+                    fontSize: 13,
+                  ),
                 ),
               ),
             ],
@@ -185,14 +185,15 @@ class ChatListItem extends StatelessWidget {
                       )
                     : Text(
                         room.lastEvent?.getLocalizedBody(
-                              L10n.of(context),
-                              withSenderNamePrefix: !room.isDirectChat,
+                              MatrixLocals(L10n.of(context)),
+                              withSenderNamePrefix: !room.isDirectChat ||
+                                  room.lastEvent.senderId == room.client.userID,
                               hideReply: true,
                             ) ??
                             '',
                         softWrap: false,
                         maxLines: 1,
-                        overflow: TextOverflow.fade,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           decoration: room.lastEvent?.redacted == true
                               ? TextDecoration.lineThrough

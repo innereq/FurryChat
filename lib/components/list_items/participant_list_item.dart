@@ -1,9 +1,9 @@
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
-import 'package:fluffychat/l10n/l10n.dart';
 import 'package:fluffychat/utils/app_route.dart';
 import 'package:fluffychat/views/chat.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../avatar.dart';
 import '../matrix.dart';
@@ -71,7 +71,9 @@ class ParticipantListItem extends StatelessWidget {
     };
     final permissionBatch = user.powerLevel == 100
         ? L10n.of(context).admin
-        : user.powerLevel >= 50 ? L10n.of(context).moderator : '';
+        : user.powerLevel >= 50
+            ? L10n.of(context).moderator
+            : '';
     var items = <PopupMenuEntry<String>>[];
 
     if (user.id != Matrix.of(context).client.userID) {

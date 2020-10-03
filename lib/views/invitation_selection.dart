@@ -1,14 +1,14 @@
 import 'dart:async';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
 import 'package:fluffychat/components/adaptive_page_layout.dart';
 import 'package:fluffychat/components/avatar.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:fluffychat/components/matrix.dart';
-import 'package:fluffychat/l10n/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import 'chat_list.dart';
 
@@ -85,7 +85,7 @@ class _InvitationSelectionState extends State<InvitationSelection> {
     setState(() => loading = true);
     final matrix = Matrix.of(context);
     final response = await SimpleDialogs(context).tryRequestWithErrorToast(
-      matrix.client.api.searchUser(text, limit: 10),
+      matrix.client.searchUser(text, limit: 10),
     );
     setState(() => loading = false);
     if (response == false || (response?.results == null)) return;
@@ -98,11 +98,13 @@ class _InvitationSelectionState extends State<InvitationSelection> {
               Profile.fromJson({'user_id': '@$text'}),
             ]);
       }
+      final participants = widget.room
+          .getParticipants()
+          .where((user) =>
+              [Membership.join, Membership.invite].contains(user.membership))
+          .toList();
       foundProfiles.removeWhere((profile) =>
-          widget.room
-              .getParticipants()
-              .indexWhere((u) => u.id == profile.userId) !=
-          -1);
+          participants.indexWhere((u) => u.id == profile.userId) != -1);
     });
   }
 

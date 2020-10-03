@@ -1,11 +1,11 @@
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../utils/date_time_extension.dart';
 import '../components/adaptive_page_layout.dart';
 import '../components/matrix.dart';
-import '../l10n/l10n.dart';
+import '../utils/date_time_extension.dart';
 import 'chat_list.dart';
 
 class DevicesSettingsView extends StatelessWidget {
@@ -28,7 +28,7 @@ class DevicesSettingsState extends State<DevicesSettings> {
   List<Device> devices;
   Future<bool> _loadUserDevices(BuildContext context) async {
     if (devices != null) return true;
-    devices = await Matrix.of(context).client.api.requestDevices();
+    devices = await Matrix.of(context).client.requestDevices();
     return true;
   }
 
@@ -49,7 +49,7 @@ class DevicesSettingsState extends State<DevicesSettings> {
     if (password == null) return;
 
     final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        matrix.client.api.deleteDevices(deviceIds,
+        matrix.client.deleteDevices(deviceIds,
             auth: matrix.getAuthByPassword(password)));
     if (success != false) {
       reload();

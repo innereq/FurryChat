@@ -1,7 +1,8 @@
-import 'package:fluffychat/l10n/l10n.dart';
-import 'package:flutter/material.dart';
-import 'package:famedlysdk/famedlysdk.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:matrix_link_text/link_text.dart';
 
 class SimpleDialogs {
   final BuildContext context;
@@ -78,13 +79,14 @@ class SimpleDialogs {
     String contentText,
     String confirmText,
     String cancelText,
+    bool dangerous = false,
   }) async {
     var confirmed = false;
     await showDialog(
       context: context,
       builder: (c) => AlertDialog(
         title: Text(titleText ?? L10n.of(context).areYouSure),
-        content: contentText != null ? Text(contentText) : null,
+        content: contentText != null ? LinkText(text: contentText) : null,
         actions: <Widget>[
           FlatButton(
             child: Text(
@@ -97,6 +99,7 @@ class SimpleDialogs {
             child: Text(
               confirmText?.toUpperCase() ??
                   L10n.of(context).confirm.toUpperCase(),
+              style: TextStyle(color: dangerous ? Colors.red : null),
             ),
             onPressed: () {
               confirmed = true;
@@ -135,11 +138,26 @@ class SimpleDialogs {
 
   Future<dynamic> tryRequestWithLoadingDialog(Future<dynamic> request,
       {Function(MatrixException) onAdditionalAuth}) async {
-    showLoadingDialog(context);
-    final dynamic = await tryRequestWithErrorToast(request,
-        onAdditionalAuth: onAdditionalAuth);
-    Navigator.of(context)?.pop();
-    return dynamic;
+    var completed = false;
+    final futureResult = tryRequestWithErrorToast(
+      request,
+      onAdditionalAuth: onAdditionalAuth,
+    ).whenComplete(() => completed = true);
+    await Future.delayed(Duration(seconds: 1));
+    if (completed) return futureResult;
+    return showDialog<dynamic>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        futureResult.then(
+          (result) => Navigator.of(context).pop<dynamic>(result),
+        );
+        return AlertDialog(
+          title: Text(L10n.of(context).loadingPleaseWait),
+          content: LinearProgressIndicator(),
+        );
+      },
+    );
   }
 
   Future<dynamic> tryRequestWithErrorToast(Future<dynamic> request,
@@ -164,18 +182,8 @@ class SimpleDialogs {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) => AlertDialog(
-        content: Row(
-          children: <Widget>[
-            CircularProgressIndicator(),
-            SizedBox(width: 16),
-            Expanded(
-                child: Text(
-              L10n.of(context).loadingPleaseWait,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            )),
-          ],
-        ),
+        title: Text(L10n.of(context).loadingPleaseWait),
+        content: LinearProgressIndicator(),
       ),
     );
   }

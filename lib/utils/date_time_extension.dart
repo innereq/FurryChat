@@ -1,5 +1,5 @@
-import 'package:fluffychat/l10n/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 /// Provides extra functionality for formatting the time.
 extension DateTimeExtension on DateTime {
@@ -34,8 +34,11 @@ extension DateTimeExtension on DateTime {
   /// Returns a simple time String.
   /// TODO: Add localization
   String localizedTimeOfDay(BuildContext context) {
-    return L10n.of(context).timeOfDay(_z(hour % 12 == 0 ? 12 : hour % 12),
-        _z(hour), _z(minute), hour > 11 ? 'pm' : 'am');
+    if (MediaQuery.of(context).alwaysUse24HourFormat) {
+      return '${_z(hour)}:${_z(minute)}';
+    } else {
+      return '${_z(hour % 12 == 0 ? 12 : hour % 12)}:${_z(minute)} ${hour > 11 ? "pm" : "am"}';
+    }
   }
 
   /// Returns [localizedTimeOfDay()] if the ChatTime is today, the name of the week

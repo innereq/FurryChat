@@ -1,25 +1,30 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/encryption.dart';
+import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:fluffychat/utils/firebase_controller.dart';
+import 'package:fluffychat/utils/matrix_locals.dart';
+import 'package:fluffychat/utils/platform_infos.dart';
+import 'package:fluffychat/utils/user_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
-import '../l10n/l10n.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../utils/app_route.dart';
 import '../utils/beautify_string_extension.dart';
 import '../utils/famedlysdk_store.dart';
-import 'avatar.dart';
+import '../utils/presence_extension.dart';
 import '../views/key_verification.dart';
-import '../utils/app_route.dart';
+import 'avatar.dart';
 
 class Matrix extends StatefulWidget {
   static const String callNamespace = 'chat.fluffy.jitsi_call';
-  static const String defaultHomeserver = 'tchncs.de';
 
   final Widget child;
 
@@ -79,7 +84,7 @@ class MatrixState extends State<Matrix> {
     var initLoginState = client.onLoginStateChanged.stream.first;
     client.database = await getDatabase(client);
     client.connect();
-    if (await initLoginState == LoginState.logged && !kIsWeb) {
+    if (await initLoginState == LoginState.logged && PlatformInfos.isMobile) {
       await FirebaseController.setupFirebase(
         this,
         widget.clientName,
@@ -102,6 +107,9 @@ class MatrixState extends State<Matrix> {
   StreamSubscription onKeyVerificationRequestSub;
   StreamSubscription onJitsiCallSub;
   StreamSubscription onNotification;
+  StreamSubscription<html.Event> onFocusSub;
+  StreamSubscription<html.Event> onBlurSub;
+  StreamSubscription onPresenceSub;
 
   void onJitsiCall(EventUpdate eventUpdate) {
     final event = Event.fromJson(
@@ -158,12 +166,15 @@ class MatrixState extends State<Matrix> {
     return;
   }
 
+  bool webHasFocus = true;
+
   void _showWebNotification(EventUpdate eventUpdate) async {
+    if (webHasFocus && activeRoomId == eventUpdate.roomID) return;
     final room = client.getRoomById(eventUpdate.roomID);
     if (room.notificationCount == 0) return;
     final event = Event.fromJson(eventUpdate.content, room);
     final body = event.getLocalizedBody(
-      L10n.of(context),
+      MatrixLocals(L10n.of(context)),
       withSenderNamePrefix:
           !room.isDirectChat || room.lastEvent.senderId == client.userID,
     );
@@ -172,7 +183,7 @@ class MatrixState extends State<Matrix> {
       ..autoplay = true
       ..load();
     html.Notification(
-      room.getLocalizedDisplayname(L10n.of(context)),
+      room.getLocalizedDisplayname(MatrixLocals(L10n.of(context))),
       body: body,
       icon: event.sender.avatarUrl?.getThumbnail(client,
               width: 64, height: 64, method: ThumbnailMethod.crop) ??
@@ -184,6 +195,16 @@ class MatrixState extends State<Matrix> {
   @override
   void initState() {
     store = widget.store ?? Store();
+    store.getItem('fluffychat.user_statuses').then(
+      (json) {
+        userStatuses = json == null
+            ? []
+            : (jsonDecode(json)['user_statuses'] as List)
+                .map((j) => UserStatus.fromJson(j))
+                .toList();
+        _cleanUpUserStatus();
+      },
+    );
     if (widget.client == null) {
       debugPrint('[Matrix] Init matrix client');
       final Set verificationMethods = <KeyVerificationMethod>{
@@ -194,12 +215,14 @@ class MatrixState extends State<Matrix> {
         verificationMethods.add(KeyVerificationMethod.emoji);
       }
       client = Client(widget.clientName,
-          debug: false,
           enableE2eeRecovery: true,
           verificationMethods: verificationMethods,
           importantStateEvents: <String>{
             'im.ponies.room_emotes', // we want emotes to work properly
           });
+      onPresenceSub ??= client.onPresence.stream
+          .where((p) => p.isUserStatus)
+          .listen(_storeUserStatus);
       onJitsiCallSub ??= client.onEvent.stream
           .where((e) =>
               e.type == 'timeline' &&
@@ -207,6 +230,7 @@ class MatrixState extends State<Matrix> {
               e.content['content']['msgtype'] == Matrix.callNamespace &&
               e.content['sender'] != client.userID)
           .listen(onJitsiCall);
+
       onRoomKeyRequestSub ??=
           client.onRoomKeyRequest.stream.listen((RoomKeyRequest request) async {
         final room = request.room;
@@ -262,11 +286,13 @@ class MatrixState extends State<Matrix> {
       });
     }
     if (kIsWeb) {
+      onFocusSub = html.window.onFocus.listen((_) => webHasFocus = true);
+      onBlurSub = html.window.onBlur.listen((_) => webHasFocus = false);
+
       client.onSync.stream.first.then((s) {
         html.Notification.requestPermission();
         onNotification ??= client.onEvent.stream
             .where((e) =>
-                e.roomID != activeRoomId &&
                 e.type == 'timeline' &&
                 [EventTypes.Message, EventTypes.Sticker, EventTypes.Encrypted]
                     .contains(e.eventType) &&
@@ -277,12 +303,57 @@ class MatrixState extends State<Matrix> {
     super.initState();
   }
 
+  List<UserStatus> userStatuses = [];
+
+  void _storeUserStatus(Presence presence) {
+    final currentStatusIndex =
+        userStatuses.indexWhere((u) => u.userId == presence.senderId);
+    final newUserStatus = UserStatus()
+      ..receivedAt = DateTime.now().millisecondsSinceEpoch
+      ..statusMsg = presence.presence.statusMsg
+      ..userId = presence.senderId;
+    if (currentStatusIndex == -1) {
+      userStatuses.add(newUserStatus);
+    } else if (userStatuses[currentStatusIndex].statusMsg !=
+        presence.presence.statusMsg) {
+      if (presence.presence.statusMsg.trim().isEmpty) {
+        userStatuses.removeAt(currentStatusIndex);
+      } else {
+        userStatuses[currentStatusIndex] = newUserStatus;
+      }
+    } else {
+      return;
+    }
+    _cleanUpUserStatus();
+  }
+
+  void _cleanUpUserStatus() {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    userStatuses
+        .removeWhere((u) => (now - u.receivedAt) > (1000 * 60 * 60 * 24));
+    userStatuses.sort((a, b) => b.receivedAt.compareTo(a.receivedAt));
+    if (userStatuses.length > 40) {
+      userStatuses.removeRange(40, userStatuses.length);
+    }
+    store.setItem(
+      'fluffychat.user_statuses',
+      jsonEncode(
+        {
+          'user_statuses': userStatuses.map((i) => i.toJson()).toList(),
+        },
+      ),
+    );
+  }
+
   @override
   void dispose() {
     onRoomKeyRequestSub?.cancel();
     onKeyVerificationRequestSub?.cancel();
     onJitsiCallSub?.cancel();
+    onPresenceSub?.cancel();
     onNotification?.cancel();
+    onFocusSub?.cancel();
+    onBlurSub?.cancel();
     super.dispose();
   }
 
@@ -303,12 +374,11 @@ class _InheritedMatrix extends InheritedWidget {
 
   @override
   bool updateShouldNotify(_InheritedMatrix old) {
-    var update =
-        old.data.client.api.accessToken != data.client.api.accessToken ||
-            old.data.client.userID != data.client.userID ||
-            old.data.client.deviceID != data.client.deviceID ||
-            old.data.client.deviceName != data.client.deviceName ||
-            old.data.client.api.homeserver != data.client.api.homeserver;
+    var update = old.data.client.accessToken != data.client.accessToken ||
+        old.data.client.userID != data.client.userID ||
+        old.data.client.deviceID != data.client.deviceID ||
+        old.data.client.deviceName != data.client.deviceName ||
+        old.data.client.homeserver != data.client.homeserver;
     return update;
   }
 }

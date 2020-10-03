@@ -3,11 +3,13 @@ import 'dart:math';
 import 'package:famedlysdk/matrix_api/model/well_known_informations.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:fluffychat/components/matrix.dart';
-import 'package:fluffychat/l10n/l10n.dart';
+import 'package:fluffychat/config/app_config.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:fluffychat/utils/app_route.dart';
 import 'package:fluffychat/views/login.dart';
 import 'package:fluffychat/views/sign_up.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeserverPicker extends StatefulWidget {
   @override
@@ -18,7 +20,7 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
   Future<void> _setHomeserverAction(BuildContext context) async {
     final homeserver = await SimpleDialogs(context).enterText(
         titleText: L10n.of(context).enterYourHomeserver,
-        hintText: Matrix.defaultHomeserver,
+        hintText: AppConfig.defaultHomeserver,
         prefixText: 'https://',
         keyboardType: TextInputType.url);
     if (homeserver?.isEmpty ?? true) return;

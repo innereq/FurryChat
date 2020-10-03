@@ -1,22 +1,26 @@
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/components/settings_themes.dart';
+import 'package:fluffychat/config/app_config.dart';
+import 'package:fluffychat/utils/sentry_controller.dart';
 import 'package:fluffychat/views/settings_devices.dart';
+import 'package:fluffychat/views/settings_ignore_list.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:memoryfilepicker/memoryfilepicker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../components/adaptive_page_layout.dart';
+import '../components/content_banner.dart';
+import '../components/dialogs/simple_dialogs.dart';
+import '../components/matrix.dart';
+import '../utils/app_route.dart';
 import 'app_info.dart';
 import 'chat_list.dart';
-import '../components/adaptive_page_layout.dart';
-import '../components/dialogs/simple_dialogs.dart';
-import '../components/content_banner.dart';
-import '../components/matrix.dart';
-import '../l10n/l10n.dart';
-import '../utils/app_route.dart';
 import 'settings_emotes.dart';
 
 class SettingsView extends StatelessWidget {
@@ -52,6 +56,52 @@ class _SettingsState extends State<Settings> {
         .tryRequestWithLoadingDialog(matrix.client.logout());
   }
 
+  void _changePasswordAccountAction(BuildContext context) async {
+    final oldPassword = await SimpleDialogs(context).enterText(
+      password: true,
+      titleText: L10n.of(context).pleaseEnterYourPassword,
+    );
+    if (oldPassword == null) return;
+    final newPassword = await SimpleDialogs(context).enterText(
+      password: true,
+      titleText: L10n.of(context).chooseAStrongPassword,
+    );
+    if (newPassword == null) return;
+    await SimpleDialogs(context).tryRequestWithLoadingDialog(
+      Matrix.of(context)
+          .client
+          .changePassword(newPassword, oldPassword: oldPassword),
+    );
+    BotToast.showText(text: L10n.of(context).passwordHasBeenChanged);
+  }
+
+  void _deleteAccountAction(BuildContext context) async {
+    if (await SimpleDialogs(context).askConfirmation(
+          titleText: L10n.of(context).warning,
+          contentText: L10n.of(context).deactivateAccountWarning,
+          dangerous: true,
+        ) ==
+        false) {
+      return;
+    }
+    if (await SimpleDialogs(context).askConfirmation(dangerous: true) ==
+        false) {
+      return;
+    }
+    final password = await SimpleDialogs(context).enterText(
+      password: true,
+      titleText: L10n.of(context).pleaseEnterYourPassword,
+    );
+    if (password == null) return;
+    await SimpleDialogs(context).tryRequestWithLoadingDialog(
+      Matrix.of(context).client.deactivateAccount(auth: {
+        'type': 'm.login.password',
+        'user': Matrix.of(context).client.userID,
+        'password': password,
+      }),
+    );
+  }
+
   void setJitsiInstanceAction(BuildContext context) async {
     var jitsi = await SimpleDialogs(context).enterText(
       titleText: L10n.of(context).editJitsiInstance,
@@ -77,7 +127,7 @@ class _SettingsState extends State<Settings> {
     if (displayname == null) return;
     final matrix = Matrix.of(context);
     final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      matrix.client.setDisplayname(displayname),
+      matrix.client.setDisplayname(matrix.client.userID, displayname),
     );
     if (success != false) {
       setState(() {
@@ -142,11 +192,15 @@ class _SettingsState extends State<Settings> {
       try {
         handle.unlock(recoveryKey: str);
         valid = true;
-      } catch (_) {
+      } catch (e, s) {
+        debugPrint('Couldn\'t use recovery key: ' + e.toString());
+        debugPrint(s.toString());
         try {
           handle.unlock(passphrase: str);
           valid = true;
-        } catch (_) {
+        } catch (e, s) {
+          debugPrint('Couldn\'t use recovery passphrase: ' + e.toString());
+          debugPrint(s.toString());
           valid = false;
         }
       }
@@ -328,8 +382,18 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             ListTile(
+              trailing: Icon(Icons.block),
+              title: Text(L10n.of(context).ignoredUsers),
+              onTap: () async => await Navigator.of(context).push(
+                AppRoute.defaultRoute(
+                  context,
+                  SettingsIgnoreListView(),
+                ),
+              ),
+            ),
+            ListTile(
               trailing: Icon(Icons.account_circle),
-              title: Text(L10n.of(context).accountInformations),
+              title: Text(L10n.of(context).accountInformation),
               onTap: () => Navigator.of(context).push(
                 AppRoute.defaultRoute(
                   context,
@@ -338,9 +402,30 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             ListTile(
+              trailing: Icon(Icons.bug_report),
+              title: Text(L10n.of(context).sendBugReports),
+              onTap: () => SentryController.toggleSentryAction(context),
+            ),
+            Divider(thickness: 1),
+            ListTile(
+              trailing: Icon(Icons.vpn_key),
+              title: Text(
+                'Change password',
+              ),
+              onTap: () => _changePasswordAccountAction(context),
+            ),
+            ListTile(
               trailing: Icon(Icons.exit_to_app),
               title: Text(L10n.of(context).logout),
               onTap: () => logoutAction(context),
+            ),
+            ListTile(
+              trailing: Icon(Icons.delete_forever),
+              title: Text(
+                L10n.of(context).deleteAccount,
+                style: TextStyle(color: Colors.red),
+              ),
+              onTap: () => _deleteAccountAction(context),
             ),
             Divider(thickness: 1),
             ListTile(
@@ -459,20 +544,27 @@ class _SettingsState extends State<Settings> {
             ListTile(
               trailing: Icon(Icons.help),
               title: Text(L10n.of(context).help),
-              onTap: () => launch(
-                  'https://gitlab.com/ChristianPauly/fluffychat-flutter/issues'),
+              onTap: () => launch(AppConfig.supportUrl),
+            ),
+            ListTile(
+              trailing: Icon(Icons.privacy_tip_rounded),
+              title: Text(L10n.of(context).privacy),
+              onTap: () => launch(AppConfig.privacyUrl),
             ),
             ListTile(
               trailing: Icon(Icons.link),
               title: Text(L10n.of(context).license),
-              onTap: () => launch(
-                  'https://gitlab.com/ChristianPauly/fluffychat-flutter/raw/master/LICENSE'),
+              onTap: () => showLicensePage(
+                context: context,
+                applicationIcon:
+                    Image.asset('assets/logo.png', width: 100, height: 100),
+                applicationName: AppConfig.applicationName,
+              ),
             ),
             ListTile(
               trailing: Icon(Icons.code),
               title: Text(L10n.of(context).sourceCode),
-              onTap: () => launch(
-                  'https://gitlab.com/ChristianPauly/fluffychat-flutter'),
+              onTap: () => launch(AppConfig.sourceCodeUrl),
             ),
           ],
         ),

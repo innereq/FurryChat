@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
 import 'package:fluffychat/components/adaptive_page_layout.dart';
@@ -5,18 +6,21 @@ import 'package:fluffychat/components/chat_settings_popup_menu.dart';
 import 'package:fluffychat/components/content_banner.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:fluffychat/components/list_items/participant_list_item.dart';
-import 'package:fluffychat/l10n/l10n.dart';
 import 'package:fluffychat/utils/app_route.dart';
+import 'package:fluffychat/utils/matrix_locals.dart';
 import 'package:fluffychat/views/chat_list.dart';
 import 'package:fluffychat/views/invitation_selection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:link_text/link_text.dart';
+import 'package:matrix_link_text/link_text.dart';
 import 'package:memoryfilepicker/memoryfilepicker.dart';
+
 import './settings_emotes.dart';
+import './settings_multiple_emotes.dart';
+import '../utils/url_launcher.dart';
 
 class ChatDetails extends StatefulWidget {
   final Room room;
@@ -33,7 +37,8 @@ class _ChatDetailsState extends State<ChatDetails> {
     var enterText = SimpleDialogs(context).enterText(
       titleText: L10n.of(context).changeTheNameOfTheGroup,
       labelText: L10n.of(context).changeTheNameOfTheGroup,
-      hintText: widget.room.getLocalizedDisplayname(L10n.of(context)),
+      hintText:
+          widget.room.getLocalizedDisplayname(MatrixLocals(L10n.of(context))),
     );
     final displayname = await enterText;
     if (displayname == null) return;
@@ -63,20 +68,18 @@ class _ChatDetailsState extends State<ChatDetails> {
       var newAliases = List<String>.from(aliases);
       newAliases.add(canonicalAlias);
       final response = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        widget.room.client.api.requestRoomAliasInformations(canonicalAlias),
+        widget.room.client.requestRoomAliasInformations(canonicalAlias),
       );
       if (response == false) {
         final success =
             await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          widget.room.client.api
-              .createRoomAlias(canonicalAlias, widget.room.id),
+          widget.room.client.createRoomAlias(canonicalAlias, widget.room.id),
         );
         if (success == false) return;
       }
     }
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      widget.room.client.api
-          .sendState(widget.room.id, 'm.room.canonical_alias', {
+      widget.room.client.sendState(widget.room.id, 'm.room.canonical_alias', {
         'alias': '#$s:$domain',
       }),
     );
@@ -174,7 +177,8 @@ class _ChatDetailsState extends State<ChatDetails> {
                       ChatSettingsPopupMenu(widget.room, false)
                     ],
                     title: Text(
-                        widget.room.getLocalizedDisplayname(L10n.of(context)),
+                        widget.room.getLocalizedDisplayname(
+                            MatrixLocals(L10n.of(context))),
                         style: TextStyle(
                             color: Theme.of(context)
                                 .appBarTheme
@@ -224,6 +228,8 @@ class _ChatDetailsState extends State<ChatDetails> {
                                       .bodyText2
                                       .color,
                                 ),
+                                onLinkTap: (url) =>
+                                    UrlLauncher(context, url).launchUrl(),
                               ),
                               onTap: widget.room.canSendEvent('m.room.topic')
                                   ? () => setTopicAction(context)
@@ -250,7 +256,8 @@ class _ChatDetailsState extends State<ChatDetails> {
                                 title: Text(
                                     L10n.of(context).changeTheNameOfTheGroup),
                                 subtitle: Text(widget.room
-                                    .getLocalizedDisplayname(L10n.of(context))),
+                                    .getLocalizedDisplayname(
+                                        MatrixLocals(L10n.of(context)))),
                                 onTap: () => setDisplaynameAction(context),
                               ),
                             if (widget.room
@@ -279,13 +286,31 @@ class _ChatDetailsState extends State<ChatDetails> {
                                 child: Icon(Icons.insert_emoticon),
                               ),
                               title: Text(L10n.of(context).emoteSettings),
-                              onTap: () async =>
+                              onTap: () async {
+                                // okay, we need to test if there are any emote state events other than the default one
+                                // if so, we need to be directed to a selection screen for which pack we want to look at
+                                // otherwise, we just open the normal one.
+                                if ((widget.room.states
+                                            .states['im.ponies.room_emotes'] ??
+                                        <String, Event>{})
+                                    .keys
+                                    .any((String s) => s.isNotEmpty)) {
                                   await Navigator.of(context).push(
-                                AppRoute.defaultRoute(
-                                  context,
-                                  EmotesSettingsView(room: widget.room),
-                                ),
-                              ),
+                                    AppRoute.defaultRoute(
+                                      context,
+                                      MultipleEmotesSettingsView(
+                                          room: widget.room),
+                                    ),
+                                  );
+                                } else {
+                                  await Navigator.of(context).push(
+                                    AppRoute.defaultRoute(
+                                      context,
+                                      EmotesSettingsView(room: widget.room),
+                                    ),
+                                  );
+                                }
+                              },
                             ),
                             PopupMenuButton(
                               child: ListTile(
@@ -297,8 +322,8 @@ class _ChatDetailsState extends State<ChatDetails> {
                                 title: Text(L10n.of(context)
                                     .whoIsAllowedToJoinThisGroup),
                                 subtitle: Text(
-                                  widget.room.joinRules
-                                      .getLocalizedString(L10n.of(context)),
+                                  widget.room.joinRules.getLocalizedString(
+                                      MatrixLocals(L10n.of(context))),
                                 ),
                               ),
                               onSelected: (JoinRules joinRule) =>
@@ -312,13 +337,15 @@ class _ChatDetailsState extends State<ChatDetails> {
                                   PopupMenuItem<JoinRules>(
                                     value: JoinRules.public,
                                     child: Text(JoinRules.public
-                                        .getLocalizedString(L10n.of(context))),
+                                        .getLocalizedString(
+                                            MatrixLocals(L10n.of(context)))),
                                   ),
                                 if (widget.room.canChangeJoinRules)
                                   PopupMenuItem<JoinRules>(
                                     value: JoinRules.invite,
                                     child: Text(JoinRules.invite
-                                        .getLocalizedString(L10n.of(context))),
+                                        .getLocalizedString(
+                                            MatrixLocals(L10n.of(context)))),
                                   ),
                               ],
                             ),
@@ -334,7 +361,8 @@ class _ChatDetailsState extends State<ChatDetails> {
                                     .visibilityOfTheChatHistory),
                                 subtitle: Text(
                                   widget.room.historyVisibility
-                                      .getLocalizedString(L10n.of(context)),
+                                      .getLocalizedString(
+                                          MatrixLocals(L10n.of(context))),
                                 ),
                               ),
                               onSelected:
@@ -350,25 +378,29 @@ class _ChatDetailsState extends State<ChatDetails> {
                                   PopupMenuItem<HistoryVisibility>(
                                     value: HistoryVisibility.invited,
                                     child: Text(HistoryVisibility.invited
-                                        .getLocalizedString(L10n.of(context))),
+                                        .getLocalizedString(
+                                            MatrixLocals(L10n.of(context)))),
                                   ),
                                 if (widget.room.canChangeHistoryVisibility)
                                   PopupMenuItem<HistoryVisibility>(
                                     value: HistoryVisibility.joined,
                                     child: Text(HistoryVisibility.joined
-                                        .getLocalizedString(L10n.of(context))),
+                                        .getLocalizedString(
+                                            MatrixLocals(L10n.of(context)))),
                                   ),
                                 if (widget.room.canChangeHistoryVisibility)
                                   PopupMenuItem<HistoryVisibility>(
                                     value: HistoryVisibility.shared,
                                     child: Text(HistoryVisibility.shared
-                                        .getLocalizedString(L10n.of(context))),
+                                        .getLocalizedString(
+                                            MatrixLocals(L10n.of(context)))),
                                   ),
                                 if (widget.room.canChangeHistoryVisibility)
                                   PopupMenuItem<HistoryVisibility>(
                                     value: HistoryVisibility.world_readable,
                                     child: Text(HistoryVisibility.world_readable
-                                        .getLocalizedString(L10n.of(context))),
+                                        .getLocalizedString(
+                                            MatrixLocals(L10n.of(context)))),
                                   ),
                               ],
                             ),
@@ -384,8 +416,8 @@ class _ChatDetailsState extends State<ChatDetails> {
                                   title: Text(
                                       L10n.of(context).areGuestsAllowedToJoin),
                                   subtitle: Text(
-                                    widget.room.guestAccess
-                                        .getLocalizedString(L10n.of(context)),
+                                    widget.room.guestAccess.getLocalizedString(
+                                        MatrixLocals(L10n.of(context))),
                                   ),
                                 ),
                                 onSelected: (GuestAccess guestAccess) =>
@@ -400,7 +432,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                                       value: GuestAccess.can_join,
                                       child: Text(
                                         GuestAccess.can_join.getLocalizedString(
-                                            L10n.of(context)),
+                                            MatrixLocals(L10n.of(context))),
                                       ),
                                     ),
                                   if (widget.room.canChangeGuestAccess)
@@ -409,7 +441,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                                       child: Text(
                                         GuestAccess.forbidden
                                             .getLocalizedString(
-                                                L10n.of(context)),
+                                                MatrixLocals(L10n.of(context))),
                                       ),
                                     ),
                                 ],

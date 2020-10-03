@@ -1,4 +1,4 @@
-image: 
+image:
   name: registry.gitlab.com/famedly/containers/flutter-dockerimages:stable
 
 variables:
@@ -36,9 +36,10 @@ build_web:
     - cd web/ && curl -L 'https://github.com/sql-js/sql.js/releases/latest/download/sqljs-wasm.zip' > sqljs-wasm.zip && cd ../
     - cd web/ && unzip sqljs-wasm.zip && cd ../
     - cd web/ && rm sqljs-wasm.zip && cd ../
-    - flutter pub get
     - flutter clean
-    - flutter build web --release --verbose --dart-define=FLUTTER_WEB_USE_SKIA=true
+    - flutter pub get
+    - flutter build web --release --verbose
+    # upload elsewhere, if wanted
   artifacts:
     paths:
       - build/web/
@@ -54,7 +55,7 @@ build_android_debug:
     paths:
       - build/app/outputs/apk/debug/app-debug.apk
   except:
-    - master
+    - main
 
 
 build_android_apk:
@@ -66,13 +67,16 @@ build_android_apk:
     - cd android && echo "keyAlias=key" >> key.properties && cd ..
     - cd android && echo "storeFile=../key.jks" >> key.properties && cd ..
     - cd android/app && echo $GOOGLE_SERVICES >> google-services.json && cd ../..
+    - flutter pub get
     - flutter build apk --release
+    - mkdir -p build/android
+    - cp build/app/outputs/apk/release/app-release.apk build/android/
   artifacts:
     when: on_success
     paths:
-      - build/app/outputs/apk/release/app-release.apk
+      - build/android/app-release.apk
   only:
-    - master
+    - main
     - tags
 
 
@@ -86,12 +90,15 @@ build_android_appbundle:
     - cd android && echo "storeFile=../key.jks" >> key.properties && cd ..
     - cd android/app && echo $GOOGLE_SERVICES >> google-services.json && cd ../..
     - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
+    - mkdir -p build/android
+    - cp build/app/outputs/bundle/release/app-release.aab build/android/
   artifacts:
     when: on_success
     paths:
-      - build/app/outputs/bundle/release/app-release.aab
+      - build/android/app-release.aab
   only:
-    - master
+    - main
+
 
 upload_to_fdroid_repo:
   stage: publish
@@ -105,17 +112,24 @@ upload_to_fdroid_repo:
     ##
     - 'which rsync || (sudo apt-get update -y && sudo apt-get install rsync -y )'
     ##
+    ## Install pcregrep if not already installed.
+    ##
+    - 'which pcregrep || (sudo apt-get update -y && sudo apt-get install pcregrep -y )'
+    ##
     ## Run ssh-agent (inside the build environment)
     ##
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    - ssh-keyscan -t rsa fdroid.nordgedanken.dev >> ~/.ssh/known_hosts
   script:
-    - export UPDATE_VERSION=$(pcregrep -o1 'version:\\s([0-9]*\\.[0-9]*\\.[0-9]*)\\+[0-9]*' pubspec.yaml)
-    - mv app-release.apk "${UPDATE_VERSION}.apk"
-    - cd build/app/outputs/apk/release/ && rsync -rav -e ssh ./ fluffy@fdroid.nordgedanken.dev:/fdroid/repo
-    - ssh fluffy@fdroid.nordgedanken.dev "cd fdroid && fdroid update"
+    - mkdir -p upload
+    - cp build/android/* upload/
+    - cd build/android/
+    - export UPDATE_VERSION=$(pcregrep -o1 'version:\\s([0-9]*\\.[0-9]*\\.[0-9]*)\\+[0-9]*' pubspec.yaml) && mv app-release.apk "${UPDATE_VERSION}.apk"
+    - rsync -rav -e ssh ./ fluffy@fdroid.nordgedanken.dev:/fdroid/repo
+    - ssh fluffy@fdroid.nordgedanken.dev "cd fdroid && mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc && fdroid update"
   dependencies:
     - build_android_apk
   only:
@@ -138,4 +152,4 @@ pages:
     paths:
       - public
   only:
-    - master
+    - main

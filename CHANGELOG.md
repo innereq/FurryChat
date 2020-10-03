@@ -1,11 +1,73 @@
-# Version 0.16.0 - 2020-07-??
+# Version 0.20.0 - 2020-??-??
+### Features
+- Add ability to enable / disable emotes globally
+- Add ability to manage emote packs with different state keys
+
+# Version 0.19.0 - 2020-09-21
+### Features
+- Implemented ignore list
+- Jump to events in timeline: When tapping on a reply and when tapping a matrix.to link
+- Display messages with up to 10 emotes or emoji bigger
+- New design for the chat list and message bubbles
+- Implement reactions
+- Implement password change
+- Implement deactivate user account
+### Fixes
+- Timeline randomly resorting while more history is being fetched
+- Automatically request history if the "load more" button is on the screen
+
+# Version 0.18.0 - 2020-09-13
+### Features
+- Added translations: Armenian, Turkish, Chinese (Simplified), Estonian
+- Url-ify matrix identifiers
+- Use server-side generated thumbnails in cleartext rooms
+- Add option to send images in their original resolution
+- Add additional confirmation for sending files & share intents
+- Add option to opt-in to report issues / crashes to sentry
+- Write keys to online key backup, fully implementing online key backup
+### Changes
+- Tapping links, pills, etc. now does stuff
+- Better handling of sending messages in bad network
+- Better recovery of "keys not cached"
+### Fixes:
+- Various html rendering and url-ifying fixes
+- Added support for blurhashes
+- Image viewer now eventually displays the original image, not only the thumbnail
+
+# Version 0.17.0 - 2020-08-31
+### Features
+- Pin and unpin chats
+- Implement event aggregations
+- Implement message edits
+- Render reactions
+- Add / Remove reactions by tapping on existing reactions
+### Fixes:
+- Don't re-render the room list nearly as often, increasing performance
+- Various fixes for sending messages on bad networks
+- Design tweeks and fixes
+- Various performance fixes and improvements
+
+# Version 0.16.0 - 2020-07-24
 ### Features
 - Implement web notifications
+- Implement a connection status header
 ### Changes
-- Various performance improvements
-- Added languages: Galician, Croatian, Japanese, Russian
+- Switch out database engine for faster performance
+- Greatly improve startup time
+- Added languages: Galician, Croatian, Japanese, Russian, Ukrainian - Thanks a lot to all the weblate users!
+- Only show the microg toast once, if you have play services disabled
+- Homeserver URL input now strips trailing whitespace and slash - Thanks @kate_shine
+- Also use prev_content to determine profile of a user: This allows the username and avatar of people who left a group to still be displayed
 ### Fixes:
-- Various fixes, including key verification fixes
+- Fix not being able to initiate key verification properly
+- Fix message sending being weird on slow networks
+- Fix a few HTML rendering bugs
+- Various other fixes
+- Fix the 12h clock showing 00:15am, instead of 12:15am	- Thanks @not_chicken
+- Fix an issue with replies and invalid HTML
+- Fix messages getting lost when retrieving chat history
+- Fix a bug where an incorrect string encoding from the server is assumed
+- Fix a bug where people couldn't log in if they had email notifications enabled
 
 # Version 0.15.1 - 2020-06-26
 ### Fixes:

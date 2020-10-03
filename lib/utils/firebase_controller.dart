@@ -1,19 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
+import 'package:famedlysdk/famedlysdk.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fluffychat/components/matrix.dart';
-import 'package:fluffychat/l10n/l10n.dart';
 import 'package:fluffychat/utils/app_route.dart';
 import 'package:fluffychat/views/chat.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_gen/gen_l10n/l10n_en.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:bot_toast/bot_toast.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:famedlysdk/famedlysdk.dart';
-import 'famedlysdk_store.dart';
+
 import '../components/matrix.dart';
+import 'famedlysdk_store.dart';
+import 'matrix_locals.dart';
 
 abstract class FirebaseController {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -53,7 +56,10 @@ abstract class FirebaseController {
       }
       return;
     }
-    final pushers = await client.api.requestPushers();
+    final pushers = await client.requestPushers().catchError((e) {
+      debugPrint('[Push] Unable to request pushers: ${e.toString()}');
+      return [];
+    });
     final currentPushers = pushers.where((pusher) => pusher.pushkey == token);
     if (currentPushers.length == 1 &&
         currentPushers.first.kind == 'http' &&
@@ -69,14 +75,15 @@ abstract class FirebaseController {
         for (final currentPusher in currentPushers) {
           currentPusher.pushkey = token;
           currentPusher.kind = 'null';
-          await client.api.setPusher(
+          await client.setPusher(
             currentPusher,
             append: true,
           );
           debugPrint('[Push] Remove legacy pusher for this device');
         }
       }
-      await client.api.setPusher(
+      await client
+          .setPusher(
         Pusher(
           token,
           APP_ID,
@@ -90,7 +97,11 @@ abstract class FirebaseController {
           kind: 'http',
         ),
         append: false,
-      );
+      )
+          .catchError((e) {
+        debugPrint('[Push] Unable to set pushers: ${e.toString()}');
+        return [];
+      });
     }
 
     Function goToRoom = (dynamic message) async {
@@ -149,21 +160,30 @@ abstract class FirebaseController {
         return null;
       }
       if (context != null && Matrix.of(context).activeRoomId == roomId) {
+        debugPrint('[Push] New clearing push');
         return null;
       }
-      final i18n =
-          context == null ? L10n(Platform.localeName) : L10n.of(context);
+      debugPrint('[Push] New message received');
+      // FIXME unable to init without context currently https://github.com/flutter/flutter/issues/67092
+      // Locked on EN until issue resolved
+      final i18n = context == null ? L10nEn() : L10n.of(context);
 
       // Get the client
       Client client;
-      if (context != null) {
+      var tempClient = false;
+      try {
         client = Matrix.of(context).client;
-      } else {
+      } catch (_) {
+        client = null;
+      }
+      if (client == null) {
+        tempClient = true;
         final platform = kIsWeb ? 'Web' : Platform.operatingSystem;
         final clientName = 'FluffyChat $platform';
-        client = Client(clientName, debug: false);
+        client = Client(clientName);
         client.database = await getDatabase(client);
         client.connect();
+        debugPrint('[Push] Use a temp client');
         await client.onLoginStateChanged.stream
             .firstWhere((l) => l == LoginState.logged)
             .timeout(
@@ -174,10 +194,12 @@ abstract class FirebaseController {
       // Get the room
       var room = client.getRoomById(roomId);
       if (room == null) {
+        debugPrint('[Push] Wait for the room');
         await client.onRoomUpdate.stream
             .where((u) => u.id == roomId)
             .first
             .timeout(Duration(seconds: 5));
+        debugPrint('[Push] Room found');
         room = client.getRoomById(roomId);
         if (room == null) return null;
       }
@@ -185,10 +207,12 @@ abstract class FirebaseController {
       // Get the event
       var event = await client.database.getEventById(client.id, eventId, room);
       if (event == null) {
+        debugPrint('[Push] Wait for the event');
         final eventUpdate = await client.onEvent.stream
             .where((u) => u.content['event_id'] == eventId)
             .first
             .timeout(Duration(seconds: 5));
+        debugPrint('[Push] Event found');
         event = Event.fromJson(eventUpdate.content, room);
         if (room == null) return null;
       }
@@ -206,14 +230,14 @@ abstract class FirebaseController {
 
       // Calculate the body
       final body = event.getLocalizedBody(
-        i18n,
+        MatrixLocals(i18n),
         withSenderNamePrefix: true,
         hideReply: true,
       );
 
       // The person object for the android message style notification
       final person = Person(
-        name: room.getLocalizedDisplayname(i18n),
+        name: room.getLocalizedDisplayname(MatrixLocals(i18n)),
         icon: room.avatar == null
             ? null
             : BitmapFilePathAndroidIcon(
@@ -247,8 +271,17 @@ abstract class FirebaseController {
       var platformChannelSpecifics = NotificationDetails(
           androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
       await _flutterLocalNotificationsPlugin.show(
-          0, room.getLocalizedDisplayname(i18n), body, platformChannelSpecifics,
+          0,
+          room.getLocalizedDisplayname(MatrixLocals(i18n)),
+          body,
+          platformChannelSpecifics,
           payload: roomId);
+
+      if (tempClient) {
+        await client.dispose();
+        client = null;
+        debugPrint('[Push] Temp client disposed');
+      }
     } catch (exception) {
       debugPrint('[Push] Error while processing notification: ' +
           exception.toString());
@@ -268,7 +301,11 @@ abstract class FirebaseController {
       var initializationSettings = InitializationSettings(
           initializationSettingsAndroid, initializationSettingsIOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-      final l10n = L10n(Platform.localeName);
+
+      // FIXME unable to init without context currently https://github.com/flutter/flutter/issues/67092
+      // Locked on en for now
+      //final l10n = L10n(Platform.localeName);
+      final l10n = L10nEn();
 
       // Notification data and matrix data
       Map<dynamic, dynamic> data = message['data'] ?? message;

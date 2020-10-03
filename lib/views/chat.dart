@@ -3,35 +3,42 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:file_picker_platform_interface/file_picker_platform_interface.dart';
 import 'package:fluffychat/components/adaptive_page_layout.dart';
 import 'package:fluffychat/components/avatar.dart';
 import 'package:fluffychat/components/chat_settings_popup_menu.dart';
 import 'package:fluffychat/components/connection_status_header.dart';
-import 'package:fluffychat/components/dialogs/presence_dialog.dart';
 import 'package:fluffychat/components/dialogs/recording_dialog.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:fluffychat/components/encryption_button.dart';
 import 'package:fluffychat/components/list_items/message.dart';
 import 'package:fluffychat/components/matrix.dart';
 import 'package:fluffychat/components/reply_content.dart';
-import 'package:fluffychat/l10n/l10n.dart';
+import 'package:fluffychat/config/app_emojis.dart';
 import 'package:fluffychat/utils/app_route.dart';
+import 'package:fluffychat/utils/matrix_locals.dart';
 import 'package:fluffychat/utils/room_status_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:memoryfilepicker/memoryfilepicker.dart';
 import 'package:pedantic/pedantic.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
+import '../components/dialogs/send_file_dialog.dart';
+import '../components/input_bar.dart';
+import '../utils/matrix_file_extension.dart';
 import 'chat_details.dart';
 import 'chat_list.dart';
-import '../components/input_bar.dart';
 
 class ChatView extends StatelessWidget {
   final String id;
+  final String scrollToEventId;
 
-  const ChatView(this.id, {Key key}) : super(key: key);
+  const ChatView(this.id, {Key key, this.scrollToEventId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +48,16 @@ class ChatView extends StatelessWidget {
       firstScaffold: ChatList(
         activeChat: id,
       ),
-      secondScaffold: _Chat(id),
+      secondScaffold: _Chat(id, scrollToEventId: scrollToEventId),
     );
   }
 }
 
 class _Chat extends StatefulWidget {
   final String id;
+  final String scrollToEventId;
 
-  const _Chat(this.id, {Key key}) : super(key: key);
+  const _Chat(this.id, {Key key, this.scrollToEventId}) : super(key: key);
 
   @override
   _ChatState createState() => _ChatState();
@@ -64,7 +72,7 @@ class _ChatState extends State<_Chat> {
 
   String seenByText = '';
 
-  final ScrollController _scrollController = ScrollController();
+  final AutoScrollController _scrollController = AutoScrollController();
 
   FocusNode inputFocus = FocusNode();
 
@@ -75,6 +83,8 @@ class _ChatState extends State<_Chat> {
   List<Event> selectedEvents = [];
 
   Event replyEvent;
+
+  Event editEvent;
 
   bool showScrollDownButton = false;
 
@@ -96,28 +106,33 @@ class _ChatState extends State<_Chat> {
         timeline.requestHistory(historyCount: _loadHistoryCount),
       );
 
-      if (mounted) setState(() => _loadingHistory = false);
+      // we do NOT setState() here as then the event order will be wrong.
+      // instead, we just set our variable to false, and rely on timeline update to set the
+      // new state, thus triggering a re-render, for us
+      _loadingHistory = false;
+    }
+  }
+
+  void _updateScrollController() {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        timeline.events.isNotEmpty &&
+        timeline.events[timeline.events.length - 1].type !=
+            EventTypes.RoomCreate) {
+      requestHistory();
+    }
+    if (_scrollController.position.pixels > 0 &&
+        showScrollDownButton == false) {
+      setState(() => showScrollDownButton = true);
+    } else if (_scrollController.position.pixels == 0 &&
+        showScrollDownButton == true) {
+      setState(() => showScrollDownButton = false);
     }
   }
 
   @override
   void initState() {
-    _scrollController.addListener(() async {
-      if (_scrollController.position.pixels ==
-              _scrollController.position.maxScrollExtent &&
-          timeline.events.isNotEmpty &&
-          timeline.events[timeline.events.length - 1].type !=
-              EventTypes.RoomCreate) {
-        requestHistory();
-      }
-      if (_scrollController.position.pixels > 0 &&
-          showScrollDownButton == false) {
-        setState(() => showScrollDownButton = true);
-      } else if (_scrollController.position.pixels == 0 &&
-          showScrollDownButton == true) {
-        setState(() => showScrollDownButton = false);
-      }
-    });
+    _scrollController.addListener(_updateScrollController);
 
     super.initState();
   }
@@ -151,12 +166,22 @@ class _ChatState extends State<_Chat> {
     }
   }
 
-  Future<bool> getTimeline() async {
+  Future<bool> getTimeline(BuildContext context) async {
     if (timeline == null) {
       timeline = await room.getTimeline(onUpdate: updateView);
       if (timeline.events.isNotEmpty) {
         unawaited(room.sendReadReceipt(timeline.events.first.eventId));
       }
+
+      // when the scroll controller is attached we want to scroll to an event id, if specified
+      // and update the scroll controller...which will trigger a request history, if the
+      // "load more" button is visible on the screen
+      SchedulerBinding.instance.addPostFrameCallback((_) async {
+        if (widget.scrollToEventId != null) {
+          _scrollToEventId(widget.scrollToEventId, context: context);
+        }
+        _updateScrollController();
+      });
     }
     updateView();
     return true;
@@ -174,51 +199,50 @@ class _ChatState extends State<_Chat> {
 
   void send() {
     if (sendController.text.isEmpty) return;
-    room.sendTextEvent(sendController.text, inReplyTo: replyEvent);
+    room.sendTextEvent(sendController.text,
+        inReplyTo: replyEvent, editEventId: editEvent?.eventId);
     sendController.text = '';
-    if (replyEvent != null) {
-      setState(() => replyEvent = null);
-    }
 
-    setState(() => inputText = '');
+    setState(() {
+      inputText = '';
+      replyEvent = null;
+      editEvent = null;
+    });
   }
 
   void sendFileAction(BuildContext context) async {
     var file = await MemoryFilePicker.getFile();
     if (file == null) return;
-    await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.sendFileEvent(
-        MatrixFile(bytes: file.bytes, name: file.path),
-      ),
-    );
+    await showDialog(
+        context: context,
+        builder: (context) => SendFileDialog(
+              file:
+                  MatrixFile(bytes: file.bytes, name: file.path).detectFileType,
+              room: room,
+            ));
   }
 
   void sendImageAction(BuildContext context) async {
-    var file = await MemoryFilePicker.getImage(
-        source: ImageSource.gallery,
-        imageQuality: 50,
-        maxWidth: 1600,
-        maxHeight: 1600);
+    var file = await MemoryFilePicker.getFile(type: FileType.image);
     if (file == null) return;
-    await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.sendFileEvent(
-        MatrixImageFile(bytes: await file.bytes, name: file.path),
-      ),
-    );
+    final bytes = await file.bytes;
+    await showDialog(
+        context: context,
+        builder: (context) => SendFileDialog(
+              file: MatrixImageFile(bytes: bytes, name: file.path),
+              room: room,
+            ));
   }
 
   void openCameraAction(BuildContext context) async {
-    var file = await MemoryFilePicker.getImage(
-        source: ImageSource.camera,
-        imageQuality: 50,
-        maxWidth: 1600,
-        maxHeight: 1600);
+    var file = await MemoryFilePicker.getImage(source: ImageSource.camera);
     if (file == null) return;
-    await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.sendFileEvent(
-        MatrixImageFile(bytes: file.bytes, name: file.path),
-      ),
-    );
+    await showDialog(
+        context: context,
+        builder: (context) => SendFileDialog(
+              file: MatrixImageFile(bytes: file.bytes, name: file.path),
+              room: room,
+            ));
   }
 
   void voiceMessageAction(BuildContext context) async {
@@ -230,6 +254,8 @@ class _ChatState extends State<_Chat> {
             ));
     if (result == null) return;
     final audioFile = File(result);
+    // as we already explicitly say send in the recording dialog,
+    // we do not need the send file dialog anymore. We can just send this straight away.
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
       room.sendFileEvent(
         MatrixAudioFile(
@@ -241,12 +267,13 @@ class _ChatState extends State<_Chat> {
   String _getSelectedEventString(BuildContext context) {
     var copyString = '';
     if (selectedEvents.length == 1) {
-      return selectedEvents.first.getLocalizedBody(L10n.of(context));
+      return selectedEvents.first
+          .getLocalizedBody(MatrixLocals(L10n.of(context)));
     }
     for (var event in selectedEvents) {
       if (copyString.isNotEmpty) copyString += '\n\n';
-      copyString +=
-          event.getLocalizedBody(L10n.of(context), withSenderNamePrefix: true);
+      copyString += event.getLocalizedBody(MatrixLocals(L10n.of(context)),
+          withSenderNamePrefix: true);
     }
     return copyString;
   }
@@ -289,8 +316,17 @@ class _ChatState extends State<_Chat> {
     Navigator.of(context).popUntil((r) => r.isFirst);
   }
 
-  void sendAgainAction() {
-    selectedEvents.first.sendAgain();
+  void sendAgainAction(Timeline timeline) {
+    final event = selectedEvents.first;
+    if (event.status == -1) {
+      event.sendAgain();
+    }
+    final allEditEvents = event
+        .aggregatedEvents(timeline, RelationshipTypes.Edit)
+        .where((e) => e.status == -1);
+    for (final e in allEditEvents) {
+      e.sendAgain();
+    }
     setState(() => selectedEvents.clear());
   }
 
@@ -301,6 +337,66 @@ class _ChatState extends State<_Chat> {
     });
     inputFocus.requestFocus();
   }
+
+  void _scrollToEventId(String eventId, {BuildContext context}) async {
+    var eventIndex =
+        getFilteredEvents().indexWhere((e) => e.eventId == eventId);
+    if (eventIndex == -1) {
+      // event id not found...maybe we can fetch it?
+      // the try...finally is here to start and close the loading dialog reliably
+      try {
+        if (context != null) {
+          SimpleDialogs(context).showLoadingDialog(context);
+        }
+        // okay, we first have to fetch if the event is in the room
+        try {
+          final event = await timeline.getEventById(eventId);
+          if (event == null) {
+            // event is null...meaning something is off
+            return;
+          }
+        } catch (err) {
+          if (err is MatrixException && err.errcode == 'M_NOT_FOUND') {
+            // event wasn't found, as the server gave a 404 or something
+            return;
+          }
+          rethrow;
+        }
+        // okay, we know that the event *is* in the room
+        while (eventIndex == -1) {
+          if (!_canLoadMore) {
+            // we can't load any more events but still haven't found ours yet...better stop here
+            return;
+          }
+          try {
+            await timeline.requestHistory(historyCount: _loadHistoryCount);
+          } catch (err) {
+            if (err is TimeoutException) {
+              // loading the history timed out...so let's do nothing
+              return;
+            }
+            rethrow;
+          }
+          eventIndex =
+              getFilteredEvents().indexWhere((e) => e.eventId == eventId);
+        }
+      } finally {
+        if (context != null) {
+          Navigator.of(context)?.pop();
+        }
+      }
+    }
+    await _scrollController.scrollToIndex(eventIndex,
+        preferPosition: AutoScrollPosition.middle);
+    _updateScrollController();
+  }
+
+  List<Event> getFilteredEvents() => timeline.events
+      .where((e) =>
+          ![RelationshipTypes.Edit, RelationshipTypes.Reaction]
+              .contains(e.relationshipType) &&
+          e.type != 'm.reaction')
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -363,25 +459,19 @@ class _ChatState extends State<_Chat> {
                   return ListTile(
                     leading: Avatar(room.avatar, room.displayname),
                     contentPadding: EdgeInsets.zero,
-                    onTap: () =>
-                        room.isDirectChat && room.directChatPresence == null
+                    onTap: room.isDirectChat && room.directChatPresence == null
+                        ? null
+                        : room.isDirectChat
                             ? null
-                            : room.isDirectChat
-                                ? showDialog(
-                                    context: context,
-                                    builder: (c) => PresenceDialog(
-                                      room.directChatPresence,
-                                      avatarUrl: room.avatar,
-                                      displayname: room.displayname,
-                                    ),
-                                  )
-                                : Navigator.of(context).push(
-                                    AppRoute.defaultRoute(
-                                      context,
-                                      ChatDetails(room),
-                                    ),
+                            : () => Navigator.of(context).push(
+                                  AppRoute.defaultRoute(
+                                    context,
+                                    ChatDetails(room),
                                   ),
-                    title: Text(room.getLocalizedDisplayname(L10n.of(context)),
+                                ),
+                    title: Text(
+                        room.getLocalizedDisplayname(
+                            MatrixLocals(L10n.of(context))),
                         maxLines: 1),
                     subtitle: typingText.isEmpty
                         ? Text(
@@ -411,6 +501,23 @@ class _ChatState extends State<_Chat> {
                 .numberSelected(selectedEvents.length.toString())),
         actions: selectMode
             ? <Widget>[
+                if (selectedEvents.length == 1 &&
+                    selectedEvents.first.status > 0 &&
+                    selectedEvents.first.senderId == client.userID)
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      setState(() {
+                        editEvent = selectedEvents.first;
+                        sendController.text = editEvent
+                            .getDisplayEvent(timeline)
+                            .getLocalizedBody(MatrixLocals(L10n.of(context)),
+                                withSenderNamePrefix: false, hideReply: true);
+                        selectedEvents.clear();
+                      });
+                      inputFocus.requestFocus();
+                    },
+                  ),
                 IconButton(
                   icon: Icon(Icons.content_copy),
                   onPressed: () => copyEventsAction(context),
@@ -450,9 +557,10 @@ class _ChatState extends State<_Chat> {
             ),
           Column(
             children: <Widget>[
+              ConnectionStatusHeader(),
               Expanded(
                 child: FutureBuilder<bool>(
-                  future: getTimeline(),
+                  future: getTimeline(context),
                   builder: (BuildContext context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(
@@ -463,11 +571,12 @@ class _ChatState extends State<_Chat> {
                     if (room.notificationCount != null &&
                         room.notificationCount > 0 &&
                         timeline != null &&
-                        timeline.events.isNotEmpty) {
+                        timeline.events.isNotEmpty &&
+                        Matrix.of(context).webHasFocus) {
                       room.sendReadReceipt(timeline.events.first.eventId);
                     }
 
-                    if (timeline.events.isEmpty) return Container();
+                    final filteredEvents = getFilteredEvents();
 
                     return ListView.builder(
                         padding: EdgeInsets.symmetric(
@@ -479,10 +588,10 @@ class _ChatState extends State<_Chat> {
                                   2),
                         ),
                         reverse: true,
-                        itemCount: timeline.events.length + 2,
+                        itemCount: filteredEvents.length + 2,
                         controller: _scrollController,
                         itemBuilder: (BuildContext context, int i) {
-                          return i == timeline.events.length + 1
+                          return i == filteredEvents.length + 1
                               ? _loadingHistory
                                   ? Container(
                                       height: 50,
@@ -512,16 +621,28 @@ class _ChatState extends State<_Chat> {
                                           ? Duration(milliseconds: 0)
                                           : Duration(milliseconds: 500),
                                       alignment:
-                                          timeline.events.first.senderId ==
+                                          filteredEvents.first.senderId ==
                                                   client.userID
                                               ? Alignment.topRight
                                               : Alignment.topLeft,
-                                      child: Text(
-                                        seenByText,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.symmetric(horizontal: 4),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor
+                                              .withOpacity(0.8),
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          seenByText,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
                                         ),
                                       ),
                                       padding: EdgeInsets.only(
@@ -530,52 +651,126 @@ class _ChatState extends State<_Chat> {
                                         bottom: 8,
                                       ),
                                     )
-                                  : Message(timeline.events[i - 1],
-                                      onAvatarTab: (Event event) {
-                                      sendController.text +=
-                                          ' ${event.senderId}';
-                                    }, onSelect: (Event event) {
-                                      if (!event.redacted) {
-                                        if (selectedEvents.contains(event)) {
-                                          setState(
-                                            () => selectedEvents.remove(event),
-                                          );
-                                        } else {
-                                          setState(
-                                            () => selectedEvents.add(event),
-                                          );
-                                        }
-                                        selectedEvents.sort(
-                                          (a, b) => a.originServerTs
-                                              .compareTo(b.originServerTs),
-                                        );
-                                      }
-                                    },
-                                      longPressSelect: selectedEvents.isEmpty,
-                                      selected: selectedEvents
-                                          .contains(timeline.events[i - 1]),
-                                      timeline: timeline,
-                                      nextEvent: i >= 2
-                                          ? timeline.events[i - 2]
-                                          : null);
+                                  : AutoScrollTag(
+                                      key: ValueKey(i - 1),
+                                      index: i - 1,
+                                      controller: _scrollController,
+                                      child: Message(filteredEvents[i - 1],
+                                          onAvatarTab: (Event event) {
+                                            sendController.text +=
+                                                ' ${event.senderId}';
+                                          },
+                                          onSelect: (Event event) {
+                                            if (!event.redacted) {
+                                              if (selectedEvents
+                                                  .contains(event)) {
+                                                setState(
+                                                  () => selectedEvents
+                                                      .remove(event),
+                                                );
+                                              } else {
+                                                setState(
+                                                  () =>
+                                                      selectedEvents.add(event),
+                                                );
+                                              }
+                                              selectedEvents.sort(
+                                                (a, b) => a.originServerTs
+                                                    .compareTo(
+                                                        b.originServerTs),
+                                              );
+                                            }
+                                          },
+                                          scrollToEventId: (String eventId) =>
+                                              _scrollToEventId(eventId,
+                                                  context: context),
+                                          longPressSelect:
+                                              selectedEvents.isEmpty,
+                                          selected: selectedEvents
+                                              .contains(filteredEvents[i - 1]),
+                                          timeline: timeline,
+                                          nextEvent: i >= 2
+                                              ? filteredEvents[i - 2]
+                                              : null),
+                                    );
                         });
                   },
                 ),
               ),
-              ConnectionStatusHeader(),
               AnimatedContainer(
                 duration: Duration(milliseconds: 300),
-                height: replyEvent != null ? 56 : 0,
+                height: (editEvent == null &&
+                        replyEvent == null &&
+                        selectedEvents.length == 1)
+                    ? 56
+                    : 0,
+                child: Material(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  child: Builder(builder: (context) {
+                    if (!(editEvent == null &&
+                        replyEvent == null &&
+                        selectedEvents.length == 1)) {
+                      return Container();
+                    }
+                    var emojis = List<String>.from(AppEmojis.emojis);
+                    final allReactionEvents = selectedEvents.first
+                        .aggregatedEvents(timeline, RelationshipTypes.Reaction)
+                        ?.where((event) =>
+                            event.senderId == event.room.client.userID &&
+                            event.type == 'm.reaction');
+
+                    allReactionEvents.forEach((event) {
+                      try {
+                        emojis.remove(event.content['m.relates_to']['key']);
+                      } catch (_) {}
+                    });
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: emojis.length,
+                      itemBuilder: (c, i) => InkWell(
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () {
+                          SimpleDialogs(context).tryRequestWithLoadingDialog(
+                            room.sendReaction(
+                              selectedEvents.first.eventId,
+                              emojis[i],
+                            ),
+                          );
+                          setState(() => selectedEvents.clear());
+                        },
+                        child: Container(
+                          width: 56,
+                          height: 56,
+                          alignment: Alignment.center,
+                          child: Text(
+                            emojis[i],
+                            style: TextStyle(fontSize: 30),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                height: editEvent != null || replyEvent != null ? 56 : 0,
                 child: Material(
                   color: Theme.of(context).secondaryHeaderColor,
                   child: Row(
                     children: <Widget>[
                       IconButton(
                         icon: Icon(Icons.close),
-                        onPressed: () => setState(() => replyEvent = null),
+                        onPressed: () => setState(() {
+                          replyEvent = null;
+                          editEvent = null;
+                        }),
                       ),
                       Expanded(
-                        child: ReplyContent(replyEvent),
+                        child: replyEvent != null
+                            ? ReplyContent(replyEvent, timeline: timeline)
+                            : _EditContent(
+                                editEvent?.getDisplayEvent(timeline)),
                       ),
                     ],
                   ),
@@ -611,7 +806,10 @@ class _ChatState extends State<_Chat> {
                                   ),
                                 ),
                                 selectedEvents.length == 1
-                                    ? selectedEvents.first.status > 0
+                                    ? selectedEvents.first
+                                                .getDisplayEvent(timeline)
+                                                .status >
+                                            0
                                         ? Container(
                                             height: 56,
                                             child: FlatButton(
@@ -629,7 +827,7 @@ class _ChatState extends State<_Chat> {
                                             height: 56,
                                             child: FlatButton(
                                               onPressed: () =>
-                                                  sendAgainAction(),
+                                                  sendAgainAction(timeline),
                                               child: Row(
                                                 children: <Widget>[
                                                   Text(L10n.of(context)
@@ -801,6 +999,41 @@ class _ChatState extends State<_Chat> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _EditContent extends StatelessWidget {
+  final Event event;
+
+  _EditContent(this.event);
+
+  @override
+  Widget build(BuildContext context) {
+    if (event == null) {
+      return Container();
+    }
+    return Row(
+      children: <Widget>[
+        Icon(
+          Icons.edit,
+          color: Theme.of(context).primaryColor,
+        ),
+        Container(width: 15.0),
+        Text(
+          event?.getLocalizedBody(
+                MatrixLocals(L10n.of(context)),
+                withSenderNamePrefix: false,
+                hideReply: true,
+              ) ??
+              '',
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyText2.color,
+          ),
+        ),
+      ],
     );
   }
 }

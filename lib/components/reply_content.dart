@@ -1,6 +1,7 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/l10n/l10n.dart';
+import 'package:fluffychat/utils/matrix_locals.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import 'html_message.dart';
 import 'matrix.dart';
@@ -8,23 +9,29 @@ import 'matrix.dart';
 class ReplyContent extends StatelessWidget {
   final Event replyEvent;
   final bool lightText;
+  final Timeline timeline;
 
-  const ReplyContent(this.replyEvent, {this.lightText = false, Key key})
+  const ReplyContent(this.replyEvent,
+      {this.lightText = false, Key key, this.timeline})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Widget replyBody;
-    if (replyEvent != null &&
+    final displayEvent = replyEvent != null && timeline != null
+        ? replyEvent.getDisplayEvent(timeline)
+        : replyEvent;
+    if (displayEvent != null &&
         Matrix.of(context).renderHtml &&
-        [EventTypes.Message, EventTypes.Encrypted].contains(replyEvent.type) &&
+        [EventTypes.Message, EventTypes.Encrypted]
+            .contains(displayEvent.type) &&
         [MessageTypes.Text, MessageTypes.Notice, MessageTypes.Emote]
-            .contains(replyEvent.messageType) &&
-        !replyEvent.redacted &&
-        replyEvent.content['format'] == 'org.matrix.custom.html' &&
-        replyEvent.content['formatted_body'] is String) {
-      String html = replyEvent.content['formatted_body'];
-      if (replyEvent.messageType == MessageTypes.Emote) {
+            .contains(displayEvent.messageType) &&
+        !displayEvent.redacted &&
+        displayEvent.content['format'] == 'org.matrix.custom.html' &&
+        displayEvent.content['formatted_body'] is String) {
+      String html = displayEvent.content['formatted_body'];
+      if (displayEvent.messageType == MessageTypes.Emote) {
         html = '* $html';
       }
       replyBody = HtmlMessage(
@@ -36,12 +43,12 @@ class ReplyContent extends StatelessWidget {
           fontSize: DefaultTextStyle.of(context).style.fontSize,
         ),
         maxLines: 1,
-        room: replyEvent.room,
+        room: displayEvent.room,
       );
     } else {
       replyBody = Text(
-        replyEvent?.getLocalizedBody(
-              L10n.of(context),
+        displayEvent?.getLocalizedBody(
+              MatrixLocals(L10n.of(context)),
               withSenderNamePrefix: false,
               hideReply: true,
             ) ??
@@ -71,7 +78,7 @@ class ReplyContent extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                (replyEvent?.sender?.calcDisplayname() ?? '') + ':',
+                (displayEvent?.sender?.calcDisplayname() ?? '') + ':',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(

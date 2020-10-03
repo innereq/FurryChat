@@ -1,14 +1,17 @@
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/components/audio_player.dart';
 import 'package:fluffychat/components/image_bubble.dart';
-import 'package:fluffychat/l10n/l10n.dart';
 import 'package:fluffychat/utils/event_extension.dart';
+import 'package:fluffychat/utils/matrix_locals.dart';
 import 'package:flutter/material.dart';
-import 'package:link_text/link_text.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:matrix_link_text/link_text.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../utils/url_launcher.dart';
+import 'html_message.dart';
 import 'matrix.dart';
 import 'message_download_content.dart';
-import 'html_message.dart';
 
 class MessageContent extends StatelessWidget {
   final Event event;
@@ -40,22 +43,25 @@ class MessageContent extends StatelessWidget {
           case MessageTypes.Text:
           case MessageTypes.Notice:
           case MessageTypes.Emote:
-          case MessageTypes.Reply:
             if (Matrix.of(context).renderHtml &&
                 !event.redacted &&
-                event.content['format'] == 'org.matrix.custom.html' &&
-                event.content['formatted_body'] is String) {
+                event.isRichMessage) {
               String html = event.content['formatted_body'];
               if (event.messageType == MessageTypes.Emote) {
                 html = '* $html';
               }
+              final bigEmotes = event.onlyEmotes &&
+                  event.numberEmotes > 0 &&
+                  event.numberEmotes <= 10;
+              final fontSize = DefaultTextStyle.of(context).style.fontSize;
               return HtmlMessage(
                 html: html,
                 defaultTextStyle: TextStyle(
                   color: textColor,
-                  fontSize: DefaultTextStyle.of(context).style.fontSize,
+                  fontSize: bigEmotes ? fontSize * 3 : fontSize,
                 ),
                 room: event.room,
+                emoteSize: bigEmotes ? fontSize * 3 : fontSize * 1.5,
               );
             }
             // else we fall through to the normal message rendering
@@ -78,13 +84,19 @@ class MessageContent extends StatelessWidget {
                 onPressed: () => launch(event.body),
               );
             }
+            final bigEmotes = event.onlyEmotes &&
+                event.numberEmotes > 0 &&
+                event.numberEmotes <= 10;
+            final fontSize = DefaultTextStyle.of(context).style.fontSize;
             return LinkText(
-              text: event.getLocalizedBody(L10n.of(context), hideReply: true),
+              text: event.getLocalizedBody(MatrixLocals(L10n.of(context)),
+                  hideReply: true),
               textStyle: TextStyle(
                 color: textColor,
-                fontSize: DefaultTextStyle.of(context).style.fontSize,
+                fontSize: bigEmotes ? fontSize * 3 : fontSize,
                 decoration: event.redacted ? TextDecoration.lineThrough : null,
               ),
+              onLinkTap: (url) => UrlLauncher(context, url).launchUrl(),
             );
         }
         break;

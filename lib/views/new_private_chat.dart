@@ -6,9 +6,9 @@ import 'package:fluffychat/components/adaptive_page_layout.dart';
 import 'package:fluffychat/components/avatar.dart';
 import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
 import 'package:fluffychat/components/matrix.dart';
-import 'package:fluffychat/l10n/l10n.dart';
 import 'package:fluffychat/utils/app_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:share/share.dart';
 
 import 'chat.dart';
@@ -90,7 +90,7 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
     setState(() => loading = true);
     final matrix = Matrix.of(context);
     final response = await SimpleDialogs(context).tryRequestWithErrorToast(
-      matrix.client.api.searchUser(text, limit: 10),
+      matrix.client.searchUser(text, limit: 10),
     );
     setState(() => loading = false);
     if (response == false || (response?.results?.isEmpty ?? true)) return;
