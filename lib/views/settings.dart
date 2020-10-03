@@ -4,7 +4,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:fluffychat/components/settings_themes.dart';
 import 'package:fluffychat/config/app_config.dart';
-import 'package:fluffychat/utils/sentry_controller.dart';
 import 'package:fluffychat/views/settings_devices.dart';
 import 'package:fluffychat/views/settings_ignore_list.dart';
 import 'package:flutter/foundation.dart';
@@ -400,11 +399,6 @@ class _SettingsState extends State<Settings> {
                   AppInfoView(),
                 ),
               ),
-            ),
-            ListTile(
-              trailing: Icon(Icons.bug_report),
-              title: Text(L10n.of(context).sendBugReports),
-              onTap: () => SentryController.toggleSentryAction(context),
             ),
             Divider(thickness: 1),
             ListTile(
