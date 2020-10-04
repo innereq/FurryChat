@@ -681,6 +681,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "homeserverOrMXID": "Homeserver or MXID",
+  "@homeserverOrMXID": {
+    "type": "text",
+    "placeholders": {}
+  },
   "id": "ID",
   "@id": {
     "type": "text",

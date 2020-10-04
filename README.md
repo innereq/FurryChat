@@ -2,6 +2,11 @@
 
 An experimental fork of FluffyChat.
 
+# Changes from FluffyChat
+ * Double check of .well-known
+ * Get Jitsi from .well-known
+ * Removed Sentry
+
 # Features
  * Single and group chats
  * Send images and files
