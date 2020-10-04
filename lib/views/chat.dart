@@ -351,6 +351,14 @@ class _ChatState extends State<_Chat> {
     inputFocus.requestFocus();
   }
 
+  void replyBySwipeAction(Event replyTo) {
+    setState(() {
+      replyEvent = replyTo;
+      selectedEvents.clear();
+    });
+    inputFocus.requestFocus();
+  }
+
   void _scrollToEventId(String eventId, {BuildContext context}) async {
     var eventIndex =
         getFilteredEvents().indexWhere((e) => e.eventId == eventId);
@@ -668,21 +676,40 @@ class _ChatState extends State<_Chat> {
                                       key: ValueKey(i - 1),
                                       index: i - 1,
                                       controller: _scrollController,
-                                      child: Message(filteredEvents[i - 1],
-                                          onAvatarTab: (Event event) {
-                                            sendController.text +=
-                                                ' ${event.senderId}';
-                                          },
-                                          onSelect: (Event event) {
-                                            if (!event.redacted) {
-                                              if (selectedEvents
-                                                  .contains(event)) {
-                                                setState(
-                                                  () => selectedEvents
-                                                      .remove(event),
-                                                );
-                                              } else {
-                                                setState(
+                                      child: Swipeable(
+                                        key: ValueKey(i - 1),
+                                        background: Container(
+                                          color: Theme.of(context).primaryColor.withAlpha(100),
+                                          padding: EdgeInsets.symmetric(horizontal: 12.0),
+                                          alignment: Alignment.centerLeft,
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.reply),
+                                              SizedBox(width: 2.0),
+                                              Text(L10n.of(context).reply)
+                                            ],
+                                          ),
+                                        ),
+                                        direction: SwipeDirection.startToEnd,
+                                        onSwiped: (direction) {
+                                          replyBySwipeAction(
+                                              filteredEvents[i - 1]);
+                                        },
+                                        child: Message(filteredEvents[i - 1],
+                                            onAvatarTab: (Event event) {
+                                              sendController.text +=
+                                                  ' ${event.senderId}';
+                                            },
+                                            onSelect: (Event event) {
+                                              if (!event.redacted) {
+                                                if (selectedEvents
+                                                    .contains(event)) {
+                                                  setState(
+                                                    () => selectedEvents
+                                                        .remove(event),
+                                                  );
+                                                } else {
+                                                  setState(
                                                   () =>
                                                       selectedEvents.add(event),
                                                 );
@@ -705,6 +732,7 @@ class _ChatState extends State<_Chat> {
                                           nextEvent: i >= 2
                                               ? filteredEvents[i - 2]
                                               : null),
+                                      ),
                                     );
                         });
                   },
