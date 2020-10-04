@@ -99,7 +99,6 @@ class MatrixState extends State<Matrix> {
       }
     } catch (e, s) {
       client.onLoginStateChanged.sink.addError(e, s);
-      captureException(e, s);
       rethrow;
     }
   }
