@@ -679,8 +679,11 @@ class _ChatState extends State<_Chat> {
                                       child: Swipeable(
                                         key: ValueKey(i - 1),
                                         background: Container(
-                                          color: Theme.of(context).primaryColor.withAlpha(100),
-                                          padding: EdgeInsets.symmetric(horizontal: 12.0),
+                                          color: Theme.of(context)
+                                              .primaryColor
+                                              .withAlpha(100),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12.0),
                                           alignment: Alignment.centerLeft,
                                           child: Row(
                                             children: [
@@ -710,28 +713,28 @@ class _ChatState extends State<_Chat> {
                                                   );
                                                 } else {
                                                   setState(
-                                                  () =>
-                                                      selectedEvents.add(event),
+                                                    () => selectedEvents
+                                                        .add(event),
+                                                  );
+                                                }
+                                                selectedEvents.sort(
+                                                  (a, b) => a.originServerTs
+                                                      .compareTo(
+                                                          b.originServerTs),
                                                 );
                                               }
-                                              selectedEvents.sort(
-                                                (a, b) => a.originServerTs
-                                                    .compareTo(
-                                                        b.originServerTs),
-                                              );
-                                            }
-                                          },
-                                          scrollToEventId: (String eventId) =>
-                                              _scrollToEventId(eventId,
-                                                  context: context),
-                                          longPressSelect:
-                                              selectedEvents.isEmpty,
-                                          selected: selectedEvents
-                                              .contains(filteredEvents[i - 1]),
-                                          timeline: timeline,
-                                          nextEvent: i >= 2
-                                              ? filteredEvents[i - 2]
-                                              : null),
+                                            },
+                                            scrollToEventId: (String eventId) =>
+                                                _scrollToEventId(eventId,
+                                                    context: context),
+                                            longPressSelect:
+                                                selectedEvents.isEmpty,
+                                            selected: selectedEvents.contains(
+                                                filteredEvents[i - 1]),
+                                            timeline: timeline,
+                                            nextEvent: i >= 2
+                                                ? filteredEvents[i - 2]
+                                                : null),
                                       ),
                                     );
                         });

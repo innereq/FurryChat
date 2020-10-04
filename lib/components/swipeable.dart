@@ -111,7 +111,7 @@ class Swipeable extends StatefulWidget {
   final Map<SwipeDirection, double> dismissThresholds;
 
   /// The maximum horizontal offset the item can move to/
-  /// 
+  ///
   /// Represented as a fraction, e.g. if it is 0.4 (the default), then the
   /// item can be moved at maximum 40% of item's width.
   final double maxOffset;
