@@ -677,7 +677,8 @@ class _ChatState extends State<_Chat> {
                                       index: i - 1,
                                       controller: _scrollController,
                                       child: Swipeable(
-                                        key: ValueKey(i - 1),
+                                        key: ValueKey(
+                                            filteredEvents[i - 1].eventId),
                                         background: Container(
                                           color: Theme.of(context)
                                               .primaryColor
