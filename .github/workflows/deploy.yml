@@ -1,4 +1,4 @@
-name: Flutter coverage
+name: Flutter build
 
 on:
   push:
@@ -89,7 +89,7 @@ jobs:
     - name: Get apt deps
       run: |
         sudo apt-get update > /dev/null
-        sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build base64
+        sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
       
     - name: Setup Flutter
       uses: subosito/flutter-action@v1.3.2
