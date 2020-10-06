@@ -11,13 +11,22 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image:  registry.gitlab.com/famedly/containers/flutter-dockerimages:stable
-
     steps:
     - uses: actions/checkout@v2
+      
+    - name: Get apt deps
+      run: |
+        apt-get update > /dev/null
+        apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
+      
+    - name: Setup Flutter
+      uses: takuyaohashi/setup-flutter@v1
+      with:
+        channel: beta
+    
     - name: Check formatting
       run: flutter format lib/ test/ test_driver/ --set-exit-if-changed
+    
     - name: Analyze code
       run: flutter analyze
 
@@ -25,13 +34,21 @@ jobs:
   build-web:
     runs-on: ubuntu-latest
 
-    container:
-      image:  registry.gitlab.com/famedly/containers/flutter-dockerimages:beta
-
     needs: analyze
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Get apt deps
+      run: |
+        apt-get update > /dev/null
+        apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
+      
+    - name: Setup Flutter
+      uses: takuyaohashi/setup-flutter@v1
+      with:
+        channel: beta
+    
     - name: Prepare env
       run: |
         sudo apt update
@@ -46,24 +63,39 @@ jobs:
         cd web/ && unzip sqljs-wasm.zip && cd ../
         cd web/ && rm sqljs-wasm.zip && cd ../
         flutter clean
+    
+    - name: Configure Flutter
+      run: flutter config --enable-web && flutter doctor
+    
     - run: flutter pub get
+    
     - name: Build web release
       run: flutter build web --release --verbose
   
   build-android-debug:
     runs-on: ubuntu-latest
 
-    container:
-      image:  registry.gitlab.com/famedly/containers/flutter-dockerimages:beta
-
     needs: analyze
 
     steps:
     - uses: actions/checkout@v2
+      
+    - name: Get apt deps
+      run: |
+        apt-get update > /dev/null
+        apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
+      
+    - name: Setup Flutter
+      uses: takuyaohashi/setup-flutter@v1
+      with:
+        channel: beta
+    
     - name: Get rid of Firebase
       run: truncate -s $(head -n -2 android/app/build.gradle | wc -c) android/app/build.gradle
+    
     - name: Build debug apk
       run: flutter build apk --debug -v
+    
     - uses: actions/upload-artifact@v2
       with:
         name: debug.apk
