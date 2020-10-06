@@ -11,7 +11,7 @@ description: Chat with your friends.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.19.1+46
+version: 0.1.0
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -25,7 +25,10 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   famedlysdk:
-    path: ../famedlysdk
+    git:
+      url: https://github.com/innereq/famedlysdk-fork.git
+      ref: yiffed
+    # path: ../famedlysdk
 
   localstorage: ^3.0.1+4
   file_picker_cross: ^4.2.2

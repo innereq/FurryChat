@@ -186,9 +186,11 @@ packages:
   famedlysdk:
     dependency: "direct main"
     description:
-      path: "../famedlysdk"
-      relative: true
-    source: path
+      path: "."
+      ref: yiffed
+      resolved-ref: "8d3fb1d64ba99392728951c79ccafb3c9481b5da"
+      url: "https://github.com/innereq/famedlysdk-fork.git"
+    source: git
     version: "0.0.1"
   ffi:
     dependency: transitive
