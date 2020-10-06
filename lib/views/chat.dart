@@ -343,17 +343,9 @@ class _ChatState extends State<_Chat> {
     setState(() => selectedEvents.clear());
   }
 
-  void replyAction() {
+  void replyAction({Event replyTo}) {
     setState(() {
-      replyEvent = selectedEvents.first;
-      selectedEvents.clear();
-    });
-    inputFocus.requestFocus();
-  }
-
-  void replyBySwipeAction(Event replyTo) {
-    setState(() {
-      replyEvent = replyTo;
+      replyEvent = replyTo ?? selectedEvents.first;
       selectedEvents.clear();
     });
     inputFocus.requestFocus();
@@ -696,8 +688,8 @@ class _ChatState extends State<_Chat> {
                                         ),
                                         direction: SwipeDirection.startToEnd,
                                         onSwiped: (direction) {
-                                          replyBySwipeAction(
-                                              filteredEvents[i - 1]);
+                                          replyAction(
+                                              replyTo: filteredEvents[i - 1]);
                                         },
                                         child: Message(filteredEvents[i - 1],
                                             onAvatarTab: (Event event) {
