@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -54,6 +55,11 @@ class Swipeable extends StatefulWidget {
     this.movementDuration = const Duration(milliseconds: 200),
     this.crossAxisEndOffset = 0.0,
     this.dragStartBehavior = DragStartBehavior.start,
+    this.allowedPointerKinds = const {
+      PointerDeviceKind.invertedStylus,
+      PointerDeviceKind.stylus,
+      PointerDeviceKind.touch
+    },
   })  : assert(key != null),
         assert(secondaryBackground == null || background != null),
         assert(dragStartBehavior != null),
@@ -125,6 +131,11 @@ class Swipeable extends StatefulWidget {
   /// it is positive or negative.
   final double crossAxisEndOffset;
 
+  /// Defines pointer types which are allowed to trigger swipe gesture.
+  ///
+  /// Defaults to {PointerDeviceKind.touch, PointerDeviceKind.invertedStylus, PointerDeviceKind.stylus}
+  final Set<PointerDeviceKind> allowedPointerKinds;
+
   /// Determines the way that drag start behavior is handled.
   ///
   /// If set to [DragStartBehavior.start], the drag gesture used to dismiss a
@@ -192,6 +203,8 @@ class _SwipeableState extends State<Swipeable>
   bool _dragUnderway = false;
   Size _sizePriorToCollapse;
 
+  bool _isTouch = true;
+
   @override
   bool get wantKeepAlive => _moveController?.isAnimating == true;
 
@@ -228,6 +241,12 @@ class _SwipeableState extends State<Swipeable>
   double get _overallDragAxisExtent {
     final size = context.size;
     return size.width;
+  }
+
+  void _handlePointerDown(PointerDownEvent event) {
+    setState(() {
+      _isTouch = widget.allowedPointerKinds.contains(event.kind);
+    });
   }
 
   void _handleDragStart(DragStartDetails details) {
@@ -447,13 +466,16 @@ class _SwipeableState extends State<Swipeable>
       ]);
     }
     // We are not swiping but we may be being dragging in widget.direction.
-    return GestureDetector(
-      onHorizontalDragStart: _handleDragStart,
-      onHorizontalDragUpdate: _handleDragUpdate,
-      onHorizontalDragEnd: _handleDragEnd,
-      behavior: HitTestBehavior.opaque,
-      child: content,
-      dragStartBehavior: widget.dragStartBehavior,
+    return Listener(
+      onPointerDown: _handlePointerDown,
+      child: GestureDetector(
+        onHorizontalDragStart: _isTouch ? _handleDragStart : null,
+        onHorizontalDragUpdate: _isTouch ? _handleDragUpdate : null,
+        onHorizontalDragEnd: _isTouch ? _handleDragEnd : null,
+        behavior: HitTestBehavior.opaque,
+        child: content,
+        dragStartBehavior: widget.dragStartBehavior,
+      ),
     );
   }
 }
