@@ -20,7 +20,7 @@ jobs:
         sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
       
     - name: Setup Flutter
-      uses: takuyaohashi/setup-flutter@v1
+      uses: subosito/flutter-action@v1.3.2
       with:
         channel: beta
     
@@ -45,7 +45,7 @@ jobs:
         sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
       
     - name: Setup Flutter
-      uses: takuyaohashi/setup-flutter@v1
+      uses: subosito/flutter-action@v1.3.2
       with:
         channel: beta
     
@@ -86,7 +86,7 @@ jobs:
         sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
       
     - name: Setup Flutter
-      uses: takuyaohashi/setup-flutter@v1
+      uses: subosito/flutter-action@v1.3.2
       with:
         channel: beta
     
