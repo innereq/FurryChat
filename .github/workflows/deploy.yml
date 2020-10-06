@@ -89,7 +89,7 @@ jobs:
     - name: Get apt deps
       run: |
         sudo apt-get update > /dev/null
-        sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
+        sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build base64
       
     - name: Setup Flutter
       uses: subosito/flutter-action@v1.3.2
@@ -97,6 +97,10 @@ jobs:
         channel: beta
     
     - name: Set up secrets
+      env:
+        SIGN_KEY: ${{ secrets.SIGN_KEY }}
+        SIGN_KEY_PASS: ${{ secrets.SIGN_KEY_PASS }}
+        GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
       run: |
         cd android && echo $SIGN_KEY | base64 --decode --ignore-garbage > key.jks && cd ..
         cd android && echo "storePassword=${SIGN_KEY_PASS}" >> key.properties && cd ..
@@ -140,7 +144,7 @@ jobs:
         flutter config --enable-linux-desktop
         flutter pub get
 
-    - name: Build release apk
+    - name: Build release package
       run: |
         flutter build linux --release
         tar czf build/FurryChat-Linux.tar.gz build/linux/release/bundle/
