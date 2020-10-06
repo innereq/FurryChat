@@ -16,8 +16,8 @@ jobs:
       
     - name: Get apt deps
       run: |
-        apt-get update > /dev/null
-        apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
+        sudo apt-get update > /dev/null
+        sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
       
     - name: Setup Flutter
       uses: takuyaohashi/setup-flutter@v1
@@ -41,8 +41,8 @@ jobs:
     
     - name: Get apt deps
       run: |
-        apt-get update > /dev/null
-        apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
+        sudo apt-get update > /dev/null
+        sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
       
     - name: Setup Flutter
       uses: takuyaohashi/setup-flutter@v1
@@ -82,8 +82,8 @@ jobs:
       
     - name: Get apt deps
       run: |
-        apt-get update > /dev/null
-        apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
+        sudo apt-get update > /dev/null
+        sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build
       
     - name: Setup Flutter
       uses: takuyaohashi/setup-flutter@v1
