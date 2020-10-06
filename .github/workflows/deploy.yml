@@ -1,7 +1,7 @@
 name: Flutter coverage
 
 on:
-  pull_request:
+  push:
     branches: [ yiffed ]
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       run: flutter analyze
 
 
-  build-web:
+  deploy-web:
     runs-on: ubuntu-latest
 
     needs: analyze
@@ -69,8 +69,16 @@ jobs:
     
     - name: Build web release
       run: flutter build web --release --verbose
+    
+    - name: Deploy to GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v2
+      with:
+        target_branch: gh-pages
+        build_dir: build/web/
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
   
-  build-android-debug:
+  build-android-apk:
     runs-on: ubuntu-latest
 
     needs: analyze
@@ -88,13 +96,56 @@ jobs:
       with:
         channel: beta
     
-    - name: Get rid of Firebase
-      run: truncate -s $(head -n -2 android/app/build.gradle | wc -c) android/app/build.gradle
+    - name: Set up secrets
+      run: |
+        cd android && echo $SIGN_KEY | base64 --decode --ignore-garbage > key.jks && cd ..
+        cd android && echo "storePassword=${SIGN_KEY_PASS}" >> key.properties && cd ..
+        cd android && echo "keyPassword=${SIGN_KEY_PASS}" >> key.properties && cd ..
+        cd android && echo "keyAlias=key" >> key.properties && cd ..
+        cd android && echo "storeFile=../key.jks" >> key.properties && cd ..
+        cd android/app && echo $GOOGLE_SERVICES >> google-services.json && cd ../..
     
-    - name: Build debug apk
-      run: flutter build apk --debug -v
+    - name: Get Flutter deps
+      run: flutter pub get
+
+    - name: Build release apk
+      run: |
+        flutter build apk --release
     
     - uses: actions/upload-artifact@v2
       with:
-        name: debug.apk
-        path: build/app/outputs/apk/debug/app-debug.apk
+        name: FurryChat.apk
+        path: build/app/outputs/apk/release/app-release.apk
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    needs: analyze
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Get apt deps
+      run: |
+        sudo apt-get update > /dev/null
+        sudo apt-get -y install --no-install-recommends openssl axel lcov gcc g++ ninja-build clang cmake pkg-config libgtk-3-dev libblkid-dev tar
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1.3.2
+      with:
+        channel: dev
+    
+    - name: Get Flutter deps
+      run: |
+        flutter config --enable-linux-desktop
+        flutter pub get
+
+    - name: Build release apk
+      run: |
+        flutter build linux --release
+        tar czf build/FurryChat-Linux.tar.gz build/linux/release/bundle/
+    
+    - uses: actions/upload-artifact@v2
+      with:
+        name: FurryChat-Linux.tar.gz
+        path: build/FurryChat-Linux.tar.gz
