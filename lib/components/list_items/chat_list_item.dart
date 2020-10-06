@@ -1,7 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/utils/matrix_locals.dart';
-import 'package:fluffychat/views/chat.dart';
+import 'package:furrychat/utils/matrix_locals.dart';
+import 'package:furrychat/views/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:pedantic/pedantic.dart';

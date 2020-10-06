@@ -1,5 +1,5 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/utils/platform_infos.dart';
+import 'package:furrychat/utils/platform_infos.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 

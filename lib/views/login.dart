@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
-import 'package:fluffychat/components/matrix.dart';
-import 'package:fluffychat/utils/app_route.dart';
-import 'package:fluffychat/utils/firebase_controller.dart';
+import 'package:furrychat/components/dialogs/simple_dialogs.dart';
+import 'package:furrychat/components/matrix.dart';
+import 'package:furrychat/utils/app_route.dart';
+import 'package:furrychat/utils/firebase_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -13,11 +13,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'chat_list.dart';
 
 class Login extends StatefulWidget {
-  Login(
-      {Key key,
-      String this.username: null,
-      WellKnownInformations this.wellknown: null})
-      : super(key: key);
+  Login({Key key, this.username, this.wellknown}) : super(key: key);
 
   final String username;
   final WellKnownInformations wellknown;
@@ -85,7 +81,7 @@ class _LoginState extends State<Login> {
           newWellknown.jitsiHomeserver.baseUrl =
               'https://${newWellknown.jitsiHomeserver.baseUrl}';
         }
-        Matrix.of(context).store.setItem('chat.fluffy.jitsi_instance',
+        await Matrix.of(context).store.setItem('chat.fluffy.jitsi_instance',
             'https://${Uri.parse(newWellknown.jitsiHomeserver.baseUrl).host}/');
         Matrix.of(context).jitsiInstance =
             'https://${Uri.parse(newWellknown.jitsiHomeserver.baseUrl).host}/';
@@ -96,7 +92,7 @@ class _LoginState extends State<Login> {
           widget.wellknown.jitsiHomeserver.baseUrl =
               'https://${widget.wellknown.jitsiHomeserver.baseUrl}';
         }
-        Matrix.of(context).store.setItem('chat.fluffy.jitsi_instance',
+        await Matrix.of(context).store.setItem('chat.fluffy.jitsi_instance',
             'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/');
         Matrix.of(context).jitsiInstance =
             'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/';

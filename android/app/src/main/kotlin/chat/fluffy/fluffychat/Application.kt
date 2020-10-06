@@ -1,4 +1,4 @@
-package chat.fluffy.fluffychat
+package dev.inex.furrychat
 
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.PluginRegistry

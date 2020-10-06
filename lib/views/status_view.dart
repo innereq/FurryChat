@@ -1,12 +1,12 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/components/avatar.dart';
-import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
-import 'package:fluffychat/components/matrix.dart';
-import 'package:fluffychat/utils/url_launcher.dart';
-import 'package:fluffychat/utils/user_status.dart';
+import 'package:furrychat/components/avatar.dart';
+import 'package:furrychat/components/dialogs/simple_dialogs.dart';
+import 'package:furrychat/components/matrix.dart';
+import 'package:furrychat/utils/url_launcher.dart';
+import 'package:furrychat/utils/user_status.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:fluffychat/utils/app_route.dart';
-import 'package:fluffychat/utils/string_color.dart';
+import 'package:furrychat/utils/app_route.dart';
+import 'package:furrychat/utils/string_color.dart';
 import 'package:flutter/material.dart';
 import 'package:matrix_link_text/link_text.dart';
 

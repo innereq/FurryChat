@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/views/homeserver_picker.dart';
+import 'package:furrychat/views/homeserver_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,12 +34,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Matrix(
-      clientName: 'FluffyChat $platform',
+      clientName: 'FurryChat $platform',
       child: Builder(
         builder: (BuildContext context) => ThemeSwitcherWidget(
           child: Builder(
             builder: (BuildContext context) => MaterialApp(
-              title: 'FluffyChat',
+              title: 'FurryChat',
               builder: BotToastInit(),
               navigatorObservers: [BotToastNavigatorObserver()],
               theme: ThemeSwitcherWidget.of(context).themeData,

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/utils/app_route.dart';
-import 'package:fluffychat/views/chat_encryption_settings.dart';
+import 'package:furrychat/utils/app_route.dart';
+import 'package:furrychat/views/chat_encryption_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 

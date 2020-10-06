@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fluffychat/utils/matrix_identifier_string_extension.dart';
+import 'package:furrychat/utils/matrix_identifier_string_extension.dart';
 
 void main() {
   group('Matrix Identifier String Extension', () {

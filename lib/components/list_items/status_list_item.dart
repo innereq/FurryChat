@@ -1,6 +1,6 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/utils/user_status.dart';
-import 'package:fluffychat/views/status_view.dart';
+import 'package:furrychat/utils/user_status.dart';
+import 'package:furrychat/views/status_view.dart';
 import 'package:flutter/material.dart';
 import '../avatar.dart';
 import '../matrix.dart';

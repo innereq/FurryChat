@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:famedlysdk/encryption.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
-import 'package:fluffychat/utils/firebase_controller.dart';
-import 'package:fluffychat/utils/matrix_locals.dart';
-import 'package:fluffychat/utils/platform_infos.dart';
-import 'package:fluffychat/utils/user_status.dart';
+import 'package:furrychat/components/dialogs/simple_dialogs.dart';
+import 'package:furrychat/utils/firebase_controller.dart';
+import 'package:furrychat/utils/matrix_locals.dart';
+import 'package:furrychat/utils/platform_infos.dart';
+import 'package:furrychat/utils/user_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -15,7 +15,6 @@ import 'package:localstorage/localstorage.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
 
-import '../main.dart';
 import '../utils/app_route.dart';
 import '../utils/beautify_string_extension.dart';
 import '../utils/famedlysdk_store.dart';

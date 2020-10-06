@@ -1,6 +1,6 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/components/image_bubble.dart';
-import 'package:fluffychat/components/matrix.dart';
+import 'package:furrychat/components/image_bubble.dart';
+import 'package:furrychat/components/matrix.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import '../utils/event_extension.dart';

@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
-import 'package:fluffychat/components/adaptive_page_layout.dart';
-import 'package:fluffychat/components/avatar.dart';
-import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
-import 'package:fluffychat/components/matrix.dart';
+import 'package:furrychat/components/adaptive_page_layout.dart';
+import 'package:furrychat/components/avatar.dart';
+import 'package:furrychat/components/dialogs/simple_dialogs.dart';
+import 'package:furrychat/components/matrix.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 

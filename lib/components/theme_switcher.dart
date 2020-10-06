@@ -219,7 +219,8 @@ class ThemeSwitcherWidgetState extends State<ThemeSwitcherWidget> {
         break;
     }
 
-    theme = theme.copyWith(accentColor: Colors.amber, primaryColor: Colors.deepOrange);
+    theme = theme.copyWith(
+        accentColor: Colors.amber, primaryColor: Colors.deepOrange);
 
     await saveThemeValue(matrix, newTheme);
     await saveAmoledEnabledValue(matrix, amoled_enabled);

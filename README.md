@@ -3,9 +3,10 @@
 An experimental fork of FluffyChat.
 
 # Changes from FluffyChat
- * Double check of .well-known
- * Get Jitsi from .well-known
+ * Reworked auth flow
  * Removed Sentry
+ * Double check of .well-known
+ * Get Jitsi instance from .well-known
 
 # Features
  * Single and group chats

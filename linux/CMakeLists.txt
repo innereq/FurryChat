@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
 set(BINARY_NAME "fluffychat")
-set(APPLICATION_ID "chat.fluffy.fluffychat")
+set(APPLICATION_ID "dev.inex.furrychat")
 
 cmake_policy(SET CMP0063 NEW)
 

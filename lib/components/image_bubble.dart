@@ -1,7 +1,7 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/utils/app_route.dart';
-import 'package:fluffychat/utils/platform_infos.dart';
-import 'package:fluffychat/views/image_view.dart';
+import 'package:furrychat/utils/app_route.dart';
+import 'package:furrychat/utils/platform_infos.dart';
+import 'package:furrychat/views/image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';

@@ -1,4 +1,4 @@
-package chat.fluffy.fluffychat
+package dev.inex.furrychat
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

@@ -81,7 +81,7 @@ A typical push notification could look like this:
     },
     "devices": [
       {
-        "app_id": "chat.fluffy.fluffychat",
+        "app_id": "dev.inex.furrychat",
         "pushkey": "V2h5IG9uIGVhcnRoIGRpZCB5b3UgZGVjb2RlIHRoaXM/",
         "pushkey_ts": 12345678,
         "data": {},

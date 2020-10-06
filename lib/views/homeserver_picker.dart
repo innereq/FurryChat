@@ -1,15 +1,13 @@
 import 'dart:math';
 
 import 'package:famedlysdk/matrix_api/model/well_known_informations.dart';
-import 'package:fluffychat/components/dialogs/simple_dialogs.dart';
-import 'package:fluffychat/components/matrix.dart';
-import 'package:fluffychat/config/app_config.dart';
+import 'package:furrychat/components/dialogs/simple_dialogs.dart';
+import 'package:furrychat/components/matrix.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:fluffychat/utils/app_route.dart';
-import 'package:fluffychat/views/login.dart';
-import 'package:fluffychat/views/sign_up.dart';
+import 'package:furrychat/utils/app_route.dart';
+import 'package:furrychat/views/login.dart';
+import 'package:furrychat/views/sign_up.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomeserverPicker extends StatefulWidget {
   @override
@@ -17,16 +15,6 @@ class HomeserverPicker extends StatefulWidget {
 }
 
 class _HomeserverPickerState extends State<HomeserverPicker> {
-  Future<void> _setHomeserverAction(BuildContext context) async {
-    final homeserver = await SimpleDialogs(context).enterText(
-        titleText: L10n.of(context).enterYourHomeserver,
-        hintText: AppConfig.defaultHomeserver,
-        prefixText: 'https://',
-        keyboardType: TextInputType.url);
-    if (homeserver?.isEmpty ?? true) return;
-    _checkHomeserverAction(homeserver, context);
-  }
-
   void _checkHomeserverAction(String homeserver, BuildContext context) async {
     if (!_isMXID && !homeserver.startsWith('https://')) {
       homeserver = 'https://$homeserver';
@@ -51,11 +39,9 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
         )));
       }
     } else {
-
       homeserver = homeserver.trim();
       if (homeserver.endsWith('/')) {
         homeserver = homeserver.substring(0, homeserver.length - 1);
-      
       }
       wellknown = await SimpleDialogs(context).tryRequestWithLoadingDialog(
           Matrix.of(context)

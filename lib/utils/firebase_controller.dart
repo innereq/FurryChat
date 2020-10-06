@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:fluffychat/components/matrix.dart';
-import 'package:fluffychat/utils/app_route.dart';
-import 'package:fluffychat/views/chat.dart';
+import 'package:furrychat/components/matrix.dart';
+import 'package:furrychat/utils/app_route.dart';
+import 'package:furrychat/views/chat.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -26,7 +26,7 @@ abstract class FirebaseController {
   static const String CHANNEL_ID = 'fluffychat_push';
   static const String CHANNEL_NAME = 'FluffyChat push channel';
   static const String CHANNEL_DESCRIPTION = 'Push notifications for FluffyChat';
-  static const String APP_ID = 'chat.fluffy.fluffychat';
+  static const String APP_ID = 'dev.inex.furrychat';
   static const String GATEWAY_URL = 'https://janian.de:7023/';
   static const String PUSHER_FORMAT = 'event_id_only';
 

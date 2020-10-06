@@ -1,4 +1,4 @@
-import 'package:fluffychat/components/matrix.dart';
+import 'package:furrychat/components/matrix.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';

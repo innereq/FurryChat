@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/components/message_download_content.dart';
+import 'package:furrychat/components/message_download_content.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
