@@ -325,7 +325,7 @@ packages:
       name: flutter_matrix_html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.5"
+    version: "0.1.7"
   flutter_olm:
     dependency: "direct main"
     description:
@@ -967,7 +967,7 @@ packages:
     source: hosted
     version: "1.0.8"
   url_launcher_web:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: url_launcher_web
       url: "https://pub.dartlang.org"

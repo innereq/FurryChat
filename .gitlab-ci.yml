@@ -181,3 +181,37 @@ pages:
       - public
   only:
     - main
+
+build_linux:
+  stage: coverage
+  image: registry.gitlab.com/famedly/containers/flutter-dockerimages:dev
+  dependencies: []
+  script:
+    - sudo apt update
+    - sudo apt install clang cmake ninja-build pkg-config libgtk-3-dev libblkid-dev
+    - flutter config --enable-linux-desktop
+    - flutter pub get
+    - flutter build linux --release
+  artifacts:
+    when: on_success
+    paths:
+      - build/linux/release/bundle/
+  only:
+    - main
+  
+snap:publish:
+  stage: publish
+  image: "cibuilds/snapcraft:core18"
+  only:
+    - tags
+  script:
+    - snapcraft
+    - echo $SNAPCRAFT_LOGIN_FILE | base64 --decode --ignore-garbage > snapcraft.login
+    - snapcraft login --with snapcraft.login
+    - snapcraft push --release=stable *.snap
+    - snapcraft logout
+  artifacts:
+    paths:
+      - './*.snap'
+    when: on_success
+    expire_in: 1 week
