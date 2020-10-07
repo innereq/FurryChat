@@ -8,8 +8,8 @@ import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:furrychat/components/settings_themes.dart';
 import 'package:furrychat/config/app_config.dart';
 import 'package:furrychat/utils/platform_infos.dart';
-import 'package:furrychat/views/settings_devices.dart';
-import 'package:furrychat/views/settings_ignore_list.dart';
+import 'package:furrychat/views/settings/settings_devices.dart';
+import 'package:furrychat/views/settings/settings_ignore_list.dart';
 import 'package:furrychat/components/avatar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,22 +17,26 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../components/adaptive_page_layout.dart';
-import '../components/content_banner.dart';
-import '../components/dialogs/simple_dialogs.dart';
-import '../components/matrix.dart';
-import '../utils/app_route.dart';
-import 'app_info.dart';
-import 'chat_list.dart';
-import 'settings_emotes.dart';
+import 'package:furrychat/components/adaptive_page_layout.dart';
+import 'package:furrychat/components/content_banner.dart';
+import 'package:furrychat/components/dialogs/simple_dialogs.dart';
+import 'package:furrychat/components/matrix.dart';
+import 'package:furrychat/utils/app_route.dart';
+import 'package:furrychat/views/settings/app_info.dart';
+import 'package:furrychat/views/chat_list.dart';
+import 'package:furrychat/views/settings/settings_emotes.dart';
 
 class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
-      secondScaffold: Settings(),
+      primaryPage: FocusPage.FIRST,
+      firstScaffold: Settings(),
+      secondScaffold: Scaffold(
+        body: Center(
+          child: Image.asset('assets/logo.png', width: 100, height: 100),
+        ),
+      ),
     );
   }
 }
@@ -271,11 +275,7 @@ class _SettingsState extends State<Settings> {
               leading: CircleAvatar(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 foregroundColor: Colors.grey,
-                child: Avatar(
-                  profile?.avatarUrl,
-                  profile?.displayname ?? client.userID.localpart,
-                  //size: 24.0,
-                ),
+                child: Icon(Icons.person_outlined,),
               ),
               title: Text(profile?.displayname ?? 'Your account'),
               subtitle: Text(client.userID),

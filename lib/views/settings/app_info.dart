@@ -1,7 +1,7 @@
 import 'package:furrychat/components/adaptive_page_layout.dart';
 import 'package:furrychat/components/matrix.dart';
 import 'package:furrychat/utils/beautify_string_extension.dart';
-import 'package:furrychat/views/chat_list.dart';
+import 'package:furrychat/views/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:olm/olm.dart' as olm;
@@ -11,7 +11,7 @@ class AppInfoView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
+      firstScaffold: Settings(),
       secondScaffold: AppInfo(),
     );
   }

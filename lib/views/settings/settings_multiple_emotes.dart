@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import '../components/adaptive_page_layout.dart';
-import '../utils/app_route.dart';
-import 'chat_list.dart';
+import 'package:furrychat/components/adaptive_page_layout.dart';
+import 'package:furrychat/utils/app_route.dart';
+import 'package:furrychat/views/settings.dart';
+import 'package:furrychat/views/chat_list.dart';
 import 'settings_emotes.dart';
 
 class MultipleEmotesSettingsView extends StatelessWidget {
@@ -15,7 +16,7 @@ class MultipleEmotesSettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
+      firstScaffold: Settings(),
       secondScaffold: MultipleEmotesSettings(room: room),
     );
   }

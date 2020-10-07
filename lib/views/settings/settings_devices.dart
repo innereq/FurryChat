@@ -1,19 +1,20 @@
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:furrychat/views/settings.dart';
 import 'package:furrychat/components/dialogs/simple_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/adaptive_page_layout.dart';
-import '../components/matrix.dart';
-import '../utils/date_time_extension.dart';
-import 'chat_list.dart';
+import 'package:furrychat/components/adaptive_page_layout.dart';
+import 'package:furrychat/components/matrix.dart';
+import 'package:furrychat/utils/date_time_extension.dart';
+import 'package:furrychat/views/chat_list.dart';
 
 class DevicesSettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
+      firstScaffold: Settings(),
       secondScaffold: DevicesSettings(),
     );
   }
