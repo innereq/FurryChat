@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 
@@ -9,6 +10,7 @@ import 'package:furrychat/config/app_config.dart';
 import 'package:furrychat/utils/platform_infos.dart';
 import 'package:furrychat/views/settings_devices.dart';
 import 'package:furrychat/views/settings_ignore_list.dart';
+import 'package:furrychat/components/avatar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -257,42 +259,105 @@ class _SettingsState extends State<Settings> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
             <Widget>[
           SliverAppBar(
-            expandedHeight: 300.0,
             floating: true,
             pinned: true,
             backgroundColor: Theme.of(context).appBarTheme.color,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                L10n.of(context).settings,
-                style: TextStyle(
-                    color: Theme.of(context)
-                        .appBarTheme
-                        .textTheme
-                        .headline6
-                        .color),
-              ),
-              background: ContentBanner(
-                profile?.avatarUrl,
-                height: 300,
-                defaultIcon: Icons.account_circle,
-                loading: profile == null,
-                onEdit: () => setAvatarAction(context),
-              ),
-            ),
+            title: Text(L10n.of(context).settings),
           ),
         ],
         body: ListView(
           children: <Widget>[
             ListTile(
-              title: Text(
-                L10n.of(context).changeTheme,
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                foregroundColor: Colors.grey,
+                child: Avatar(
+                  profile?.avatarUrl,
+                  profile?.displayname ?? client.userID.localpart,
+                  //size: 24.0,
+                ),
+              ),
+              title: Text(profile?.displayname ?? 'Your account'),
+              subtitle: Text(client.userID),
+              onTap: () => Navigator.of(context).push(
+                AppRoute.defaultRoute(
+                  context,
+                  AppInfoView(),
                 ),
               ),
             ),
-            ThemesSettings(),
+            ListTile(
+              leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  foregroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.dns_outlined,
+                  )),
+              title: Text('Your homeserver'),
+              subtitle: Text(client.homeserver.host),
+            ),
+            Divider(thickness: 1),
+            ListTile(
+              leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  foregroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.color_lens_outlined,
+                  )),
+              title: Text(L10n.of(context).changeTheme),
+            ),
+            ListTile(
+              leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  foregroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.insert_emoticon_outlined,
+                  )),
+              title: Text(L10n.of(context).emoteSettings),
+              onTap: () async => await Navigator.of(context).push(
+                AppRoute.defaultRoute(
+                  context,
+                  EmotesSettingsView(),
+                ),
+              ),
+            ),
+            Divider(thickness: 1),
+            ListTile(
+              leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  foregroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.lock_outline,
+                  )),
+              title: Text(L10n.of(context).encryption),
+            ),
+            ListTile(
+              leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  foregroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.devices_other_outlined,
+                  )),
+              title: Text(L10n.of(context).devices),
+              onTap: () async => await Navigator.of(context).push(
+                AppRoute.defaultRoute(
+                  context,
+                  DevicesSettingsView(),
+                ),
+              ),
+            ),
+            Divider(thickness: 1),
+            ListTile(
+              leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  foregroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.info_outline,
+                  )),
+              title: Text(L10n.of(context).about),
+            ),
+/*
+            //ThemesSettings(),
             if (!kIsWeb && Matrix.of(context).store != null)
               Divider(thickness: 1),
             if (!kIsWeb && Matrix.of(context).store != null)
@@ -350,16 +415,7 @@ class _SettingsState extends State<Settings> {
                 },
               ),
             ),
-            ListTile(
-              title: Text(L10n.of(context).emoteSettings),
-              onTap: () async => await Navigator.of(context).push(
-                AppRoute.defaultRoute(
-                  context,
-                  EmotesSettingsView(),
-                ),
-              ),
-              trailing: Icon(Icons.insert_emoticon),
-            ),
+            
             Divider(thickness: 1),
             ListTile(
               title: Text(
@@ -382,16 +438,7 @@ class _SettingsState extends State<Settings> {
               subtitle: Text(Matrix.of(context).jitsiInstance),
               onTap: () => setJitsiInstanceAction(context),
             ),
-            ListTile(
-              trailing: Icon(Icons.devices_other),
-              title: Text(L10n.of(context).devices),
-              onTap: () async => await Navigator.of(context).push(
-                AppRoute.defaultRoute(
-                  context,
-                  DevicesSettingsView(),
-                ),
-              ),
-            ),
+
             ListTile(
               trailing: Icon(Icons.block),
               title: Text(L10n.of(context).ignoredUsers),
@@ -571,7 +618,7 @@ class _SettingsState extends State<Settings> {
               trailing: Icon(Icons.code),
               title: Text(L10n.of(context).sourceCode),
               onTap: () => launch(AppConfig.sourceCodeUrl),
-            ),
+            ),*/
           ],
         ),
       ),
