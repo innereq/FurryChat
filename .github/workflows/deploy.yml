@@ -70,6 +70,9 @@ jobs:
     - name: Build web release
       run: flutter build web --release --verbose
     
+    - name: Add CNAME
+      run: cd build/web/ && echo "chat.inex.dev" > CNAME && cd ../..
+    
     - name: Deploy to GitHub Pages
       uses: crazy-max/ghaction-github-pages@v2
       with:
@@ -147,12 +150,11 @@ jobs:
     - name: Build release package
       run: |
         flutter build linux --release
-        tar czf build/FurryChat-Linux.tar.gz build/linux/release/bundle/
     
     - uses: actions/upload-artifact@v2
       with:
-        name: FurryChat-Linux.tar.gz
-        path: build/FurryChat-Linux.tar.gz
+        name: FurryChat-Linux
+        path: build/linux/release/bundle/
         
   build-windows:
     runs-on: windows-latest
