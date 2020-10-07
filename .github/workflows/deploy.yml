@@ -153,3 +153,35 @@ jobs:
       with:
         name: FurryChat-Linux.tar.gz
         path: build/FurryChat-Linux.tar.gz
+        
+  build-windows:
+    runs-on: windows-latest
+
+    needs: [analyze, build-android-apk, build-linux]
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Get choco deps
+      run: |
+        choco install git -y
+        choco install visualstudio2019community -y --package-parameters "--add Microsoft.VisualStudio.Product.BuildTools --includeRecommended --includeOptional --passive --locale en-US"
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1.3.2
+      with:
+        channel: dev
+    
+    - name: Get Flutter deps
+      run: |
+        flutter config --enable-windows-desktop
+        flutter pub get
+
+    - name: Build release package
+      run: |
+        flutter build windows --release
+    
+    - uses: actions/upload-artifact@v2
+      with:
+        name: FurryChat-Windows
+        path: build/windows/runner/Release/
