@@ -14,6 +14,7 @@ import 'package:furrychat/components/avatar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:furrychat/views/settings/settings_themes.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -178,22 +179,6 @@ class _SettingsState extends State<Settings> {
     }
   }
 
-  void setWallpaperAction(BuildContext context) async {
-    final wallpaper = await ImagePicker().getImage(source: ImageSource.gallery);
-    if (wallpaper == null) return;
-    Matrix.of(context).wallpaper = File(wallpaper.path);
-    await Matrix.of(context)
-        .store
-        .setItem('chat.fluffy.wallpaper', wallpaper.path);
-    setState(() => null);
-  }
-
-  void deleteWallpaperAction(BuildContext context) async {
-    Matrix.of(context).wallpaper = null;
-    await Matrix.of(context).store.setItem('chat.fluffy.wallpaper', null);
-    setState(() => null);
-  }
-
   Future<void> requestSSSSCache(BuildContext context) async {
     final handle = Matrix.of(context).client.encryption.ssss.open();
     final str = await SimpleDialogs(context).enterText(
@@ -275,7 +260,9 @@ class _SettingsState extends State<Settings> {
               leading: CircleAvatar(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 foregroundColor: Colors.grey,
-                child: Icon(Icons.person_outlined,),
+                child: Icon(
+                  Icons.person_outlined,
+                ),
               ),
               title: Text(profile?.displayname ?? 'Your account'),
               subtitle: Text(client.userID),
@@ -296,7 +283,6 @@ class _SettingsState extends State<Settings> {
               title: Text('Your homeserver'),
               subtitle: Text(client.homeserver.host),
             ),
-            Divider(thickness: 1),
             ListTile(
               leading: CircleAvatar(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -305,6 +291,11 @@ class _SettingsState extends State<Settings> {
                     Icons.color_lens_outlined,
                   )),
               title: Text(L10n.of(context).changeTheme),
+              onTap: () async =>
+                  await Navigator.of(context).push(AppRoute.defaultRoute(
+                context,
+                ThemesSettingsView(),
+              )),
             ),
             ListTile(
               leading: CircleAvatar(
@@ -321,7 +312,6 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
             ),
-            Divider(thickness: 1),
             ListTile(
               leading: CircleAvatar(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -356,41 +346,8 @@ class _SettingsState extends State<Settings> {
                   )),
               title: Text(L10n.of(context).about),
             ),
-/*
-            //ThemesSettings(),
-            if (!kIsWeb && Matrix.of(context).store != null)
-              Divider(thickness: 1),
-            if (!kIsWeb && Matrix.of(context).store != null)
-              ListTile(
-                title: Text(
-                  L10n.of(context).wallpaper,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            if (Matrix.of(context).wallpaper != null)
-              ListTile(
-                title: Image.file(
-                  Matrix.of(context).wallpaper,
-                  height: 38,
-                  fit: BoxFit.cover,
-                ),
-                trailing: Icon(
-                  Icons.delete_forever,
-                  color: Colors.red,
-                ),
-                onTap: () => deleteWallpaperAction(context),
-              ),
-            if (!kIsWeb && Matrix.of(context).store != null)
-              Builder(builder: (context) {
-                return ListTile(
-                  title: Text(L10n.of(context).changeWallpaper),
-                  trailing: Icon(Icons.wallpaper),
-                  onTap: () => setWallpaperAction(context),
-                );
-              }),
+
+            /*
             Divider(thickness: 1),
             ListTile(
               title: Text(
