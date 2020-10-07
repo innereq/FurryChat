@@ -28,6 +28,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:swipe_to_action/swipe_to_action.dart';
 
 import '../components/dialogs/send_file_dialog.dart';
 import '../components/input_bar.dart';
@@ -687,7 +688,7 @@ class _ChatState extends State<_Chat> {
                                           ),
                                         ),
                                         direction: SwipeDirection.startToEnd,
-                                        onSwiped: (direction) {
+                                        onSwipe: (direction) {
                                           replyAction(
                                               replyTo: filteredEvents[i - 1]);
                                         },
