@@ -7,7 +7,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:furrychat/components/adaptive_page_layout.dart';
 import 'package:furrychat/components/matrix.dart';
 import 'package:furrychat/utils/date_time_extension.dart';
-import 'package:furrychat/views/chat_list.dart';
 
 class DevicesSettingsView extends StatelessWidget {
   @override
@@ -111,7 +110,7 @@ class DevicesSettingsState extends State<DevicesSettings> {
                     L10n.of(context).removeAllOtherDevices,
                     style: TextStyle(color: Colors.red),
                   ),
-                  trailing: Icon(Icons.delete_outline),
+                  leading: Icon(Icons.delete_outline_outlined),
                   onTap: () => _removeDevicesAction(context, devices),
                 ),
               Divider(height: 1),

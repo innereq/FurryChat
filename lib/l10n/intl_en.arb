@@ -114,6 +114,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "avatar": "Avatar",
+  "@avatar": {
+    "type": "text",
+    "placeholders": {}
+  },
   "avatarHasBeenChanged": "Avatar has been changed",
   "@avatarHasBeenChanged": {
     "type": "text",
@@ -204,6 +209,11 @@
   },
   "changeTheHomeserver": "Change the homeserver",
   "@changeTheHomeserver": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "changeThePassword": "Change the password",
+  "@changeThePassword": {
     "type": "text",
     "placeholders": {}
   },
@@ -678,6 +688,11 @@
   },
   "help": "Help",
   "@help": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "homeserver": "Homeserver",
+  "@homeserver": {
     "type": "text",
     "placeholders": {}
   },

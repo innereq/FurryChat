@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:furrychat/components/adaptive_page_layout.dart';
 import 'package:furrychat/utils/app_route.dart';
 import 'package:furrychat/views/settings.dart';
-import 'package:furrychat/views/chat_list.dart';
 import 'settings_emotes.dart';
 
 class MultipleEmotesSettingsView extends StatelessWidget {

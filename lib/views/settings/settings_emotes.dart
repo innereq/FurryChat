@@ -13,7 +13,6 @@ import 'package:furrychat/components/adaptive_page_layout.dart';
 import 'package:furrychat/components/dialogs/simple_dialogs.dart';
 import 'package:furrychat/components/matrix.dart';
 import 'package:furrychat/views/settings.dart';
-import 'package:furrychat/views/chat_list.dart';
 
 class EmotesSettingsView extends StatelessWidget {
   final Room room;

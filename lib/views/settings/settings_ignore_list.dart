@@ -7,7 +7,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import 'package:furrychat/components/matrix.dart';
 import 'package:furrychat/views/settings.dart';
-import 'package:furrychat/views/chat_list.dart';
 
 class SettingsIgnoreListView extends StatelessWidget {
   @override
