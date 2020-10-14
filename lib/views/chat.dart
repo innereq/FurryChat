@@ -28,6 +28,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:swipe_to_action/swipe_to_action.dart';
 
 import '../components/dialogs/send_file_dialog.dart';
 import '../components/input_bar.dart';
@@ -316,8 +317,10 @@ class _ChatState extends State<_Chat> {
     return true;
   }
 
-  void forwardEventsAction(BuildContext context) async {
-    if (selectedEvents.length == 1) {
+  void forwardEventsAction(BuildContext context, {Event event}) async {
+    if (event != null) {
+      Matrix.of(context).shareContent = event.content;
+    } else if (selectedEvents.length == 1) {
       Matrix.of(context).shareContent = selectedEvents.first.content;
     } else {
       Matrix.of(context).shareContent = {
@@ -343,9 +346,9 @@ class _ChatState extends State<_Chat> {
     setState(() => selectedEvents.clear());
   }
 
-  void replyAction() {
+  void replyAction({Event replyTo}) {
     setState(() {
-      replyEvent = selectedEvents.first;
+      replyEvent = replyTo ?? selectedEvents.first;
       selectedEvents.clear();
     });
     inputFocus.requestFocus();
@@ -410,6 +413,128 @@ class _ChatState extends State<_Chat> {
               .contains(e.relationshipType) &&
           e.type != 'm.reaction')
       .toList();
+
+  SwipeDirection _getSwipeDirection(Event event) {
+    var swipeToEndAction = Matrix.of(context).swipeToEndAction;
+    var swipeToStartAction = Matrix.of(context).swipeToStartAction;
+    var client = Matrix.of(context).client;
+    if (event.senderId != client.userID && swipeToEndAction == 'edit') {
+      swipeToEndAction = null;
+    }
+    if (event.senderId != client.userID && swipeToStartAction == 'edit') {
+      swipeToStartAction = null;
+    }
+    if (swipeToEndAction != null && swipeToStartAction != null) {
+      return SwipeDirection.horizontal;
+    }
+    if (swipeToEndAction != null) {
+      return SwipeDirection.startToEnd;
+    }
+    if (swipeToStartAction != null) {
+      return SwipeDirection.endToStart;
+    }
+    return null;
+  }
+
+  Widget _getSwipeBackground(Event event, {bool isSecondary = false}) {
+    var alignToRight, action;
+    if (_getSwipeDirection(event) == SwipeDirection.horizontal) {
+      if (isSecondary) {
+        alignToRight = true;
+        action = Matrix.of(context).swipeToStartAction;
+      } else {
+        alignToRight = false;
+        action = Matrix.of(context).swipeToEndAction;
+      }
+    } else if (isSecondary) {
+      return null;
+    } else if (_getSwipeDirection(event) == SwipeDirection.endToStart) {
+      alignToRight = true;
+      action = Matrix.of(context).swipeToStartAction;
+    } else {
+      alignToRight = false;
+      action = Matrix.of(context).swipeToStartAction;
+    }
+
+    switch (action) {
+      case 'reply':
+        return Container(
+          color: Theme.of(context).primaryColor.withAlpha(100),
+          padding: EdgeInsets.symmetric(horizontal: 12.0),
+          child: Row(
+            mainAxisAlignment:
+                alignToRight ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Icon(Icons.reply_outlined),
+              SizedBox(width: 2.0),
+              Text(L10n.of(context).reply)
+            ],
+          ),
+        );
+      case 'forward':
+        return Container(
+          color: Theme.of(context).primaryColor.withAlpha(100),
+          padding: EdgeInsets.symmetric(horizontal: 12.0),
+          child: Row(
+            mainAxisAlignment:
+                alignToRight ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Icon(Icons.forward_outlined),
+              SizedBox(width: 2.0),
+              Text(L10n.of(context).forward)
+            ],
+          ),
+        );
+      case 'edit':
+        return Container(
+          color: Theme.of(context).primaryColor.withAlpha(100),
+          padding: EdgeInsets.symmetric(horizontal: 12.0),
+          child: Row(
+            mainAxisAlignment:
+                alignToRight ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              Icon(Icons.edit_outlined),
+              SizedBox(width: 2.0),
+              Text(L10n.of(context).edit)
+            ],
+          ),
+        );
+      default:
+        return Container(
+          color: Theme.of(context).primaryColor.withAlpha(100),
+        );
+    }
+  }
+
+  void _handleSwipe(SwipeDirection direction, Event event) {
+    var action;
+    if (direction == SwipeDirection.endToStart) {
+      action = Matrix.of(context).swipeToStartAction;
+    } else {
+      action = Matrix.of(context).swipeToEndAction;
+    }
+
+    switch (action) {
+      case 'reply':
+        replyAction(replyTo: event);
+        break;
+      case 'forward':
+        forwardEventsAction(context, event: event);
+        break;
+      case 'edit':
+        setState(() {
+          editEvent = event;
+          sendController.text = editEvent
+              .getDisplayEvent(timeline)
+              .getLocalizedBody(MatrixLocals(L10n.of(context)),
+                  withSenderNamePrefix: false, hideReply: true);
+          selectedEvents.clear();
+        });
+        inputFocus.requestFocus();
+        break;
+      default:
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -668,43 +793,57 @@ class _ChatState extends State<_Chat> {
                                       key: ValueKey(i - 1),
                                       index: i - 1,
                                       controller: _scrollController,
-                                      child: Message(filteredEvents[i - 1],
-                                          onAvatarTab: (Event event) {
-                                            sendController.text +=
-                                                ' ${event.senderId}';
-                                          },
-                                          onSelect: (Event event) {
-                                            if (!event.redacted) {
-                                              if (selectedEvents
-                                                  .contains(event)) {
-                                                setState(
-                                                  () => selectedEvents
-                                                      .remove(event),
-                                                );
-                                              } else {
-                                                setState(
-                                                  () =>
-                                                      selectedEvents.add(event),
+                                      child: Swipeable(
+                                        key: ValueKey(
+                                            filteredEvents[i - 1].eventId),
+                                        background: _getSwipeBackground(
+                                            filteredEvents[i - 1]),
+                                        secondaryBackground:
+                                            _getSwipeBackground(
+                                                filteredEvents[i - 1],
+                                                isSecondary: true),
+                                        direction: _getSwipeDirection(
+                                            filteredEvents[i - 1]),
+                                        onSwipe: (direction) => _handleSwipe(
+                                            direction, filteredEvents[i - 1]),
+                                        child: Message(filteredEvents[i - 1],
+                                            onAvatarTab: (Event event) {
+                                              sendController.text +=
+                                                  ' ${event.senderId}';
+                                            },
+                                            onSelect: (Event event) {
+                                              if (!event.redacted) {
+                                                if (selectedEvents
+                                                    .contains(event)) {
+                                                  setState(
+                                                    () => selectedEvents
+                                                        .remove(event),
+                                                  );
+                                                } else {
+                                                  setState(
+                                                    () => selectedEvents
+                                                        .add(event),
+                                                  );
+                                                }
+                                                selectedEvents.sort(
+                                                  (a, b) => a.originServerTs
+                                                      .compareTo(
+                                                          b.originServerTs),
                                                 );
                                               }
-                                              selectedEvents.sort(
-                                                (a, b) => a.originServerTs
-                                                    .compareTo(
-                                                        b.originServerTs),
-                                              );
-                                            }
-                                          },
-                                          scrollToEventId: (String eventId) =>
-                                              _scrollToEventId(eventId,
-                                                  context: context),
-                                          longPressSelect:
-                                              selectedEvents.isEmpty,
-                                          selected: selectedEvents
-                                              .contains(filteredEvents[i - 1]),
-                                          timeline: timeline,
-                                          nextEvent: i >= 2
-                                              ? filteredEvents[i - 2]
-                                              : null),
+                                            },
+                                            scrollToEventId: (String eventId) =>
+                                                _scrollToEventId(eventId,
+                                                    context: context),
+                                            longPressSelect:
+                                                selectedEvents.isEmpty,
+                                            selected: selectedEvents.contains(
+                                                filteredEvents[i - 1]),
+                                            timeline: timeline,
+                                            nextEvent: i >= 2
+                                                ? filteredEvents[i - 2]
+                                                : null),
+                                      ),
                                     );
                         });
                   },

@@ -11,7 +11,6 @@ import 'package:furrychat/utils/user_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -72,13 +71,15 @@ class MatrixState extends State<Matrix> {
   File wallpaper;
   bool renderHtml = false;
 
+  String swipeToEndAction;
+  String swipeToStartAction = 'reply';
+
   String jitsiInstance = 'https://meet.jit.si/';
 
   void clean() async {
     if (!kIsWeb) return;
 
-    final storage = LocalStorage('LocalStorage');
-    await storage.ready;
+    final storage = await getLocalStorage();
     await storage.deleteItem(widget.clientName);
   }
 
@@ -284,6 +285,16 @@ class MatrixState extends State<Matrix> {
       });
       store.getItem('chat.fluffy.renderHtml').then((final render) async {
         renderHtml = render == '1';
+      });
+      store
+          .getItem('dev.inex.furrychat.swipeToEndAction')
+          .then((final action) async {
+        swipeToEndAction = action ?? swipeToEndAction;
+      });
+      store
+          .getItem('dev.inex.furrychat.swipeToStartAction')
+          .then((final action) async {
+        swipeToStartAction = action ?? swipeToStartAction;
       });
     }
     if (kIsWeb) {
