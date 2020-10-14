@@ -5,15 +5,15 @@ import 'package:furrychat/components/dialogs/simple_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/matrix.dart';
-import 'chat_list.dart';
+import 'package:furrychat/components/matrix.dart';
+import 'package:furrychat/views/settings.dart';
 
 class SettingsIgnoreListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
+      firstScaffold: Settings(currentSetting: SettingsViews.account),
       secondScaffold: SettingsIgnoreList(),
     );
   }

@@ -20,9 +20,9 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix_link_text/link_text.dart';
 
-import './settings_emotes.dart';
-import './settings_multiple_emotes.dart';
-import '../utils/url_launcher.dart';
+import 'package:furrychat/views/settings/settings_emotes.dart';
+import 'package:furrychat/views/settings/settings_multiple_emotes.dart';
+import 'package:furrychat/utils/url_launcher.dart';
 
 class ChatDetails extends StatefulWidget {
   final Room room;
