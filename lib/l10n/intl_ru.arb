@@ -114,6 +114,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "avatar": "Аватар",
+  "@avatar": {
+    "type": "text",
+    "placeholders": {}
+  },
   "avatarHasBeenChanged": "Аватар был изменён",
   "@avatarHasBeenChanged": {
     "type": "text",
@@ -196,6 +201,11 @@
       "username": {},
       "displayname": {}
     }
+  },
+  "changeThePassword": "Сменить пароль",
+  "@changeThePassword": {
+    "type": "text",
+    "placeholders": {}
   },
   "changedTheGuestAccessRules": "{username} изменил(а) правила гостевого доступа",
   "@changedTheGuestAccessRules": {
@@ -509,6 +519,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "edit": "Редактировать",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
   "editDisplayname": "Отображаемое имя",
   "@editDisplayname": {
     "type": "text",
@@ -681,8 +696,18 @@
     "type": "text",
     "placeholders": {}
   },
+  "homeserver": "Сервер Matrix",
+  "@homeserver": {
+    "type": "text",
+    "placeholders": {}
+  },
   "homeserverIsNotCompatible": "Несовместимый сервер Matrix",
   "@homeserverIsNotCompatible": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "homeserverOrMXID": "Сервер или полное имя пользователя",
+  "@homeserverOrMXID": {
     "type": "text",
     "placeholders": {}
   },
@@ -1369,6 +1394,16 @@
   },
   "sunday": "Воскресенье",
   "@sunday": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "swipeToEndAction": "Действие по жесту вправо",
+  "@swipeToEndAction": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "swipeToStartAction": "Действие по жесту влево",
+  "@swipeToStartAction": {
     "type": "text",
     "placeholders": {}
   },
