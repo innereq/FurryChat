@@ -188,7 +188,7 @@ packages:
     description:
       path: "."
       ref: yiffed
-      resolved-ref: "8d3fb1d64ba99392728951c79ccafb3c9481b5da"
+      resolved-ref: c1791edd4d9788d353c618cf1717a88d6c3b547b
       url: "https://github.com/innereq/famedlysdk-fork.git"
     source: git
     version: "0.0.1"
@@ -219,35 +219,28 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.13.3"
+    version: "2.0.7"
   file_picker_cross:
     dependency: "direct main"
     description:
       name: file_picker_cross
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.2"
-  file_picker_platform_interface:
-    dependency: transitive
-    description:
-      name: file_picker_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.3.1"
+    version: "4.2.4"
   firebase:
     dependency: transitive
     description:
       name: firebase
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.3.0"
+    version: "7.3.1"
   firebase_core:
     dependency: transitive
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0"
+    version: "0.5.0+1"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -268,7 +261,7 @@ packages:
       name: firebase_messaging
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.0.2"
+    version: "7.0.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -308,7 +301,7 @@ packages:
       name: flutter_local_notifications
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0"
+    version: "2.0.0+1"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
@@ -348,7 +341,7 @@ packages:
       name: flutter_secure_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.4"
+    version: "3.3.5"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -393,7 +386,7 @@ packages:
       name: html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.0+3"
+    version: "0.14.0+4"
   html_unescape:
     dependency: transitive
     description:
