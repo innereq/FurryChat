@@ -3,6 +3,7 @@
 An experimental fork of FluffyChat.
 
 # Changes from FluffyChat
+ * Swipe to reply (or forward/edit)
  * Reworked auth flow
  * Removed Sentry
  * Double check of .well-known
@@ -36,8 +37,8 @@ An experimental fork of FluffyChat.
 
 2. Clone the repo:
 ```
-git clone --recurse-submodules https://gitlab.com/ChristianPauly/fluffychat-flutter
-cd fluffychat-flutter
+git clone --recurse-submodules https://github.com/innereq/FurryChat.git
+cd FurryChat
 ```
 
 3. Choose your target platform below and enable support for it.
@@ -80,13 +81,6 @@ flutter build linux --release
 flutter build windows --release
 flutter build macos --release
 ```
-
-
-### Docker
-
-Don't even ask.
-
-`docker run -ti --privileged -v /dev/bus/usb:/dev/bus/usb -v ${PWD}:/build -v /home/inex/.pub-cache:/home/inex/.pub-cache -v /home/inex/flutter:/home/inex/flutter -d flutter-fluffy:1.0`
 
 ## How to add translations for your language
 
