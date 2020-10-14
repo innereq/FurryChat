@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 
 import 'components/matrix.dart';
@@ -21,8 +20,6 @@ void main() {
   runZonedGuarded(
     () => runApp(App()),
     (error, stackTrace) async {
-      final storage = LocalStorage('LocalStorage');
-      await storage.ready;
       debugPrint(error.toString());
       debugPrint(stackTrace.toString());
     },

@@ -7,6 +7,7 @@ An experimental fork of FluffyChat.
  * Removed Sentry
  * Double check of .well-known
  * Get Jitsi instance from .well-known
+ * Redesigned settings
 
 # Features
  * Single and group chats
