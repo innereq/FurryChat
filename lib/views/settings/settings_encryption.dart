@@ -13,7 +13,7 @@ class EncryptionSettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(),
+      firstScaffold: Settings(currentSetting: SettingsViews.encryption),
       secondScaffold: EncryptionSettings(),
     );
   }

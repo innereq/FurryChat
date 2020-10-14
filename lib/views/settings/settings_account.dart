@@ -19,7 +19,7 @@ class AccountSettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(),
+      firstScaffold: Settings(currentSetting: SettingsViews.account),
       secondScaffold: AccountSettings(),
     );
   }

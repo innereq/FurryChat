@@ -10,7 +10,7 @@ class HomeserverSettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(),
+      firstScaffold: Settings(currentSetting: SettingsViews.homeserver),
       secondScaffold: HomeserverSettings(),
     );
   }

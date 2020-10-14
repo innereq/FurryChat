@@ -24,7 +24,7 @@ class EmotesSettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(),
+      firstScaffold: Settings(currentSetting: SettingsViews.emotes),
       secondScaffold: EmotesSettings(room: room, stateKey: stateKey),
     );
   }

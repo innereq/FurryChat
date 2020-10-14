@@ -14,6 +14,16 @@ import 'package:furrychat/components/matrix.dart';
 import 'package:furrychat/utils/app_route.dart';
 import 'package:furrychat/views/settings/settings_emotes.dart';
 
+enum SettingsViews {
+  account,
+  homeserver,
+  themes,
+  chat,
+  emotes,
+  encryption,
+  devices,
+}
+
 class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -33,8 +43,10 @@ class SettingsView extends StatelessWidget {
 
 class Settings extends StatefulWidget {
   final bool isInFocus;
+  final SettingsViews currentSetting;
 
-  const Settings({this.isInFocus = false, Key key}) : super(key: key);
+  const Settings({this.isInFocus = false, this.currentSetting, Key key})
+      : super(key: key);
 
   @override
   _SettingsState createState() => _SettingsState();
@@ -73,6 +85,13 @@ class _SettingsState extends State<Settings> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
             <Widget>[
           SliverAppBar(
+            leading: !widget.isInFocus
+                ? IconButton(
+                    icon: Icon(Icons.close_outlined),
+                    onPressed: () =>
+                        {Navigator.of(context).popUntil((r) => r.isFirst)},
+                  )
+                : null,
             floating: true,
             pinned: true,
             backgroundColor: Theme.of(context).appBarTheme.color,
@@ -82,105 +101,98 @@ class _SettingsState extends State<Settings> {
         body: ListView(
           children: <Widget>[
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.person_outlined,
-                  )),
+              leading: Icon(
+                Icons.person_outlined,
+              ),
               title: Text(profile?.displayname ?? L10n.of(context).account),
+              selected:
+                  widget.currentSetting == SettingsViews.account ? true : false,
+              selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               subtitle: Text(client.userID),
               onTap: () => _handleTap(AccountSettingsView()),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.dns_outlined,
-                  )),
+              leading: Icon(
+                Icons.dns_outlined,
+              ),
               title: Text(L10n.of(context).homeserver),
+              selected: widget.currentSetting == SettingsViews.homeserver
+                  ? true
+                  : false,
+              selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               subtitle: Text(client.homeserver.host),
               onTap: () => _handleTap(HomeserverSettingsView()),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.color_lens_outlined,
-                  )),
+              leading: Icon(
+                Icons.color_lens_outlined,
+              ),
               title: Text(L10n.of(context).changeTheme),
+              selected:
+                  widget.currentSetting == SettingsViews.themes ? true : false,
+              selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               onTap: () => _handleTap(ThemesSettingsView()),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.chat_outlined,
-                  )),
+              leading: Icon(
+                Icons.chat_outlined,
+              ),
               title: Text(L10n.of(context).chat),
+              selected:
+                  widget.currentSetting == SettingsViews.chat ? true : false,
+              selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               onTap: () => _handleTap(ChatSettingsView()),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.insert_emoticon_outlined,
-                  )),
+              leading: Icon(
+                Icons.insert_emoticon_outlined,
+              ),
               title: Text(L10n.of(context).emoteSettings),
+              selected:
+                  widget.currentSetting == SettingsViews.emotes ? true : false,
+              selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               onTap: () => _handleTap(EmotesSettingsView()),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.lock_outline,
-                  )),
+              leading: Icon(
+                Icons.lock_outline,
+              ),
               title: Text(L10n.of(context).encryption),
+              selected: widget.currentSetting == SettingsViews.encryption
+                  ? true
+                  : false,
+              selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               onTap: () => _handleTap(EncryptionSettingsView()),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.devices_other_outlined,
-                  )),
+              leading: Icon(
+                Icons.devices_other_outlined,
+              ),
               title: Text(L10n.of(context).devices),
+              selected:
+                  widget.currentSetting == SettingsViews.devices ? true : false,
+              selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               onTap: () => _handleTap(DevicesSettingsView()),
             ),
             Divider(thickness: 1),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.help_outline_outlined,
-                  )),
+              leading: Icon(
+                Icons.help_outline_outlined,
+              ),
               title: Text(L10n.of(context).help),
               onTap: () => launch(AppConfig.supportUrl),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.privacy_tip_outlined,
-                  )),
+              leading: Icon(
+                Icons.privacy_tip_outlined,
+              ),
               title: Text(L10n.of(context).privacy),
               onTap: () => launch(AppConfig.privacyUrl),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.link_outlined,
-                  )),
+              leading: Icon(
+                Icons.link_outlined,
+              ),
               title: Text(L10n.of(context).license),
               onTap: () => showLicensePage(
                 context: context,
@@ -190,12 +202,9 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             ListTile(
-              leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.code_outlined,
-                  )),
+              leading: Icon(
+                Icons.code_outlined,
+              ),
               title: Text(L10n.of(context).sourceCode),
               onTap: () => launch(AppConfig.sourceCodeUrl),
             ),
