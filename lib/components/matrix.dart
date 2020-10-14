@@ -71,6 +71,9 @@ class MatrixState extends State<Matrix> {
   File wallpaper;
   bool renderHtml = false;
 
+  String swipeToEndAction;
+  String swipeToStartAction = 'reply';
+
   String jitsiInstance = 'https://meet.jit.si/';
 
   void clean() async {
@@ -282,6 +285,16 @@ class MatrixState extends State<Matrix> {
       });
       store.getItem('chat.fluffy.renderHtml').then((final render) async {
         renderHtml = render == '1';
+      });
+      store
+          .getItem('dev.inex.furrychat.swipeToEndAction')
+          .then((final action) async {
+        swipeToEndAction = action ?? swipeToEndAction;
+      });
+      store
+          .getItem('dev.inex.furrychat.swipeToStartAction')
+          .then((final action) async {
+        swipeToStartAction = action ?? swipeToStartAction;
       });
     }
     if (kIsWeb) {

@@ -514,6 +514,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "edit": "Edit",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
   "editDisplayname": "Edit displayname",
   "@editDisplayname": {
     "type": "text",
@@ -1436,6 +1441,16 @@
   },
   "sunday": "Sunday",
   "@sunday": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "swipeToEndAction": "Swipe to right action",
+  "@swipeToEndAction": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "swipeToStartAction": "Swipe to left action",
+  "@swipeToStartAction": {
     "type": "text",
     "placeholders": {}
   },

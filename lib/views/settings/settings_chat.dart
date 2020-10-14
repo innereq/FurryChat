@@ -22,6 +22,74 @@ class ChatSettings extends StatefulWidget {
 }
 
 class _ChatSettingsState extends State<ChatSettings> {
+  String _getActionDescription(String action) {
+    switch (action) {
+      case 'reply':
+        return L10n.of(context).reply;
+      case 'forward':
+        return L10n.of(context).forward;
+      case 'edit':
+        return L10n.of(context).edit;
+      default:
+        return L10n.of(context).none;
+    }
+  }
+
+  void _changeSwipeAction(bool isToEnd, String action) async {
+    if (isToEnd) {
+      Matrix.of(context).swipeToEndAction = action;
+      await Matrix.of(context)
+          .store
+          .setItem('chat.fluffy.swipeToEndAction', action);
+      setState(() => null);
+    } else {
+      Matrix.of(context).swipeToStartAction = action;
+      await Matrix.of(context)
+          .store
+          .setItem('chat.fluffy.swipeToStartAction', action);
+      setState(() => null);
+    }
+  }
+
+  Widget _swipeActionChooser(BuildContext context, bool isToEnd) {
+    return ListView(
+      children: [
+        ListTile(
+          title: Text(L10n.of(context).none),
+          leading: Icon(Icons.clear_outlined),
+          onTap: () {
+            _changeSwipeAction(isToEnd, null);
+            Navigator.of(context).pop();
+          },
+        ),
+        ListTile(
+          title: Text(L10n.of(context).reply),
+          leading: Icon(Icons.reply_outlined),
+          onTap: () {
+            _changeSwipeAction(isToEnd, 'reply');
+            Navigator.of(context).pop();
+          },
+        ),
+        ListTile(
+          title: Text(L10n.of(context).forward),
+          leading: Icon(Icons.forward_outlined),
+          onTap: () {
+            _changeSwipeAction(isToEnd, 'forward');
+            Navigator.of(context).pop();
+          },
+        ),
+        ListTile(
+          title: Text(L10n.of(context).edit),
+          leading: Icon(Icons.edit_outlined),
+          onTap: () {
+            _changeSwipeAction(isToEnd, 'edit');
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +109,27 @@ class _ChatSettingsState extends State<ChatSettings> {
                 setState(() => null);
               },
             ),
+          ),
+          Divider(thickness: 1),
+          ListTile(
+            title: Text(L10n.of(context).swipeToEndAction),
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) =>
+                  _swipeActionChooser(context, true),
+            ),
+            subtitle: Text(
+                _getActionDescription(Matrix.of(context).swipeToEndAction)),
+          ),
+          ListTile(
+            title: Text(L10n.of(context).swipeToStartAction),
+            onTap: () => showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) =>
+                  _swipeActionChooser(context, false),
+            ),
+            subtitle: Text(
+                _getActionDescription(Matrix.of(context).swipeToStartAction)),
           ),
         ],
       ),
