@@ -19,7 +19,9 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
       primaryPage: FocusPage.FIRST,
-      firstScaffold: Settings(),
+      firstScaffold: Settings(
+        isInFocus: true,
+      ),
       secondScaffold: Scaffold(
         body: Center(
           child: Image.asset('assets/logo.png', width: 100, height: 100),
@@ -30,6 +32,10 @@ class SettingsView extends StatelessWidget {
 }
 
 class Settings extends StatefulWidget {
+  final bool isInFocus;
+
+  const Settings({this.isInFocus = false, Key key}) : super(key: key);
+
   @override
   _SettingsState createState() => _SettingsState();
 }
@@ -37,6 +43,22 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   Future<dynamic> profileFuture;
   dynamic profile;
+
+  void _handleTap(Widget child) {
+    widget.isInFocus
+        ? Navigator.of(context).push(
+            AppRoute.defaultRoute(
+              context,
+              child,
+            ),
+          )
+        : Navigator.of(context).pushReplacement(
+            AppRoute.defaultRoute(
+              context,
+              child,
+            ),
+          );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,12 +90,7 @@ class _SettingsState extends State<Settings> {
                   )),
               title: Text(profile?.displayname ?? L10n.of(context).account),
               subtitle: Text(client.userID),
-              onTap: () => Navigator.of(context).push(
-                AppRoute.defaultRoute(
-                  context,
-                  AccountSettingsView(),
-                ),
-              ),
+              onTap: () => _handleTap(AccountSettingsView()),
             ),
             ListTile(
               leading: CircleAvatar(
@@ -84,11 +101,7 @@ class _SettingsState extends State<Settings> {
                   )),
               title: Text(L10n.of(context).homeserver),
               subtitle: Text(client.homeserver.host),
-              onTap: () async =>
-                  await Navigator.of(context).push(AppRoute.defaultRoute(
-                context,
-                HomeserverSettingsView(),
-              )),
+              onTap: () => _handleTap(HomeserverSettingsView()),
             ),
             ListTile(
               leading: CircleAvatar(
@@ -98,11 +111,7 @@ class _SettingsState extends State<Settings> {
                     Icons.color_lens_outlined,
                   )),
               title: Text(L10n.of(context).changeTheme),
-              onTap: () async =>
-                  await Navigator.of(context).push(AppRoute.defaultRoute(
-                context,
-                ThemesSettingsView(),
-              )),
+              onTap: () => _handleTap(ThemesSettingsView()),
             ),
             ListTile(
               leading: CircleAvatar(
@@ -112,12 +121,7 @@ class _SettingsState extends State<Settings> {
                     Icons.chat_outlined,
                   )),
               title: Text(L10n.of(context).chat),
-              onTap: () async => await Navigator.of(context).push(
-                AppRoute.defaultRoute(
-                  context,
-                  ChatSettingsView(),
-                ),
-              ),
+              onTap: () => _handleTap(ChatSettingsView()),
             ),
             ListTile(
               leading: CircleAvatar(
@@ -127,12 +131,7 @@ class _SettingsState extends State<Settings> {
                     Icons.insert_emoticon_outlined,
                   )),
               title: Text(L10n.of(context).emoteSettings),
-              onTap: () async => await Navigator.of(context).push(
-                AppRoute.defaultRoute(
-                  context,
-                  EmotesSettingsView(),
-                ),
-              ),
+              onTap: () => _handleTap(EmotesSettingsView()),
             ),
             ListTile(
               leading: CircleAvatar(
@@ -142,12 +141,7 @@ class _SettingsState extends State<Settings> {
                     Icons.lock_outline,
                   )),
               title: Text(L10n.of(context).encryption),
-              onTap: () async => await Navigator.of(context).push(
-                AppRoute.defaultRoute(
-                  context,
-                  EncryptionSettingsView(),
-                ),
-              ),
+              onTap: () => _handleTap(EncryptionSettingsView()),
             ),
             ListTile(
               leading: CircleAvatar(
@@ -157,12 +151,7 @@ class _SettingsState extends State<Settings> {
                     Icons.devices_other_outlined,
                   )),
               title: Text(L10n.of(context).devices),
-              onTap: () async => await Navigator.of(context).push(
-                AppRoute.defaultRoute(
-                  context,
-                  DevicesSettingsView(),
-                ),
-              ),
+              onTap: () => _handleTap(DevicesSettingsView()),
             ),
             Divider(thickness: 1),
             ListTile(
