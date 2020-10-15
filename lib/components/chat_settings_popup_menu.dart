@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/views/chat_details.dart';
-import 'package:furrychat/views/chat_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../utils/app_route.dart';
+import '../views/chat_details.dart';
+import '../views/chat_list.dart';
 import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
 

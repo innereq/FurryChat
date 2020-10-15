@@ -1,16 +1,16 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/message_content.dart';
-import 'package:furrychat/components/reply_content.dart';
-import 'package:furrychat/utils/date_time_extension.dart';
-import 'package:furrychat/utils/event_extension.dart';
-import 'package:furrychat/utils/string_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../../utils/date_time_extension.dart';
+import '../../utils/event_extension.dart';
+import '../../utils/string_color.dart';
 import '../avatar.dart';
+import '../dialogs/simple_dialogs.dart';
 import '../matrix.dart';
+import '../message_content.dart';
 import '../message_reactions.dart';
+import '../reply_content.dart';
 import 'state_message.dart';
 
 class Message extends StatelessWidget {

@@ -4,6 +4,9 @@ linter:
   rules:
     - camel_case_types
     - avoid_print
+    - avoid_relative_lib_imports
+    - prefer_relative_imports
+    - directives_ordering
 
 analyzer:
   errors:

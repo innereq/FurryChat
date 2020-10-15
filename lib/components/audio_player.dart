@@ -2,15 +2,16 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/message_download_content.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
-import 'dialogs/simple_dialogs.dart';
+
 import '../utils/ui_fake.dart' if (dart.library.html) 'dart:ui' as ui;
+import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
+import 'message_download_content.dart';
 
 class AudioPlayer extends StatefulWidget {
   final Color color;

@@ -1,10 +1,11 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'matrix_file_extension.dart';
-import 'app_route.dart';
+
+import '../components/dialogs/simple_dialogs.dart';
 import '../views/image_view.dart';
+import 'app_route.dart';
+import 'matrix_file_extension.dart';
 
 extension LocalizedBody on Event {
   void openFile(BuildContext context, {bool downloadOnly = false}) async {

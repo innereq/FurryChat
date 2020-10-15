@@ -4,9 +4,6 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/views/chat.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -15,6 +12,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../components/matrix.dart';
+import '../views/chat.dart';
+import 'app_route.dart';
 import 'famedlysdk_store.dart';
 import 'matrix_locals.dart';
 

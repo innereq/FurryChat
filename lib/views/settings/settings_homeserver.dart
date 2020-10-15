@@ -1,9 +1,9 @@
-import 'package:furrychat/views/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/matrix.dart';
+import '../../components/adaptive_page_layout.dart';
+import '../../components/matrix.dart';
+import '../settings.dart';
 
 class HomeserverSettingsView extends StatelessWidget {
   @override

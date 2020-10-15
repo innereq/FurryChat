@@ -1,10 +1,11 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/views/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../components/dialogs/simple_dialogs.dart';
+import '../components/matrix.dart';
+import '../views/chat.dart';
+import 'app_route.dart';
 import 'matrix_identifier_string_extension.dart';
 
 class UrlLauncher {

@@ -1,9 +1,10 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/list_items/chat_list_item.dart';
-import 'package:furrychat/components/matrix.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+
+import '../components/adaptive_page_layout.dart';
+import '../components/list_items/chat_list_item.dart';
+import '../components/matrix.dart';
 
 class Archive extends StatefulWidget {
   @override

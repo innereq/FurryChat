@@ -1,13 +1,14 @@
 import 'dart:math';
 
 import 'package:famedlysdk/matrix_api/model/well_known_informations.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/views/login.dart';
-import 'package:furrychat/views/sign_up.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
+
+import '../components/dialogs/simple_dialogs.dart';
+import '../components/matrix.dart';
+import '../utils/app_route.dart';
+import 'login.dart';
+import 'sign_up.dart';
 
 class HomeserverPicker extends StatefulWidget {
   @override

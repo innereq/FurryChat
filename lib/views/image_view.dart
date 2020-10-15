@@ -1,8 +1,9 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/image_bubble.dart';
-import 'package:furrychat/components/matrix.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+
+import '../components/image_bubble.dart';
+import '../components/matrix.dart';
 import '../utils/event_extension.dart';
 
 class ImageView extends StatelessWidget {

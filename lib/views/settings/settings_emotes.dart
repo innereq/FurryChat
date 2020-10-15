@@ -2,17 +2,16 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-
-import 'package:furrychat/utils/platform_infos.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/views/settings.dart';
+import '../../components/adaptive_page_layout.dart';
+import '../../components/dialogs/simple_dialogs.dart';
+import '../../components/matrix.dart';
+import '../../utils/platform_infos.dart';
+import '../settings.dart';
 
 class EmotesSettingsView extends StatelessWidget {
   final Room room;

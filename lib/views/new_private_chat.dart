@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/avatar.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:share/share.dart';
 
+import '../components/adaptive_page_layout.dart';
+import '../components/avatar.dart';
+import '../components/dialogs/simple_dialogs.dart';
+import '../components/matrix.dart';
+import '../utils/app_route.dart';
 import 'chat.dart';
 import 'chat_list.dart';
 

@@ -1,17 +1,18 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:core';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/utils/platform_infos.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:async';
-import 'dart:core';
-import './database/shared.dart';
 import 'package:olm/olm.dart' as olm; // needed for migration
+import 'package:path_provider/path_provider.dart';
 import 'package:random_string/random_string.dart';
+
+import './database/shared.dart';
+import 'platform_infos.dart';
 
 Future<LocalStorage> getLocalStorage() async {
   final directory = PlatformInfos.isBetaDesktop

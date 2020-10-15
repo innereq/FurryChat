@@ -1,13 +1,12 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/utils/matrix_locals.dart';
-import 'package:furrychat/views/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:pedantic/pedantic.dart';
 
 import '../../utils/app_route.dart';
 import '../../utils/date_time_extension.dart';
+import '../../utils/matrix_locals.dart';
 import '../../views/chat.dart';
 import '../avatar.dart';
 import '../dialogs/send_file_dialog.dart';

@@ -1,11 +1,12 @@
-import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/utils/platform_infos.dart';
-import 'package:furrychat/views/image_view.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
+
+import '../utils/app_route.dart';
+import '../utils/platform_infos.dart';
+import '../views/image_view.dart';
 
 class ImageBubble extends StatefulWidget {
   final Event event;

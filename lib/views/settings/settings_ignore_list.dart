@@ -1,12 +1,12 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/avatar.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/views/settings.dart';
+import '../../components/adaptive_page_layout.dart';
+import '../../components/avatar.dart';
+import '../../components/dialogs/simple_dialogs.dart';
+import '../../components/matrix.dart';
+import '../settings.dart';
 
 class SettingsIgnoreListView extends StatelessWidget {
   @override

@@ -1,7 +1,8 @@
-import 'package:famedlysdk/famedlysdk.dart';
-import 'package:moor/moor_web.dart';
-import 'package:flutter/material.dart';
 import 'dart:html';
+
+import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flutter/material.dart';
+import 'package:moor/moor_web.dart';
 
 Future<Database> constructDb(
     {bool logStatements = false,

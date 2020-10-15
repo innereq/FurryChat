@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/views/login.dart';
-import 'package:furrychat/views/sign_up_password.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+
+import '../components/matrix.dart';
+import '../utils/app_route.dart';
+import 'login.dart';
+import 'sign_up_password.dart';
 
 class SignUp extends StatefulWidget {
   SignUp({Key key, this.wellknown}) : super(key: key);

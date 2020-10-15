@@ -1,18 +1,18 @@
-import 'package:furrychat/config/app_config.dart';
-import 'package:furrychat/views/settings/settings_account.dart';
-import 'package:furrychat/views/settings/settings_chat.dart';
-import 'package:furrychat/views/settings/settings_devices.dart';
-import 'package:furrychat/views/settings/settings_encryption.dart';
-import 'package:furrychat/views/settings/settings_homeserver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:furrychat/views/settings/settings_themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/views/settings/settings_emotes.dart';
+import '../components/adaptive_page_layout.dart';
+import '../components/matrix.dart';
+import '../config/app_config.dart';
+import '../utils/app_route.dart';
+import 'settings/settings_account.dart';
+import 'settings/settings_chat.dart';
+import 'settings/settings_devices.dart';
+import 'settings/settings_emotes.dart';
+import 'settings/settings_encryption.dart';
+import 'settings/settings_homeserver.dart';
+import 'settings/settings_themes.dart';
 
 enum SettingsViews {
   account,

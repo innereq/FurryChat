@@ -1,11 +1,11 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/views/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../../utils/app_route.dart';
+import '../../views/chat.dart';
 import '../avatar.dart';
+import '../dialogs/simple_dialogs.dart';
 import '../matrix.dart';
 
 class ParticipantListItem extends StatelessWidget {

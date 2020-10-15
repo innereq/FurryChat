@@ -1,18 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
-
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/chat_settings_popup_menu.dart';
-import 'package:furrychat/components/content_banner.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/list_items/participant_list_item.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/utils/matrix_locals.dart';
-import 'package:furrychat/utils/platform_infos.dart';
-import 'package:furrychat/views/chat_list.dart';
-import 'package:furrychat/views/invitation_selection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,9 +9,19 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix_link_text/link_text.dart';
 
-import 'package:furrychat/views/settings/settings_emotes.dart';
-import 'package:furrychat/views/settings/settings_multiple_emotes.dart';
-import 'package:furrychat/utils/url_launcher.dart';
+import '../components/adaptive_page_layout.dart';
+import '../components/chat_settings_popup_menu.dart';
+import '../components/content_banner.dart';
+import '../components/dialogs/simple_dialogs.dart';
+import '../components/list_items/participant_list_item.dart';
+import '../utils/app_route.dart';
+import '../utils/matrix_locals.dart';
+import '../utils/platform_infos.dart';
+import '../utils/url_launcher.dart';
+import 'chat_list.dart';
+import 'invitation_selection.dart';
+import 'settings/settings_emotes.dart';
+import 'settings/settings_multiple_emotes.dart';
 
 class ChatDetails extends StatefulWidget {
   final Room room;

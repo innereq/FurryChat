@@ -2,13 +2,12 @@ import 'dart:math';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/views/auth_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../components/matrix.dart';
+import '../utils/app_route.dart';
+import 'auth_web_view.dart';
 import 'chat_list.dart';
 
 class SignUpPassword extends StatefulWidget {

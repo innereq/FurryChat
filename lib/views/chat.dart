@@ -3,23 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:famedlysdk/famedlysdk.dart';
-
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/avatar.dart';
-import 'package:furrychat/components/chat_settings_popup_menu.dart';
-import 'package:furrychat/components/connection_status_header.dart';
-import 'package:furrychat/components/dialogs/recording_dialog.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/encryption_button.dart';
-import 'package:furrychat/components/list_items/message.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/components/reply_content.dart';
-import 'package:furrychat/config/app_emojis.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/utils/matrix_locals.dart';
-import 'package:furrychat/utils/platform_infos.dart';
-import 'package:furrychat/utils/room_status_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -30,9 +14,24 @@ import 'package:pedantic/pedantic.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:swipe_to_action/swipe_to_action.dart';
 
+import '../components/adaptive_page_layout.dart';
+import '../components/avatar.dart';
+import '../components/chat_settings_popup_menu.dart';
+import '../components/connection_status_header.dart';
+import '../components/dialogs/recording_dialog.dart';
 import '../components/dialogs/send_file_dialog.dart';
+import '../components/dialogs/simple_dialogs.dart';
+import '../components/encryption_button.dart';
 import '../components/input_bar.dart';
+import '../components/list_items/message.dart';
+import '../components/matrix.dart';
+import '../components/reply_content.dart';
+import '../config/app_emojis.dart';
+import '../utils/app_route.dart';
 import '../utils/matrix_file_extension.dart';
+import '../utils/matrix_locals.dart';
+import '../utils/platform_infos.dart';
+import '../utils/room_status_extension.dart';
 import 'chat_details.dart';
 import 'chat_list.dart';
 

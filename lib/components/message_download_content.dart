@@ -1,6 +1,6 @@
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
-import 'package:furrychat/utils/event_extension.dart';
+import '../utils/event_extension.dart';
 
 class MessageDownloadContent extends StatelessWidget {
   final Event event;

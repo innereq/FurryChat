@@ -1,15 +1,15 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/avatar.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/url_launcher.dart';
-import 'package:furrychat/utils/user_status.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/utils/string_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix_link_text/link_text.dart';
 
+import '../components/avatar.dart';
+import '../components/dialogs/simple_dialogs.dart';
+import '../components/matrix.dart';
+import '../utils/app_route.dart';
+import '../utils/string_color.dart';
+import '../utils/url_launcher.dart';
+import '../utils/user_status.dart';
 import 'chat.dart';
 
 class StatusView extends StatelessWidget {

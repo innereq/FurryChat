@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/utils/firebase_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../components/dialogs/simple_dialogs.dart';
+import '../components/matrix.dart';
+import '../utils/app_route.dart';
+import '../utils/firebase_controller.dart';
 import 'chat_list.dart';
 
 class Login extends StatefulWidget {

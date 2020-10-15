@@ -1,18 +1,18 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:furrychat/components/avatar.dart';
-import 'package:furrychat/utils/app_route.dart';
-import 'package:furrychat/utils/platform_infos.dart';
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/views/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/views/settings/settings_ignore_list.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../components/adaptive_page_layout.dart';
+import '../../components/avatar.dart';
+import '../../components/dialogs/simple_dialogs.dart';
+import '../../components/matrix.dart';
+import '../../utils/app_route.dart';
+import '../../utils/platform_infos.dart';
+import '../settings.dart';
+import 'settings_ignore_list.dart';
 
 class AccountSettingsView extends StatelessWidget {
   @override

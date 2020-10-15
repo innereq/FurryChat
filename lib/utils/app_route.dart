@@ -1,6 +1,7 @@
-import 'package:furrychat/components/adaptive_page_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../components/adaptive_page_layout.dart';
 
 class AppRoute extends PageRouteBuilder {
   static Route defaultRoute(BuildContext context, Widget page) {

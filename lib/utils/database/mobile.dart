@@ -1,17 +1,19 @@
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
+
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flutter/material.dart';
+import 'package:moor/ffi.dart' as moor;
+import 'package:moor/isolate.dart';
+import 'package:moor/moor.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
-import 'package:path/path.dart' as p;
-import 'package:flutter/material.dart';
-import 'package:moor/moor.dart';
-import 'package:moor/isolate.dart';
+import 'package:sqlite3/open.dart';
+
 import '../platform_infos.dart';
 import 'cipher_db.dart' as cipher;
-import 'package:moor/ffi.dart' as moor;
-import 'package:sqlite3/open.dart';
 
 bool _inited = false;
 

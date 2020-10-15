@@ -1,15 +1,15 @@
 import 'package:famedlysdk/encryption.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/avatar.dart';
-import 'package:furrychat/components/matrix.dart';
-import 'package:furrychat/utils/beautify_string_extension.dart';
-import 'package:furrychat/views/chat_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../components/adaptive_page_layout.dart';
+import '../components/avatar.dart';
 import '../components/dialogs/simple_dialogs.dart';
+import '../components/matrix.dart';
 import '../utils/app_route.dart';
+import '../utils/beautify_string_extension.dart';
+import 'chat_list.dart';
 import 'key_verification.dart';
 
 class ChatEncryptionSettingsView extends StatelessWidget {

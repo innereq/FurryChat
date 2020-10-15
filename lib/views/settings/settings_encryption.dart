@@ -1,12 +1,12 @@
-import 'package:furrychat/views/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:furrychat/utils/beautify_string_extension.dart';
-
-import 'package:furrychat/components/dialogs/simple_dialogs.dart';
-import 'package:furrychat/components/adaptive_page_layout.dart';
-import 'package:furrychat/components/matrix.dart';
 import 'package:olm/olm.dart' as olm;
+
+import '../../components/adaptive_page_layout.dart';
+import '../../components/dialogs/simple_dialogs.dart';
+import '../../components/matrix.dart';
+import '../../utils/beautify_string_extension.dart';
+import '../settings.dart';
 
 class EncryptionSettingsView extends StatelessWidget {
   @override

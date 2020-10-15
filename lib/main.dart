@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/views/homeserver_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +12,7 @@ import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'components/matrix.dart';
 import 'components/theme_switcher.dart';
 import 'views/chat_list.dart';
+import 'views/homeserver_picker.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(

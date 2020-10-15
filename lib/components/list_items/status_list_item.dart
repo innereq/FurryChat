@@ -1,7 +1,8 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:furrychat/utils/user_status.dart';
-import 'package:furrychat/views/status_view.dart';
 import 'package:flutter/material.dart';
+
+import '../../utils/user_status.dart';
+import '../../views/status_view.dart';
 import '../avatar.dart';
 import '../matrix.dart';
 
