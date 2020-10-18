@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/platform_infos.dart';
 import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
 

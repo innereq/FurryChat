@@ -3,7 +3,6 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/platform_infos.dart';
 import 'matrix.dart';
 
 class ContentBanner extends StatelessWidget {

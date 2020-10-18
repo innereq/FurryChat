@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-import '../utils/platform_infos.dart';
 import 'avatar.dart';
 
 class InputBar extends StatelessWidget {
