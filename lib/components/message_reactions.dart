@@ -93,15 +93,10 @@ class _Reaction extends StatelessWidget {
       content = Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          PlatformInfos.isBetaDesktop
-              ? Image.network(
-                  src,
-                  height: fontSize,
-                )
-              : CachedNetworkImage(
-                  imageUrl: src,
-                  height: fontSize,
-                ),
+          CachedNetworkImage(
+            imageUrl: src,
+            height: fontSize,
+          ),
           Container(width: 4),
           Text(count.toString(),
               style: TextStyle(

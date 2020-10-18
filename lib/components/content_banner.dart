@@ -49,17 +49,11 @@ class ContentBanner extends StatelessWidget {
               opacity: 0.75,
               child: !loading
                   ? mxContent != null
-                      ? PlatformInfos.isBetaDesktop
-                          ? Image.network(
-                              src,
-                              height: 300,
-                              fit: BoxFit.cover,
-                            )
-                          : CachedNetworkImage(
-                              imageUrl: src,
-                              height: 300,
-                              fit: BoxFit.cover,
-                            )
+                      ? CachedNetworkImage(
+                          imageUrl: src,
+                          height: 300,
+                          fit: BoxFit.cover,
+                        )
                       : Icon(defaultIcon, size: 300)
                   : Icon(defaultIcon, size: 300),
             ),

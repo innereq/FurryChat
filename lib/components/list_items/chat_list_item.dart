@@ -1,4 +1,5 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:circular_check_box/circular_check_box.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -12,6 +13,7 @@ import '../avatar.dart';
 import '../dialogs/send_file_dialog.dart';
 import '../dialogs/simple_dialogs.dart';
 import '../matrix.dart';
+import '../mouse_over_builder.dart';
 import '../theme_switcher.dart';
 
 class ChatListItem extends StatelessWidget {
@@ -127,7 +129,20 @@ class ChatListItem extends StatelessWidget {
         color: chatListItemColor(context, activeChat, selected),
         child: ListTile(
           onLongPress: onLongPress,
-          leading: Avatar(room.avatar, room.displayname),
+          leading: MouseOverBuilder(
+            builder: (context, hover) =>
+                onLongPress != null && (hover || selected)
+                    ? Container(
+                        width: Avatar.defaultSize,
+                        height: Avatar.defaultSize,
+                        alignment: Alignment.center,
+                        child: CircularCheckBox(
+                          value: selected,
+                          onChanged: (_) => onLongPress(),
+                        ),
+                      )
+                    : Avatar(room.avatar, room.displayname),
+          ),
           title: Row(
             children: <Widget>[
               Expanded(

@@ -128,17 +128,11 @@ class _ImageBubbleState extends State<ImageBubble> {
                   width: 800,
                   height: 800,
                   method: ThumbnailMethod.scale);
-              renderWidget = PlatformInfos.isBetaDesktop
-                  ? Image.network(
-                      src,
-                      fit: widget.fit,
-                    )
-                  : CachedNetworkImage(
-                      imageUrl: src,
-                      placeholder: (context, url) =>
-                          generatePlaceholderWidget(),
-                      fit: widget.fit,
-                    );
+              renderWidget = CachedNetworkImage(
+                imageUrl: src,
+                placeholder: (context, url) => generatePlaceholderWidget(),
+                fit: widget.fit,
+              );
             } else {
               renderWidget = generatePlaceholderWidget();
             }

@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import '../../utils/date_time_extension.dart';
 import '../../utils/event_extension.dart';
 import '../../utils/string_color.dart';
+import '../adaptive_page_layout.dart';
 import '../avatar.dart';
 import '../dialogs/simple_dialogs.dart';
 import '../matrix.dart';
@@ -86,6 +87,8 @@ class Message extends StatelessWidget {
               color: color,
               borderRadius: BorderRadius.circular(radius),
             ),
+            constraints:
+                BoxConstraints(maxWidth: AdaptivePageLayout.defaultMinWidth),
             child: Stack(
               children: <Widget>[
                 Column(
