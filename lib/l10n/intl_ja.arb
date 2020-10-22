@@ -601,7 +601,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -898,7 +898,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "FluffyChatに新しいメッセージがあります",
+  "newMessageInFluffyChat": "FurryChatに新しいメッセージがあります",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -913,7 +913,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "FluffyChatは現在相互署名機能をサポートしていません。Riotから有効化してください。",
+  "noCrossSignBootstrap": "FurryChatは現在相互署名機能をサポートしていません。Riotから有効化してください。",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -928,7 +928,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "FluffyChatは現在鍵のオンラインバックアップの有効化をサポートしていません。Riotから有効化してください。",
+  "noMegolmBootstrap": "FurryChatは現在鍵のオンラインバックアップの有効化をサポートしていません。Riotから有効化してください。",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1362,7 +1362,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

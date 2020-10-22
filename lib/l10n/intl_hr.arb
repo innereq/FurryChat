@@ -616,7 +616,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -928,7 +928,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Nova poruka u FluffyChatu",
+  "newMessageInFluffyChat": "Nova poruka u FurryChatu",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -948,7 +948,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Fluffychat trenutačno ne podržava unakrsno potpisivanje. Aktiviraj je u Riot.",
+  "noCrossSignBootstrap": "FurryChat trenutačno ne podržava unakrsno potpisivanje. Aktiviraj je u Riot.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -958,12 +958,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Čini se da na mobitelu nemaš google usluge. To je dobra odluka za tvoju privatnost! Za primanje push obavijesti u FluffyChatu preporučujemo upotrebu microG-a: https://microg.org/",
+  "noGoogleServicesWarning": "Čini se da na mobitelu nemaš google usluge. To je dobra odluka za tvoju privatnost! Za primanje push obavijesti u FurryChatu preporučujemo upotrebu microG-a: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat trenutačno ne podržava aktiviranje online sigurnosnu kopiju ključeva. Aktiviraj je u Riot.",
+  "noMegolmBootstrap": "FurryChat trenutačno ne podržava aktiviranje online sigurnosnu kopiju ključeva. Aktiviraj je u Riot.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1427,7 +1427,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

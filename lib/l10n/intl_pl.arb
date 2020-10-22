@@ -490,7 +490,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -752,7 +752,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Nowa wiadomość w FluffyChat",
+  "newMessageInFluffyChat": "Nowa wiadomość w FurryChat",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -762,7 +762,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Wygląda na to, że nie masz usług Google w swoim telefonie. To dobra decyzja dla twojej prywatności! Aby otrzymywać powiadomienia wysyłane w FluffyChat, zalecamy korzystanie z microG: https://microg.org/",
+  "noGoogleServicesWarning": "Wygląda na to, że nie masz usług Google w swoim telefonie. To dobra decyzja dla twojej prywatności! Aby otrzymywać powiadomienia wysyłane w FurryChat, zalecamy korzystanie z microG: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
@@ -1112,7 +1112,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

@@ -621,7 +621,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -945,7 +945,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "New message in FluffyChat",
+  "newMessageInFluffyChat": "New message in FurryChat",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -960,17 +960,17 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Fluffychat currently does not support enabling Cross-Signing. Please enable it from within Riot.",
+  "noCrossSignBootstrap": "FurryChat currently does not support enabling Cross-Signing. Please enable it from within Riot.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat currently does not support enabling Online Key Backup. Please enable it from within Riot.",
+  "noMegolmBootstrap": "FurryChat currently does not support enabling Online Key Backup. Please enable it from within Riot.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "It seems that you have no google services on your phone. That's a good decision for your privacy! To receive push notifications in FluffyChat we recommend using microG: https://microg.org/",
+  "noGoogleServicesWarning": "It seems that you have no google services on your phone. That's a good decision for your privacy! To receive push notifications in FurryChat we recommend using microG: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
@@ -1494,7 +1494,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

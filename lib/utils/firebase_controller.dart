@@ -178,7 +178,7 @@ abstract class FirebaseController {
       if (client == null) {
         tempClient = true;
         final platform = kIsWeb ? 'Web' : Platform.operatingSystem;
-        final clientName = 'FluffyChat $platform';
+        final clientName = 'FurryChat $platform';
         client = Client(clientName);
         client.database = await getDatabase(client);
         client.connect();

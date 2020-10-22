@@ -601,7 +601,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -898,7 +898,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "来自 FluffyChat 的新消息",
+  "newMessageInFluffyChat": "来自 FurryChat 的新消息",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -913,7 +913,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Fluffychat目前不支持启用Cross-Signing. 请在Riot中启用.",
+  "noCrossSignBootstrap": "FurryChat目前不支持启用Cross-Signing. 请在Riot中启用.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -923,12 +923,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "看起来您手机上没有谷歌服务框架。这对您保护隐私而言是个好决定！为收取FluffyChat的推送通知，推荐您使用microG: https://microg.org/",
+  "noGoogleServicesWarning": "看起来您手机上没有谷歌服务框架。这对您保护隐私而言是个好决定！为收取FurryChat的推送通知，推荐您使用microG: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat目前不支持启用在线密钥备份. 请在Riot中启用.",
+  "noMegolmBootstrap": "FurryChat目前不支持启用在线密钥备份. 请在Riot中启用.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1362,7 +1362,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

@@ -1,6 +1,6 @@
 {
-    "name": "FluffyChat",
-    "short_name": "FluffyChat",
+    "name": "FurryChat",
+    "short_name": "FurryChat",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

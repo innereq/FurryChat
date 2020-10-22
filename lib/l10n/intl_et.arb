@@ -616,7 +616,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -928,7 +928,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Uus sõnum FluffyChat'i vahendusel",
+  "newMessageInFluffyChat": "Uus sõnum FurryChat'i vahendusel",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -948,7 +948,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "FluffyChat hetkel ei toeta risttunnustamist. Palun võta ta kasutusele Element'i (vana nimega Riot) vahendusel.",
+  "noCrossSignBootstrap": "FurryChat hetkel ei toeta risttunnustamist. Palun võta ta kasutusele Element'i (vana nimega Riot) vahendusel.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -958,12 +958,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Tundub, et sinu nutiseadmes pole Google teenuseid. Sinu privaatsuse mõttes on see kindlasti hea otsus! Kui sa soovid FluffyChat'is näha tõuketeavitusi, siis soovitame, et selle jaoks kasutad microG liidestust https://microg.org/",
+  "noGoogleServicesWarning": "Tundub, et sinu nutiseadmes pole Google teenuseid. Sinu privaatsuse mõttes on see kindlasti hea otsus! Kui sa soovid FurryChat'is näha tõuketeavitusi, siis soovitame, et selle jaoks kasutad microG liidestust https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "FluffyChat hetkel ei toeta krüptovõtmete võrgupõhise varunduse kasutusele võtmist. Palun võta ta kasutusele Element'i (vana nimega Riot) vahendusel.",
+  "noMegolmBootstrap": "FurryChat hetkel ei toeta krüptovõtmete võrgupõhise varunduse kasutusele võtmist. Palun võta ta kasutusele Element'i (vana nimega Riot) vahendusel.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1427,7 +1427,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

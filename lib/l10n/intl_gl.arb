@@ -616,7 +616,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -928,7 +928,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Nova mensaxe en FluffyChat",
+  "newMessageInFluffyChat": "Nova mensaxe en FurryChat",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -948,7 +948,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Polo momento FluffyChat non soporta a activación da Sinatura-Cruzada. Actívaa desde Element.",
+  "noCrossSignBootstrap": "Polo momento FurryChat non soporta a activación da Sinatura-Cruzada. Actívaa desde Element.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -958,12 +958,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Semella que non tes os servizos de google no teu dispositivo. Ben feito! a túa privacidade agradécecho! Para recibir notificacións push en FluffyChat recomendamos usar microG: https://microg.org/",
+  "noGoogleServicesWarning": "Semella que non tes os servizos de google no teu dispositivo. Ben feito! a túa privacidade agradécecho! Para recibir notificacións push en FurryChat recomendamos usar microG: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Actualmente Fluffychat non soporta a activación da Copia En Liña das Chaves. Actívaa desde Element.",
+  "noMegolmBootstrap": "Actualmente FurryChat non soporta a activación da Copia En Liña das Chaves. Actívaa desde Element.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1427,7 +1427,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

@@ -606,7 +606,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -903,7 +903,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Neue Nachricht in FluffyChat",
+  "newMessageInFluffyChat": "Neue Nachricht in FurryChat",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -923,7 +923,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Fluffychat kann Cross-Signing noch nicht einschalten. Bitte schalte es innerhalb Element an.",
+  "noCrossSignBootstrap": "FurryChat kann Cross-Signing noch nicht einschalten. Bitte schalte es innerhalb Element an.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -933,12 +933,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Es sieht so aus als hättest du keine Google-Dienste auf deinem Gerät. Das ist eine gute Entscheidung für deine Privatsphäre! Um Push Benachrichtigungen in FluffyChat zu erhalten, empfehlen wir die Verwendung von microG: https://microg.org/",
+  "noGoogleServicesWarning": "Es sieht so aus als hättest du keine Google-Dienste auf deinem Gerät. Das ist eine gute Entscheidung für deine Privatsphäre! Um Push Benachrichtigungen in FurryChat zu erhalten, empfehlen wir die Verwendung von microG: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat kann das Online-Schlüssel-Backup noch nicht aktivieren. Bitte schalte es innerhalb von Element an.",
+  "noMegolmBootstrap": "FurryChat kann das Online-Schlüssel-Backup noch nicht aktivieren. Bitte schalte es innerhalb von Element an.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1397,7 +1397,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

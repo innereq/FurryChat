@@ -616,7 +616,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -928,7 +928,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Nouveau message dans FluffyChat",
+  "newMessageInFluffyChat": "Nouveau message dans FurryChat",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -948,7 +948,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Fluffychat ne permet pas actuellement d'activer la signature croisée. Veuillez l'activer à partir de Riot.",
+  "noCrossSignBootstrap": "FurryChat ne permet pas actuellement d'activer la signature croisée. Veuillez l'activer à partir de Riot.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -958,12 +958,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Il semblerait que vous n'ayez pas de services Google sur votre téléphone. C'est une bonne décision pour votre vie privée ! Pour recevoir des notifications dans FluffyChat, nous vous recommandons d'utiliser microG : https://microg.org/",
+  "noGoogleServicesWarning": "Il semblerait que vous n'ayez pas de services Google sur votre téléphone. C'est une bonne décision pour votre vie privée ! Pour recevoir des notifications dans FurryChat, nous vous recommandons d'utiliser microG : https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat ne prend pas actuellement en charge l'activation de la sauvegarde des clés en ligne. Veuillez l'activer à partir de Riot.",
+  "noMegolmBootstrap": "FurryChat ne prend pas actuellement en charge l'activation de la sauvegarde des clés en ligne. Veuillez l'activer à partir de Riot.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1427,7 +1427,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

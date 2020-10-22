@@ -621,7 +621,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -943,7 +943,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Новое сообщение во FluffyChat",
+  "newMessageInFluffyChat": "Новое сообщение в FurryChat",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -963,7 +963,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "FluffyChat в настоящее время не поддерживает включение кросс-подписи. Пожалуйста, включите его в Element.",
+  "noCrossSignBootstrap": "FurryChat в настоящее время не поддерживает включение кросс-подписи. Пожалуйста, включите его в Element.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -973,12 +973,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Похоже, у вас нет служб Google на вашем телефоне. Это хорошее решение для вашей конфиденциальности! Для получения push-уведомлений во FluffyChat мы рекомендуем использовать microG: https://microg.org/",
+  "noGoogleServicesWarning": "Похоже, у вас нет служб Google на вашем телефоне. Это хорошее решение для вашей конфиденциальности! Для получения push-уведомлений во FurryChat мы рекомендуем использовать microG: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "В настоящее время FluffyChat не поддерживает функцию резервного копирования онлайн-ключей. Пожалуйста, включите её в Element.",
+  "noMegolmBootstrap": "В настоящее время FurryChat не поддерживает функцию резервного копирования онлайн-ключей. Пожалуйста, включите её в Element.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1447,7 +1447,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

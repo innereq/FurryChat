@@ -587,7 +587,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -879,7 +879,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Nová správa v FluffyChate",
+  "newMessageInFluffyChat": "Nová správa v FurryChate",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -894,7 +894,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Fluffychat v súčasnosti nepodporuje povolenie krížového podpisu. Prosím, povoľte ho z Riot.im.",
+  "noCrossSignBootstrap": "FurryChat v súčasnosti nepodporuje povolenie krížového podpisu. Prosím, povoľte ho z Riot.im.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -904,12 +904,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Zdá sa, že nemáte žiadne služby Googlu v telefóne. To je dobré rozhodnutie pre vaše súkromie! Ak chcete dostávať push notifikácie vo FluffyChat, odporúčame používať microG: https://microg.org/",
+  "noGoogleServicesWarning": "Zdá sa, že nemáte žiadne služby Googlu v telefóne. To je dobré rozhodnutie pre vaše súkromie! Ak chcete dostávať push notifikácie vo FurryChat, odporúčame používať microG: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat v súčasnosti nepodporuje povolenie online zálohu klúčov. Prosím, povoľte ho z Riot.im.",
+  "noMegolmBootstrap": "FurryChat v súčasnosti nepodporuje povolenie online zálohu klúčov. Prosím, povoľte ho z Riot.im.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1324,7 +1324,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

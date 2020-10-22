@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(fluffychat LANGUAGES CXX)
+project(furrychat LANGUAGES CXX)
 
-set(BINARY_NAME "fluffychat")
+set(BINARY_NAME "furrychat")
 
 cmake_policy(SET CMP0063 NEW)
 

@@ -606,7 +606,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -918,7 +918,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Nová zpráva ve FluffyChatu",
+  "newMessageInFluffyChat": "Nová zpráva ve FurryChatu",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -1412,7 +1412,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

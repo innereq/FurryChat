@@ -594,7 +594,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -886,7 +886,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "FluffyChat'te yeni mesaj",
+  "newMessageInFluffyChat": "FurryChat'te yeni mesaj",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -901,7 +901,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "FluffyChat şu anda çapraz imzalamanın etkinleştirilmesini desteklemiyor. Lütfen Riot içinden etkinleştirin.",
+  "noCrossSignBootstrap": "FurryChat şu anda çapraz imzalamanın etkinleştirilmesini desteklemiyor. Lütfen Riot içinden etkinleştirin.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -911,12 +911,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Görünüşe göre telefonunuzda Google hizmetleri yok. Bu, mahremiyetiniz için iyi bir karar! FluffyChat'te anlık bildirimler almak için microG kullanmanızı tavsiye ediyoruz: https://microg.org/",
+  "noGoogleServicesWarning": "Görünüşe göre telefonunuzda Google hizmetleri yok. Bu, mahremiyetiniz için iyi bir karar! FurryChat'te anlık bildirimler almak için microG kullanmanızı tavsiye ediyoruz: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "FluffyChat şu anda çevrim içi anahtar yedeklemenin etkinleştirilmesini desteklemiyor. Lütfen Riot içinden etkinleştirin.",
+  "noMegolmBootstrap": "FurryChat şu anda çevrim içi anahtar yedeklemenin etkinleştirilmesini desteklemiyor. Lütfen Riot içinden etkinleştirin.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1331,7 +1331,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",

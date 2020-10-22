@@ -606,7 +606,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "fluffychat": "FluffyChat",
+  "fluffychat": "FurryChat",
   "@fluffychat": {
     "type": "text",
     "placeholders": {}
@@ -903,7 +903,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "newMessageInFluffyChat": "Nuevo mensaje en FluffyChat",
+  "newMessageInFluffyChat": "Nuevo mensaje en FurryChat",
   "@newMessageInFluffyChat": {
     "type": "text",
     "placeholders": {}
@@ -923,7 +923,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Fluffychat actualmente no soporta la activación de Cross-Signing. Por favor, actívelo dentro de Riot.",
+  "noCrossSignBootstrap": "FurryChat actualmente no soporta la activación de Cross-Signing. Por favor, actívelo dentro de Riot.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -933,12 +933,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Parece que no tienes servicios de Google en tu teléfono. ¡Esa es una buena decisión para tu privacidad! Para recibir notificaciones instantáneas en FluffyChat, recomendamos usar microG: https://microg.org/",
+  "noGoogleServicesWarning": "Parece que no tienes servicios de Google en tu teléfono. ¡Esa es una buena decisión para tu privacidad! Para recibir notificaciones instantáneas en FurryChat, recomendamos usar microG: https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat actualmente no soporta la activación de Online Key Backup. Por favor, actívalo dentro de Riot.",
+  "noMegolmBootstrap": "FurryChat actualmente no soporta la activación de Online Key Backup. Por favor, actívalo dentro de Riot.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1397,7 +1397,7 @@
       "suffix": {}
     }
   },
-  "title": "FluffyChat",
+  "title": "FurryChat",
   "@title": {
     "description": "Title for the application",
     "type": "text",
