@@ -85,6 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  catex:
+    dependency: transitive
+    description:
+      name: catex
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+6"
   characters:
     dependency: transitive
     description:
@@ -327,7 +334,7 @@ packages:
       name: flutter_matrix_html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.7"
+    version: "0.1.9"
   flutter_olm:
     dependency: "direct main"
     description:
@@ -519,7 +526,7 @@ packages:
       name: matrix_link_text
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.3.1"
   meta:
     dependency: transitive
     description:

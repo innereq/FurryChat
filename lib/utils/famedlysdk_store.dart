@@ -17,8 +17,8 @@ import 'platform_infos.dart';
 Future<LocalStorage> getLocalStorage() async {
   final directory = PlatformInfos.isBetaDesktop
       ? await getApplicationSupportDirectory()
-      : await getApplicationDocumentsDirectory();
-  final localStorage = LocalStorage('LocalStorage', directory.path);
+      : (PlatformInfos.isWeb ? null : await getApplicationDocumentsDirectory());
+  final localStorage = LocalStorage('LocalStorage', directory?.path);
   await localStorage.ready;
   return localStorage;
 }
