@@ -127,8 +127,8 @@ abstract class FirebaseController {
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
         AndroidInitializationSettings('notifications_icon');
-    var initializationSettingsIOS =
-        IOSInitializationSettings(onDidReceiveLocalNotification: (i, a, b, c) => null);
+    var initializationSettingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: (i, a, b, c) => null);
     var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
