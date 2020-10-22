@@ -97,6 +97,8 @@ class _ChatState extends State<_Chat> {
 
   String inputText = '';
 
+  String pendingText = '';
+
   bool get _canLoadMore => timeline.events.last.type != EventTypes.RoomCreate;
 
   void requestHistory() async {
@@ -201,12 +203,13 @@ class _ChatState extends State<_Chat> {
     if (sendController.text.isEmpty) return;
     room.sendTextEvent(sendController.text,
         inReplyTo: replyEvent, editEventId: editEvent?.eventId);
-    sendController.text = '';
+    sendController.text = pendingText;
 
     setState(() {
-      inputText = '';
+      inputText = pendingText;
       replyEvent = null;
       editEvent = null;
+      pendingText = '';
     });
   }
 
@@ -348,6 +351,19 @@ class _ChatState extends State<_Chat> {
   void replyAction({Event replyTo}) {
     setState(() {
       replyEvent = replyTo ?? selectedEvents.first;
+      selectedEvents.clear();
+    });
+    inputFocus.requestFocus();
+  }
+
+  void editAction(Event event) {
+    setState(() {
+      pendingText = sendController.text;
+      editEvent = event;
+      inputText = sendController.text = editEvent
+          .getDisplayEvent(timeline)
+          .getLocalizedBody(MatrixLocals(L10n.of(context)),
+              withSenderNamePrefix: false, hideReply: true);
       selectedEvents.clear();
     });
     inputFocus.requestFocus();
@@ -521,15 +537,7 @@ class _ChatState extends State<_Chat> {
         forwardEventsAction(context, event: event);
         break;
       case 'edit':
-        setState(() {
-          editEvent = event;
-          sendController.text = editEvent
-              .getDisplayEvent(timeline)
-              .getLocalizedBody(MatrixLocals(L10n.of(context)),
-                  withSenderNamePrefix: false, hideReply: true);
-          selectedEvents.clear();
-        });
-        inputFocus.requestFocus();
+        editAction(event);
         break;
       default:
     }
@@ -643,17 +651,7 @@ class _ChatState extends State<_Chat> {
                     selectedEvents.first.senderId == client.userID)
                   IconButton(
                     icon: Icon(Icons.edit),
-                    onPressed: () {
-                      setState(() {
-                        editEvent = selectedEvents.first;
-                        sendController.text = editEvent
-                            .getDisplayEvent(timeline)
-                            .getLocalizedBody(MatrixLocals(L10n.of(context)),
-                                withSenderNamePrefix: false, hideReply: true);
-                        selectedEvents.clear();
-                      });
-                      inputFocus.requestFocus();
-                    },
+                    onPressed: () => editAction(selectedEvents.first),
                   ),
                 IconButton(
                   icon: Icon(Icons.content_copy),
@@ -910,6 +908,10 @@ class _ChatState extends State<_Chat> {
                       IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () => setState(() {
+                          if (editEvent != null) {
+                            inputText = sendController.text = pendingText;
+                            pendingText = '';
+                          }
                           replyEvent = null;
                           editEvent = null;
                         }),
