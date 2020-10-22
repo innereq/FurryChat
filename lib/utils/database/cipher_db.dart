@@ -89,29 +89,19 @@ class _VmEncryptedDelegate extends DatabaseDelegate {
   FutureOr<bool> get isOpen => delegate.isOpen;
 
   @override
-  Future<void> runBatched(BatchedStatements statements) {
-    return delegate.runBatched(statements);
-  }
+  Future<void> runBatched(BatchedStatements statements) => delegate.runBatched(statements);
 
   @override
-  Future<void> runCustom(String statement, List args) {
-    return delegate.runCustom(statement, args);
-  }
+  Future<void> runCustom(String statement, List args) => delegate.runCustom(statement, args);
 
   @override
-  Future<int> runInsert(String statement, List args) {
-    return delegate.runInsert(statement, args);
-  }
+  Future<int> runInsert(String statement, List args) => delegate.runInsert(statement, args);
 
   @override
-  Future<QueryResult> runSelect(String statement, List args) {
-    return delegate.runSelect(statement, args);
-  }
+  Future<QueryResult> runSelect(String statement, List args) => delegate.runSelect(statement, args);
 
   @override
-  Future<int> runUpdate(String statement, List args) {
-    return delegate.runUpdate(statement, args);
-  }
+  Future<int> runUpdate(String statement, List args) => delegate.runUpdate(statement, args);
 
   @override
   TransactionDelegate get transactionDelegate => delegate.transactionDelegate;

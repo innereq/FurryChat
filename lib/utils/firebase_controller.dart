@@ -128,9 +128,7 @@ abstract class FirebaseController {
     var initializationSettingsAndroid =
         AndroidInitializationSettings('notifications_icon');
     var initializationSettingsIOS =
-        IOSInitializationSettings(onDidReceiveLocalNotification: (i, a, b, c) {
-      return null;
-    });
+        IOSInitializationSettings(onDidReceiveLocalNotification: (i, a, b, c) => null);
     var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings,

@@ -8,112 +8,90 @@ class MatrixLocals extends MatrixLocalizations {
   MatrixLocals(this.l10n);
 
   @override
-  String acceptedTheInvitation(String targetName) {
-    return l10n.acceptedTheInvitation(targetName);
-  }
+  String acceptedTheInvitation(String targetName) =>
+      l10n.acceptedTheInvitation(targetName);
 
   @override
-  String activatedEndToEndEncryption(String senderName) {
-    return l10n.activatedEndToEndEncryption(senderName);
-  }
+  String activatedEndToEndEncryption(String senderName) =>
+      l10n.activatedEndToEndEncryption(senderName);
 
   @override
-  String answeredTheCall(String senderName) {
-    return l10n.answeredTheCall(senderName);
-  }
+  String answeredTheCall(String senderName) => l10n.answeredTheCall(senderName);
 
   @override
   String get anyoneCanJoin => l10n.anyoneCanJoin;
 
   @override
-  String bannedUser(String senderName, String targetName) {
-    return l10n.bannedUser(senderName, targetName);
-  }
+  String bannedUser(String senderName, String targetName) =>
+      l10n.bannedUser(senderName, targetName);
 
   @override
-  String changedTheChatAvatar(String senderName) {
-    return l10n.changedTheChatAvatar(senderName);
-  }
+  String changedTheChatAvatar(String senderName) =>
+      l10n.changedTheChatAvatar(senderName);
 
   @override
-  String changedTheChatDescriptionTo(String senderName, String content) {
-    return l10n.changedTheChatDescriptionTo(senderName, content);
-  }
+  String changedTheChatDescriptionTo(String senderName, String content) =>
+      l10n.changedTheChatDescriptionTo(senderName, content);
 
   @override
-  String changedTheChatNameTo(String senderName, String content) {
-    return l10n.changedTheChatNameTo(senderName, content);
-  }
+  String changedTheChatNameTo(String senderName, String content) =>
+      l10n.changedTheChatNameTo(senderName, content);
 
   @override
-  String changedTheChatPermissions(String senderName) {
-    return l10n.changedTheChatPermissions(senderName);
-  }
+  String changedTheChatPermissions(String senderName) =>
+      l10n.changedTheChatPermissions(senderName);
 
   @override
-  String changedTheDisplaynameTo(String targetName, String newDisplayname) {
-    return l10n.changedTheDisplaynameTo(targetName, newDisplayname);
-  }
+  String changedTheDisplaynameTo(String targetName, String newDisplayname) =>
+      l10n.changedTheDisplaynameTo(targetName, newDisplayname);
 
   @override
-  String changedTheGuestAccessRules(String senderName) {
-    return l10n.changedTheGuestAccessRules(senderName);
-  }
+  String changedTheGuestAccessRules(String senderName) =>
+      l10n.changedTheGuestAccessRules(senderName);
 
   @override
   String changedTheGuestAccessRulesTo(
-      String senderName, String localizedString) {
-    return l10n.changedTheGuestAccessRulesTo(senderName, localizedString);
-  }
+          String senderName, String localizedString) =>
+      l10n.changedTheGuestAccessRulesTo(senderName, localizedString);
 
   @override
-  String changedTheHistoryVisibility(String senderName) {
-    return l10n.changedTheHistoryVisibility(senderName);
-  }
+  String changedTheHistoryVisibility(String senderName) =>
+      l10n.changedTheHistoryVisibility(senderName);
 
   @override
   String changedTheHistoryVisibilityTo(
-      String senderName, String localizedString) {
-    return l10n.changedTheHistoryVisibilityTo(senderName, localizedString);
-  }
+          String senderName, String localizedString) =>
+      l10n.changedTheHistoryVisibilityTo(senderName, localizedString);
 
   @override
-  String changedTheJoinRules(String senderName) {
-    return l10n.changedTheJoinRules(senderName);
-  }
+  String changedTheJoinRules(String senderName) =>
+      l10n.changedTheJoinRules(senderName);
 
   @override
-  String changedTheJoinRulesTo(String senderName, String localizedString) {
-    return l10n.changedTheJoinRulesTo(senderName, localizedString);
-  }
+  String changedTheJoinRulesTo(String senderName, String localizedString) =>
+      l10n.changedTheJoinRulesTo(senderName, localizedString);
 
   @override
-  String changedTheProfileAvatar(String targetName) {
-    return l10n.changedTheProfileAvatar(targetName);
-  }
+  String changedTheProfileAvatar(String targetName) =>
+      l10n.changedTheProfileAvatar(targetName);
 
   @override
-  String changedTheRoomAliases(String senderName) {
-    return l10n.changedTheRoomAliases(senderName);
-  }
+  String changedTheRoomAliases(String senderName) =>
+      l10n.changedTheRoomAliases(senderName);
 
   @override
-  String changedTheRoomInvitationLink(String senderName) {
-    return l10n.changedTheRoomInvitationLink(senderName);
-  }
+  String changedTheRoomInvitationLink(String senderName) =>
+      l10n.changedTheRoomInvitationLink(senderName);
 
   @override
   String get channelCorruptedDecryptError => l10n.channelCorruptedDecryptError;
 
   @override
-  String couldNotDecryptMessage(String errorText) {
-    return l10n.couldNotDecryptMessage(errorText);
-  }
+  String couldNotDecryptMessage(String errorText) =>
+      l10n.couldNotDecryptMessage(errorText);
 
   @override
-  String createdTheChat(String senderName) {
-    return l10n.createdTheChat(senderName);
-  }
+  String createdTheChat(String senderName) => l10n.createdTheChat(senderName);
 
   @override
   String get emptyChat => l10n.emptyChat;
@@ -122,9 +100,7 @@ class MatrixLocals extends MatrixLocalizations {
   String get encryptionNotEnabled => l10n.encryptionNotEnabled;
 
   @override
-  String endedTheCall(String senderName) {
-    return l10n.endedTheCall(senderName);
-  }
+  String endedTheCall(String senderName) => l10n.endedTheCall(senderName);
 
   @override
   String get fromJoining => l10n.fromJoining;
@@ -133,9 +109,7 @@ class MatrixLocals extends MatrixLocalizations {
   String get fromTheInvitation => l10n.fromTheInvitation;
 
   @override
-  String groupWith(String displayname) {
-    return l10n.groupWith(displayname);
-  }
+  String groupWith(String displayname) => l10n.groupWith(displayname);
 
   @override
   String get guestsAreForbidden => l10n.guestsAreForbidden;
@@ -144,32 +118,26 @@ class MatrixLocals extends MatrixLocalizations {
   String get guestsCanJoin => l10n.guestsCanJoin;
 
   @override
-  String hasWithdrawnTheInvitationFor(String senderName, String targetName) {
-    return l10n.hasWithdrawnTheInvitationFor(senderName, targetName);
-  }
+  String hasWithdrawnTheInvitationFor(String senderName, String targetName) =>
+      l10n.hasWithdrawnTheInvitationFor(senderName, targetName);
 
   @override
-  String invitedUser(String senderName, String targetName) {
-    return l10n.invitedUser(senderName, targetName);
-  }
+  String invitedUser(String senderName, String targetName) =>
+      l10n.invitedUser(senderName, targetName);
 
   @override
   String get invitedUsersOnly => l10n.invitedUsersOnly;
 
   @override
-  String joinedTheChat(String targetName) {
-    return l10n.joinedTheChat(targetName);
-  }
+  String joinedTheChat(String targetName) => l10n.joinedTheChat(targetName);
 
   @override
-  String kicked(String senderName, String targetName) {
-    return l10n.kicked(senderName, targetName);
-  }
+  String kicked(String senderName, String targetName) =>
+      l10n.kicked(senderName, targetName);
 
   @override
-  String kickedAndBanned(String senderName, String targetName) {
-    return l10n.kickedAndBanned(senderName, targetName);
-  }
+  String kickedAndBanned(String senderName, String targetName) =>
+      l10n.kickedAndBanned(senderName, targetName);
 
   @override
   String get needPantalaimonWarning => l10n.needPantalaimonWarning;
@@ -178,80 +146,56 @@ class MatrixLocals extends MatrixLocalizations {
   String get noPermission => l10n.noPermission;
 
   @override
-  String redactedAnEvent(String senderName) {
-    return l10n.redactedAnEvent(senderName);
-  }
+  String redactedAnEvent(String senderName) => l10n.redactedAnEvent(senderName);
 
   @override
-  String rejectedTheInvitation(String targetName) {
-    return l10n.rejectedTheInvitation(targetName);
-  }
+  String rejectedTheInvitation(String targetName) =>
+      l10n.rejectedTheInvitation(targetName);
 
   @override
-  String removedBy(String calcDisplayname) {
-    return l10n.removedBy(calcDisplayname);
-  }
+  String removedBy(String calcDisplayname) => l10n.removedBy(calcDisplayname);
 
   @override
   String get roomHasBeenUpgraded => l10n.roomHasBeenUpgraded;
 
   @override
-  String sentAFile(String senderName) {
-    return l10n.sentAFile(senderName);
-  }
+  String sentAFile(String senderName) => l10n.sentAFile(senderName);
 
   @override
-  String sentAPicture(String senderName) {
-    return l10n.sentAPicture(senderName);
-  }
+  String sentAPicture(String senderName) => l10n.sentAPicture(senderName);
 
   @override
-  String sentASticker(String senderName) {
-    return l10n.sentASticker(senderName);
-  }
+  String sentASticker(String senderName) => l10n.sentASticker(senderName);
 
   @override
-  String sentAVideo(String senderName) {
-    return l10n.sentAVideo(senderName);
-  }
+  String sentAVideo(String senderName) => l10n.sentAVideo(senderName);
 
   @override
-  String sentAnAudio(String senderName) {
-    return l10n.sentAnAudio(senderName);
-  }
+  String sentAnAudio(String senderName) => l10n.sentAnAudio(senderName);
 
   @override
-  String sentCallInformations(String senderName) {
-    return l10n.sentCallInformations(senderName);
-  }
+  String sentCallInformations(String senderName) =>
+      l10n.sentCallInformations(senderName);
 
   @override
-  String sharedTheLocation(String senderName) {
-    return l10n.sharedTheLocation(senderName);
-  }
+  String sharedTheLocation(String senderName) =>
+      l10n.sharedTheLocation(senderName);
 
   @override
-  String startedACall(String senderName) {
-    return l10n.startedACall(senderName);
-  }
+  String startedACall(String senderName) => l10n.startedACall(senderName);
 
   @override
-  String unbannedUser(String senderName, String targetName) {
-    return l10n.unbannedUser(senderName, targetName);
-  }
+  String unbannedUser(String senderName, String targetName) =>
+      l10n.unbannedUser(senderName, targetName);
 
   @override
   String get unknownEncryptionAlgorithm => l10n.unknownEncryptionAlgorithm;
 
   @override
-  String unknownEvent(String typeKey) {
-    return l10n.unknownEvent(typeKey);
-  }
+  String unknownEvent(String typeKey) => l10n.unknownEvent(typeKey);
 
   @override
-  String userLeftTheChat(String targetName) {
-    return l10n.userLeftTheChat(targetName);
-  }
+  String userLeftTheChat(String targetName) => l10n.userLeftTheChat(targetName);
 
   @override
   String get visibleForAllParticipants => l10n.visibleForAllParticipants;
