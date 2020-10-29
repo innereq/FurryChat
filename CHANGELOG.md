@@ -1,4 +1,16 @@
-# Version 0.20.0 - 2020-??-??
+# Version 0.21.0 - 2020-10-28
+### Features
+- New user viewer
+- Add code syntax highlighting in messages
+- Updated translations: Thanks to all helpers
+### Changes
+- Stories feature removed
+### Fixes
+- Fixes sentry
+- Fixes Android download
+- Minor fixes
+
+# Version 0.20.0 - 2020-10-23
 ### Features
 - Added translations: Arabic
 - Add ability to enable / disable emotes globally
@@ -18,6 +30,7 @@
 - Show device name in account information correctly
 - Fix tapping on aliases / room pills not always working
 - Link clicking in web not always working
+- Return message input field to previous state after editing message - Thanks @inexcode
 
 # Version 0.19.0 - 2020-09-21
 ### Features

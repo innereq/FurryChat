@@ -123,7 +123,7 @@ class _LoginState extends State<Login> {
       if ((newDomain?.isNotEmpty ?? false) &&
           newDomain != Matrix.of(context).client.homeserver.toString()) {
         await SimpleDialogs(context).tryRequestWithErrorToast(
-            Matrix.of(context).client.checkServer(newDomain));
+            Matrix.of(context).client.checkHomeserver(newDomain));
         setState(() => usernameError = null);
       }
       newWellknown = wellKnownInformations;

@@ -76,6 +76,11 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
     }
   }
 
+  Future<bool> checkHomeserver(dynamic homeserver, Client client) async {
+    await client.checkHomeserver(homeserver);
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();

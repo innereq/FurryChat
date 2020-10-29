@@ -130,7 +130,9 @@ abstract class FirebaseController {
     var initializationSettingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: (i, a, b, c) => null);
     var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: goToRoom);
 
@@ -266,8 +268,9 @@ abstract class FirebaseController {
           ticker: i18n.newMessageInFluffyChat);
       var iOSPlatformChannelSpecifics = IOSNotificationDetails();
       var platformChannelSpecifics = NotificationDetails(
-          android: androidPlatformChannelSpecifics,
-          iOS: iOSPlatformChannelSpecifics);
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics,
+      );
       await _flutterLocalNotificationsPlugin.show(
           0,
           room.getLocalizedDisplayname(MatrixLocals(i18n)),
@@ -297,8 +300,9 @@ abstract class FirebaseController {
           AndroidInitializationSettings('notifications_icon');
       var initializationSettingsIOS = IOSInitializationSettings();
       var initializationSettings = InitializationSettings(
-          android: initializationSettingsAndroid,
-          iOS: initializationSettingsIOS);
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS,
+      );
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
       // FIXME unable to init without context currently https://github.com/flutter/flutter/issues/67092
@@ -324,8 +328,9 @@ abstract class FirebaseController {
           importance: Importance.max, priority: Priority.high);
       var iOSPlatformChannelSpecifics = IOSNotificationDetails();
       var platformChannelSpecifics = NotificationDetails(
-          android: androidPlatformChannelSpecifics,
-          iOS: iOSPlatformChannelSpecifics);
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics,
+      );
       final title = l10n.unreadChats(unread.toString());
       await flutterLocalNotificationsPlugin.show(
           1, title, l10n.openAppToReadMessages, platformChannelSpecifics,

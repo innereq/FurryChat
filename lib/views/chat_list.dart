@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-import 'package:share/share.dart';
 
 import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
@@ -19,6 +18,7 @@ import '../components/list_items/status_list_item.dart';
 import '../components/matrix.dart';
 import '../utils/app_route.dart';
 import '../utils/matrix_file_extension.dart';
+import '../utils/fluffy_share.dart';
 import '../utils/platform_infos.dart';
 import '../utils/url_launcher.dart';
 import 'archive.dart';
@@ -198,29 +198,23 @@ class _ChatListState extends State<ChatList> {
     );
   }
 
-  void _setStatus(BuildContext context, {bool fromDrawer = false}) async {
-    if (fromDrawer) Navigator.of(context).pop();
-    final ownProfile = await SimpleDialogs(context)
-        .tryRequestWithLoadingDialog(Matrix.of(context).client.ownProfile);
-    String composeText;
-    if (Matrix.of(context).shareContent != null &&
-        Matrix.of(context).shareContent['msgtype'] == 'm.text') {
-      composeText = Matrix.of(context).shareContent['body'];
-      Matrix.of(context).shareContent = null;
-    }
-    if (ownProfile is Profile) {
-      await Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => StatusView(
-            composeMode: true,
-            avatarUrl: ownProfile.avatarUrl,
-            displayname: ownProfile.displayname ??
-                Matrix.of(context).client.userID.localpart,
-            composeText: composeText,
-          ),
-        ),
-      );
-    }
+  void _setStatus(BuildContext context) async {
+    Navigator.of(context).pop();
+    final statusMsg = await SimpleDialogs(context).enterText(
+      titleText: L10n.of(context).setStatus,
+      labelText: L10n.of(context).setStatus,
+      hintText: L10n.of(context).statusExampleMessage,
+      multiLine: true,
+    );
+    if (statusMsg?.isEmpty ?? true) return;
+    final client = Matrix.of(context).client;
+    await SimpleDialogs(context).tryRequestWithLoadingDialog(
+      client.sendPresence(
+        client.userID,
+        PresenceType.online,
+        statusMsg: statusMsg,
+      ),
+    );
     return;
   }
 
@@ -302,8 +296,7 @@ class _ChatListState extends State<ChatList> {
                                 ListTile(
                                   leading: Icon(Icons.edit),
                                   title: Text(L10n.of(context).setStatus),
-                                  onTap: () =>
-                                      _setStatus(context, fromDrawer: true),
+                                  onTap: () => _setStatus(context),
                                 ),
                                 Divider(height: 1),
                                 ListTile(
@@ -338,9 +331,11 @@ class _ChatListState extends State<ChatList> {
                                   title: Text(L10n.of(context).inviteContact),
                                   onTap: () {
                                     Navigator.of(context).pop();
-                                    Share.share(L10n.of(context).inviteText(
-                                        Matrix.of(context).client.userID,
-                                        'https://matrix.to/#/${Matrix.of(context).client.userID}'));
+                                    FluffyShare.share(
+                                        L10n.of(context).inviteText(
+                                            Matrix.of(context).client.userID,
+                                            'https://matrix.to/#/${Matrix.of(context).client.userID}'),
+                                        context);
                                   },
                                 ),
                               ],
@@ -422,31 +417,14 @@ class _ChatListState extends State<ChatList> {
                   ),
                   floatingActionButton: AdaptivePageLayout.columnMode(context)
                       ? null
-                      : Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            FloatingActionButton(
-                              heroTag: null,
-                              child: Icon(
-                                Icons.edit,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              elevation: 1,
-                              backgroundColor:
-                                  Theme.of(context).secondaryHeaderColor,
-                              onPressed: () => _setStatus(context),
-                            ),
-                            SizedBox(height: 16.0),
-                            FloatingActionButton(
-                              child: Icon(Icons.add),
-                              backgroundColor: Theme.of(context).primaryColor,
-                              onPressed: () => Navigator.of(context)
-                                  .pushAndRemoveUntil(
-                                      AppRoute.defaultRoute(
-                                          context, NewPrivateChatView()),
-                                      (r) => r.isFirst),
-                            ),
-                          ],
+                      : FloatingActionButton(
+                          child: Icon(Icons.add),
+                          backgroundColor: Theme.of(context).primaryColor,
+                          onPressed: () => Navigator.of(context)
+                              .pushAndRemoveUntil(
+                                  AppRoute.defaultRoute(
+                                      context, NewPrivateChatView()),
+                                  (r) => r.isFirst),
                         ),
                   body: Column(
                     children: [
@@ -506,94 +484,28 @@ class _ChatListState extends State<ChatList> {
                                     final totalCount =
                                         rooms.length + publicRoomsCount;
                                     return ListView.separated(
-                                        controller: _scrollController,
-                                        separatorBuilder: (BuildContext context,
-                                                int i) =>
-                                            i == totalCount - publicRoomsCount
-                                                ? ListTile(
-                                                    title: Text(
-                                                      L10n.of(context)
-                                                              .publicRooms +
-                                                          ':',
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                      ),
+                                      controller: _scrollController,
+                                      separatorBuilder: (BuildContext context,
+                                              int i) =>
+                                          i == totalCount - publicRoomsCount
+                                              ? ListTile(
+                                                  title: Text(
+                                                    L10n.of(context)
+                                                            .publicRooms +
+                                                        ':',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
                                                     ),
-                                                  )
-                                                : Container(),
-                                        itemCount: totalCount + 1,
-                                        itemBuilder:
-                                            (BuildContext context, int i) {
-                                          if (i == 0) {
-                                            final displayPresences =
-                                                selectMode != SelectMode.share;
-                                            final displayShareStatus =
-                                                selectMode ==
-                                                        SelectMode.share &&
-                                                    Matrix.of(context)
-                                                                .shareContent[
-                                                            'msgtype'] ==
-                                                        'm.text';
-                                            return Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                AnimatedContainer(
-                                                  duration: Duration(
-                                                      milliseconds: 300),
-                                                  height: displayPresences
-                                                      ? 78
-                                                      : displayShareStatus
-                                                          ? 56
-                                                          : 0,
-                                                  child: displayPresences
-                                                      ? ListView.builder(
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          itemCount:
-                                                              Matrix.of(context)
-                                                                  .userStatuses
-                                                                  .length,
-                                                          itemBuilder: (BuildContext
-                                                                      context,
-                                                                  int i) =>
-                                                              StatusListItem(Matrix
-                                                                      .of(context)
-                                                                  .userStatuses[i]),
-                                                        )
-                                                      : displayShareStatus
-                                                          ? ListTile(
-                                                              leading:
-                                                                  CircleAvatar(
-                                                                radius: Avatar
-                                                                        .defaultSize /
-                                                                    2,
-                                                                backgroundColor:
-                                                                    Theme.of(
-                                                                            context)
-                                                                        .secondaryHeaderColor,
-                                                                child: Icon(
-                                                                  Icons.edit,
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .primaryColor,
-                                                                ),
-                                                              ),
-                                                              title: Text(L10n.of(
-                                                                      context)
-                                                                  .setStatus),
-                                                              onTap: () =>
-                                                                  _setStatus(
-                                                                      context))
-                                                          : null,
-                                                ),
-                                              ],
-                                            );
-                                          }
-                                          i--;
-                                          return i < rooms.length
+                                                  ),
+                                                )
+                                              : Container(),
+                                      itemCount: totalCount,
+                                      itemBuilder: (BuildContext context,
+                                              int i) =>
+                                          i < rooms.length
                                               ? ChatListItem(
                                                   rooms[i],
                                                   selected: _selectedRoomIds
@@ -614,8 +526,9 @@ class _ChatListState extends State<ChatList> {
                                                 )
                                               : PublicRoomListItem(
                                                   publicRoomsResponse
-                                                      .chunk[i - rooms.length]);
-                                        });
+                                                      .chunk[i - rooms.length],
+                                                ),
+                                    );
                                   } else {
                                     return Center(
                                       child: CircularProgressIndicator(),

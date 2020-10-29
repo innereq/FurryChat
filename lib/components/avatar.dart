@@ -45,10 +45,12 @@ class Avatar extends StatelessWidget {
       ),
     );
     final noPic = mxContent == null || mxContent.toString().isEmpty;
+    final borderRadius = BorderRadius.circular(size / 2);
     return InkWell(
       onTap: onTap,
+      borderRadius: borderRadius,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(size / 2),
+        borderRadius: borderRadius,
         child: Container(
           width: size,
           height: size,
@@ -65,6 +67,11 @@ class Avatar extends StatelessWidget {
                   placeholder: (c, s) => Stack(
                     children: [
                       Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                      textWidget,
+                    ],
+                  ),
+                  errorWidget: (c, s, d) => Stack(
+                    children: [
                       textWidget,
                     ],
                   ),

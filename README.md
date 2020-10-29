@@ -54,11 +54,6 @@ cd FurryChat
 sudo apt install ninja-build
 ```
 
-* Outcomment the Google Services plugin at the end of the file `android/app/build.gradle`:
-```
-// apply plugin: "com.google.gms.google-services"
-```
-
 * Build with: `flutter build apk`
 
 ### iOS / iPadOS
