@@ -1,14 +1,15 @@
 import 'dart:io';
 
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/utils/platform_infos.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mime_type/mime_type.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:universal_html/prefer_universal/html.dart' as html;
-import 'package:mime_type/mime_type.dart';
-import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:universal_html/prefer_universal/html.dart' as html;
+
+import 'platform_infos.dart';
 
 extension MatrixFileExtension on MatrixFile {
   void open() async {

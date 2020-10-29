@@ -1,15 +1,15 @@
 import 'dart:math';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:fluffychat/components/adaptive_page_layout.dart';
-import 'package:fluffychat/utils/app_route.dart';
-import 'package:fluffychat/utils/fluffy_share.dart';
-import 'package:fluffychat/views/chat.dart';
 import 'package:flutter/material.dart';
-import 'content_banner.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../utils/app_route.dart';
+import '../utils/fluffy_share.dart';
 import '../utils/presence_extension.dart';
+import '../views/chat.dart';
+import 'adaptive_page_layout.dart';
+import 'content_banner.dart';
 import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
 

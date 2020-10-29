@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:famedlysdk/matrix_api/model/well_known_informations.dart';
+import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -30,9 +30,10 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
               .client
               .getWellKnownInformationsByUserId(homeserver));
       final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          Matrix.of(context).client.checkServer(wellknown.mHomeserver != null
-              ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
-              : homeserver));
+          Matrix.of(context).client.checkHomeserver(
+              wellknown.mHomeserver != null
+                  ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
+                  : homeserver));
       if (success != false) {
         await Navigator.of(context).push(AppRoute(Login(
           username: homeserver,
@@ -50,9 +51,10 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
               .getWellKnownInformationsByDomain(homeserver));
 
       final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          Matrix.of(context).client.checkServer(wellknown.mHomeserver != null
-              ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
-              : homeserver));
+          Matrix.of(context).client.checkHomeserver(
+              wellknown.mHomeserver != null
+                  ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
+                  : homeserver));
       if (success != false) {
         await Navigator.of(context).push(AppRoute(SignUp(
           wellknown: wellknown,

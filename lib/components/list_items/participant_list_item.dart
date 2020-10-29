@@ -2,11 +2,7 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../../utils/app_route.dart';
-import '../../views/chat.dart';
 import '../avatar.dart';
-import '../dialogs/simple_dialogs.dart';
-import '../matrix.dart';
 import '../user_bottom_sheet.dart';
 
 class ParticipantListItem extends StatelessWidget {

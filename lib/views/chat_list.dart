@@ -9,16 +9,14 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import '../components/adaptive_page_layout.dart';
-import '../components/avatar.dart';
 import '../components/connection_status_header.dart';
 import '../components/dialogs/simple_dialogs.dart';
 import '../components/list_items/chat_list_item.dart';
 import '../components/list_items/public_room_list_item.dart';
-import '../components/list_items/status_list_item.dart';
 import '../components/matrix.dart';
 import '../utils/app_route.dart';
-import '../utils/matrix_file_extension.dart';
 import '../utils/fluffy_share.dart';
+import '../utils/matrix_file_extension.dart';
 import '../utils/platform_infos.dart';
 import '../utils/url_launcher.dart';
 import 'archive.dart';
@@ -26,7 +24,6 @@ import 'homeserver_picker.dart';
 import 'new_group.dart';
 import 'new_private_chat.dart';
 import 'settings.dart';
-import 'status_view.dart';
 
 enum SelectMode { normal, share, select }
 

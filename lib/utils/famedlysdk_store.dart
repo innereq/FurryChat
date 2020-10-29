@@ -1,12 +1,14 @@
-import '../famedlysdk.dart';
-import './platform_infos.dart';
+import 'dart:async';
+import 'dart:core';
+
+import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:async';
-import 'dart:core';
-import './database/shared.dart';
 import 'package:random_string/random_string.dart';
+
+import './database/shared.dart';
+import './platform_infos.dart';
 
 Future<Database> getDatabase(Client client) async {
   while (_generateDatabaseLock) {

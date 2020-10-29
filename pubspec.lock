@@ -216,7 +216,7 @@ packages:
     description:
       path: "."
       ref: yiffed
-      resolved-ref: d9bc92d6543e51845ef384ee7650fcb3428d0718
+      resolved-ref: "0f5943382e8d08da9a3c019e75982d8dcc08d4a8"
       url: "https://github.com/innereq/famedlysdk-fork.git"
     source: git
     version: "0.0.1"
@@ -247,14 +247,21 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.7"
+    version: "1.13.3"
   file_picker_cross:
     dependency: "direct main"
     description:
       name: file_picker_cross
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.4"
+    version: "4.2.2"
+  file_picker_platform_interface:
+    dependency: transitive
+    description:
+      name: file_picker_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.3.1"
   firebase:
     dependency: transitive
     description:
@@ -512,7 +519,7 @@ packages:
       name: js
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3-nullsafety.1"
+    version: "0.6.3-nullsafety.2"
   localstorage:
     dependency: "direct main"
     description:
@@ -588,7 +595,7 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: c8eb59c25c4e3a568bd64e4722108ec45259e157
+      resolved-ref: "42a0fa3d4643d1e0402f6ac599dff7062aff754f"
       url: "https://gitlab.com/famedly/libraries/native_imaging.git"
     source: git
     version: "0.0.1"
@@ -703,7 +710,7 @@ packages:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.0-nullsafety.1"
+    version: "1.10.0-nullsafety.2"
   permission_handler:
     dependency: "direct main"
     description:
@@ -759,7 +766,7 @@ packages:
       name: pool
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0-nullsafety.1"
+    version: "1.5.0-nullsafety.2"
   process:
     dependency: transitive
     description:
@@ -780,7 +787,7 @@ packages:
       name: quiver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.4+1"
   random_string:
     dependency: "direct main"
     description:
@@ -855,14 +862,14 @@ packages:
       name: source_map_stack_trace
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0-nullsafety.2"
+    version: "2.1.0-nullsafety.3"
   source_maps:
     dependency: transitive
     description:
       name: source_maps
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.10-nullsafety.1"
+    version: "0.10.10-nullsafety.2"
   source_span:
     dependency: transitive
     description:
@@ -876,7 +883,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.2"
+    version: "1.3.2+1"
   sqflite_common:
     dependency: transitive
     description:
@@ -1009,7 +1016,7 @@ packages:
       name: url_launcher_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+1"
+    version: "0.0.1+3"
   url_launcher_macos:
     dependency: transitive
     description:
@@ -1058,7 +1065,7 @@ packages:
       name: vm_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.0"
+    version: "5.3.1"
   watcher:
     dependency: transitive
     description:
@@ -1123,5 +1130,5 @@ packages:
     source: hosted
     version: "0.1.2"
 sdks:
-  dart: ">=2.10.2 <2.11.0"
+  dart: ">=2.10.2 <=2.11.0-161.0.dev"
   flutter: ">=1.22.2 <2.0.0"

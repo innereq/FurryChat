@@ -19,8 +19,6 @@ import '../utils/famedlysdk_store.dart';
 import '../utils/firebase_controller.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
-import '../utils/presence_extension.dart';
-import '../utils/user_status.dart';
 import '../views/key_verification.dart';
 import 'avatar.dart';
 import 'dialogs/simple_dialogs.dart';
