@@ -40,13 +40,13 @@ class _ChatSettingsState extends State<ChatSettings> {
       Matrix.of(context).swipeToEndAction = action;
       await Matrix.of(context)
           .store
-          .setItem('chat.fluffy.swipeToEndAction', action);
+          .setItem('dev.inex.furrychat.swipeToEndAction', action);
       setState(() => null);
     } else {
       Matrix.of(context).swipeToStartAction = action;
       await Matrix.of(context)
           .store
-          .setItem('chat.fluffy.swipeToStartAction', action);
+          .setItem('dev.inex.furrychat.swipeToStartAction', action);
       setState(() => null);
     }
   }
