@@ -447,10 +447,6 @@ class _EmoteImagePickerState extends State<_EmoteImagePicker> {
           borderRadius: BorderRadius.circular(10.0),
         ),
         onPressed: () async {
-          if (kIsWeb) {
-            BotToast.showText(text: L10n.of(context).notSupportedInWeb);
-            return;
-          }
           MatrixFile file;
           if (PlatformInfos.isMobile) {
             final result = await ImagePicker().getImage(
