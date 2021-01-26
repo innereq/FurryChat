@@ -88,9 +88,6 @@ jobs:
       with:
         channel: beta
     
-    - name: Get rid of Firebase
-      run: truncate -s $(head -n -2 android/app/build.gradle | wc -c) android/app/build.gradle
-    
     - name: Build debug apk
       run: flutter build apk --debug -v
     
