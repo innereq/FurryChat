@@ -27,13 +27,13 @@ import '../components/list_items/message.dart';
 import '../components/matrix.dart';
 import '../components/reply_content.dart';
 import '../components/user_bottom_sheet.dart';
+import '../config/app_config.dart';
 import '../config/app_emojis.dart';
 import '../utils/app_route.dart';
 import '../utils/matrix_file_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
 import '../utils/room_status_extension.dart';
-import '../config/app_config.dart';
 import 'chat_details.dart';
 import 'chat_list.dart';
 

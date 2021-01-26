@@ -75,6 +75,8 @@ class _LoginState extends State<Login> {
       }
     }
     setState(() => loading = false);
+    // TODO: Restore Jitsi
+    /*
     if (newWellknown != null) {
       if (newWellknown.jitsiHomeserver?.baseUrl != null) {
         if (!newWellknown.jitsiHomeserver.baseUrl.startsWith('https://')) {
@@ -97,7 +99,7 @@ class _LoginState extends State<Login> {
         Matrix.of(context).jitsiInstance =
             'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/';
       }
-    }
+    }*/
     await Navigator.of(context).pushAndRemoveUntil(
         AppRoute.defaultRoute(context, ChatListView()), (r) => false);
   }

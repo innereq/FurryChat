@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -96,15 +96,21 @@ class _SignUpPasswordState extends State<SignUpPassword> {
       await matrix.client
           .setDisplayname(matrix.client.userID, widget.displayname);
     } catch (exception) {
-      BotToast.showText(text: L10n.of(context).couldNotSetDisplayname);
+      await FlushbarHelper.createError(
+              message: L10n.of(context).couldNotSetDisplayname)
+          .show(context);
     }
     if (widget.avatar != null) {
       try {
         await matrix.client.setAvatar(widget.avatar);
       } catch (exception) {
-        BotToast.showText(text: L10n.of(context).couldNotSetAvatar);
+        await FlushbarHelper.createError(
+                message: L10n.of(context).couldNotSetAvatar)
+            .show(context);
       }
     }
+    // TODO: Restore Jitsi well-known
+    /*
     if (widget.wellknown != null) {
       if (widget.wellknown.jitsiHomeserver?.baseUrl != null) {
         if (!widget.wellknown.jitsiHomeserver.baseUrl.startsWith('https://')) {
@@ -116,7 +122,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
         Matrix.of(context).jitsiInstance =
             'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/';
       }
-    }
+    }*/
     await Navigator.of(context).pushAndRemoveUntil(
         AppRoute.defaultRoute(context, ChatListView()), (r) => false);
     setState(() => loading = false);

@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'matrix.dart';
+
 import '../config/setting_keys.dart';
+import 'matrix.dart';
 
 enum Themes {
   light,

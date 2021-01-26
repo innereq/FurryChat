@@ -48,7 +48,7 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
       wellknown = await SimpleDialogs(context).tryRequestWithLoadingDialog(
           Matrix.of(context)
               .client
-              .getWellKnownInformationsByDomain(homeserver));
+              .getWellKnownInformationsByUserId(homeserver));
 
       final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
           Matrix.of(context).client.checkHomeserver(

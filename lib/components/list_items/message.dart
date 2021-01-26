@@ -1,12 +1,13 @@
-import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/encryption.dart';
-
+import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../../utils/app_route.dart';
 import '../../utils/date_time_extension.dart';
 import '../../utils/event_extension.dart';
 import '../../utils/string_color.dart';
+import '../../views/key_verification.dart';
 import '../adaptive_page_layout.dart';
 import '../avatar.dart';
 import '../dialogs/simple_dialogs.dart';
@@ -15,8 +16,6 @@ import '../message_content.dart';
 import '../message_reactions.dart';
 import '../reply_content.dart';
 import 'state_message.dart';
-import '../../views/key_verification.dart';
-import '../../utils/app_route.dart';
 
 class Message extends StatelessWidget {
   final Event event;

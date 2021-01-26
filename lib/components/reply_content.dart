@@ -2,9 +2,9 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../config/app_config.dart';
 import '../utils/matrix_locals.dart';
 import 'html_message.dart';
-import '../config/app_config.dart';
 
 class ReplyContent extends StatelessWidget {
   final Event replyEvent;

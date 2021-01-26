@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +38,6 @@ class App extends StatelessWidget {
           child: Builder(
             builder: (BuildContext context) => MaterialApp(
               title: 'FurryChat',
-              builder: BotToastInit(),
-              navigatorObservers: [BotToastNavigatorObserver()],
               theme: ThemeSwitcherWidget.of(context).themeData,
               localizationsDelegates: L10n.localizationsDelegates,
               supportedLocales: L10n.supportedLocales,

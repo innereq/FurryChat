@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
+
+import '../config/app_config.dart';
+import '../config/setting_keys.dart';
 /*import 'package:fluffychat/views/chat.dart';
 import 'package:fluffychat/config/app_config.dart';
 import 'package:dbus/dbus.dart';
@@ -20,8 +23,6 @@ import '../utils/firebase_controller.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
 import '../views/key_verification.dart';
-import '../config/app_config.dart';
-import '../config/setting_keys.dart';
 import 'avatar.dart';
 import 'dialogs/simple_dialogs.dart';
 

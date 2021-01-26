@@ -1,9 +1,9 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:flutter_matrix_html/flutter_html.dart';
 import 'package:flutter/material.dart';
-import '../utils/url_launcher.dart';
-import '../config/setting_keys.dart';
+import 'package:flutter_matrix_html/flutter_html.dart';
 
+import '../config/setting_keys.dart';
+import '../utils/url_launcher.dart';
 import 'matrix.dart';
 
 class HtmlMessage extends StatelessWidget {

@@ -8,12 +8,11 @@ import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
 import '../utils/presence_extension.dart';
 import '../views/chat.dart';
+import '../views/key_verification.dart';
 import 'adaptive_page_layout.dart';
 import 'content_banner.dart';
 import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
-import '../views/key_verification.dart';
-import '../utils/app_route.dart';
 
 class UserBottomSheet extends StatelessWidget {
   final User user;

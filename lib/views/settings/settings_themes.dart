@@ -7,11 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../components/adaptive_page_layout.dart';
 import '../../components/matrix.dart';
 import '../../components/theme_switcher.dart';
-import '../settings.dart';
-
-
-import '../../config/app_config.dart';
 import '../../config/setting_keys.dart';
+import '../settings.dart';
 
 class ThemesSettingsView extends StatelessWidget {
   @override

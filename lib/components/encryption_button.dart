@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -22,7 +22,6 @@ class _EncryptionButtonState extends State<EncryptionButton> {
 
   void _enableEncryptionAction() async {
     if (widget.room.encrypted) {
-      BotToast.showText(text: L10n.of(context).warningEncryptionInBeta);
       await Navigator.of(context).push(
         AppRoute.defaultRoute(
           context,
@@ -32,7 +31,9 @@ class _EncryptionButtonState extends State<EncryptionButton> {
       return;
     }
     if (!widget.room.client.encryptionEnabled) {
-      BotToast.showText(text: L10n.of(context).needPantalaimonWarning);
+      await FlushbarHelper.createInformation(
+              message: L10n.of(context).needPantalaimonWarning)
+          .show(context);
       return;
     }
     if (await SimpleDialogs(context).askConfirmation(

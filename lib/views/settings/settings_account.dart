@@ -1,6 +1,6 @@
-import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,14 +9,11 @@ import '../../components/adaptive_page_layout.dart';
 import '../../components/avatar.dart';
 import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
+import '../../config/setting_keys.dart';
 import '../../utils/app_route.dart';
 import '../../utils/platform_infos.dart';
 import '../settings.dart';
 import 'settings_ignore_list.dart';
-
-
-import '../../config/app_config.dart';
-import '../../config/setting_keys.dart';
 
 class AccountSettingsView extends StatelessWidget {
   @override
@@ -63,7 +60,9 @@ class _AccountSettingsState extends State<AccountSettings> {
           .client
           .changePassword(newPassword, oldPassword: oldPassword),
     );
-    BotToast.showText(text: L10n.of(context).passwordHasBeenChanged);
+    await FlushbarHelper.createSuccess(
+            message: L10n.of(context).passwordHasBeenChanged)
+        .show(context);
   }
 
   void _deleteAccountAction(BuildContext context) async {
