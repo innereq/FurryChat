@@ -499,6 +499,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "deviceId": "Device ID",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
   "devices": "Devices",
   "@devices": {
     "type": "text",
@@ -586,6 +591,11 @@
   },
   "encryptionNotEnabled": "Encryption is not enabled",
   "@encryptionNotEnabled": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Encrypted",
+  "@encrypted": {
     "type": "text",
     "placeholders": {}
   },
