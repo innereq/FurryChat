@@ -96,16 +96,25 @@ class _AccountSettingsState extends State<AccountSettings> {
     final input = await showTextInputDialog(
       context: context,
       title: L10n.of(context).pleaseEnterYourPassword,
-      textFields: [DialogTextField(obscureText: true, hintText: '******',minLines: 1,
-          maxLines: 1,)],
+      textFields: [
+        DialogTextField(
+          obscureText: true,
+          hintText: '******',
+          minLines: 1,
+          maxLines: 1,
+        )
+      ],
     );
     if (input == null) return;
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      Matrix.of(context).client.deactivateAccount(auth: {
-        'type': 'm.login.password',
-        'user': Matrix.of(context).client.userID,
-        'password': input.single,
-      }),
+      Matrix.of(context).client.deactivateAccount(
+            auth: AuthenticationPassword(
+              password: input.single,
+              user: Matrix.of(context).client.userID,
+              identifier: AuthenticationUserIdentifier(
+                  user: Matrix.of(context).client.userID),
+            ),
+          ),
     );
   }
 

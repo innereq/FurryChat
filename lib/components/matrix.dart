@@ -14,11 +14,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
 
-import '../config/app_config.dart';
+import '../app_config.dart';
 import '../config/setting_keys.dart';
 import '../utils/app_route.dart';
 /*import 'package:fluffychat/views/chat.dart';
-import 'package:fluffychat/config/app_config.dart';
+import 'package:fluffychat/app_config.dart';
 import 'package:dbus/dbus.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';*/
 
@@ -36,11 +36,7 @@ class Matrix extends StatefulWidget {
 
   final Widget child;
 
-  final String clientName;
-
-  final Store store;
-
-  Matrix({this.child, this.clientName, this.store, Key key}) : super(key: key);
+  Matrix({this.child, Key key}) : super(key: key);
 
   @override
   MatrixState createState() => MatrixState();
@@ -56,7 +52,7 @@ class Matrix extends StatefulWidget {
 
 class MatrixState extends State<Matrix> {
   Client client;
-  Store store;
+  Store store = Store();
   @override
   BuildContext context;
 
@@ -81,10 +77,12 @@ class MatrixState extends State<Matrix> {
 
   String jitsiInstance = 'https://meet.jit.si/';
 
+  String clientName;
+
   void clean() async {
     if (!kIsWeb) return;
 
-    await store.deleteItem(widget.clientName);
+    await store.deleteItem(clientName);
   }
 
   void _initWithStore() async {
@@ -97,7 +95,7 @@ class MatrixState extends State<Matrix> {
         if (PlatformInfos.isMobile) {
           await FirebaseController.setupFirebase(
             this,
-            widget.clientName,
+            clientName,
           );
         }
       }
@@ -140,17 +138,6 @@ class MatrixState extends State<Matrix> {
     }
   }
 
-  Map<String, dynamic> getAuthByPassword(String password, [String session]) => {
-        'type': 'm.login.password',
-        'identifier': {
-          'type': 'm.id.user',
-          'user': client.userID,
-        },
-        'user': client.userID,
-        'password': password,
-        if (session != null) 'session': session,
-      };
-
   StreamSubscription onRoomKeyRequestSub;
   StreamSubscription onKeyVerificationRequestSub;
   StreamSubscription onJitsiCallSub;
@@ -160,11 +147,12 @@ class MatrixState extends State<Matrix> {
   StreamSubscription<html.Event> onBlurSub;
 
   void _onUiaRequest(UiaRequest uiaRequest) async {
-    uiaRequest.onUpdate = () => _onUiaRequest(uiaRequest);
-    if (uiaRequest.loading || uiaRequest.done || uiaRequest.fail) return;
+    uiaRequest.onUpdate = (_) => _onUiaRequest(uiaRequest);
+    if (uiaRequest.state != UiaRequestState.waitForUser ||
+        uiaRequest.nextStages.isEmpty) return;
     final stage = uiaRequest.nextStages.first;
     switch (stage) {
-      case 'm.login.password':
+      case AuthenticationTypes.password:
         final input = await showTextInputDialog(context: context, textFields: [
           DialogTextField(
             minLines: 1,
@@ -174,17 +162,12 @@ class MatrixState extends State<Matrix> {
         ]);
         if (input?.isEmpty ?? true) return;
         return uiaRequest.completeStage(
-          'm.login.password',
-          {
-            'type': 'm.login.password',
-            'identifier': {
-              'type': 'm.id.user',
-              'user': client.userID,
-            },
-            'user': client.userID,
-            'password': input.single,
-            'session': uiaRequest.session,
-          },
+          AuthenticationPassword(
+            session: uiaRequest.session,
+            user: client.userID,
+            password: input.single,
+            identifier: AuthenticationUserIdentifier(user: client.userID),
+          ),
         );
       default:
         debugPrint('Warning! Cannot handle the stage "$stage"');
@@ -329,8 +312,8 @@ class MatrixState extends State<Matrix> {
   }
 
   void initMatrix() {
-    store = widget.store ?? Store();
-
+    clientName =
+        '${AppConfig.applicationName} ${kIsWeb ? 'Web' : Platform.operatingSystem}';
     final Set verificationMethods = <KeyVerificationMethod>{
       KeyVerificationMethod.numbers
     };
@@ -339,7 +322,7 @@ class MatrixState extends State<Matrix> {
       verificationMethods.add(KeyVerificationMethod.emoji);
     }
     client = Client(
-      widget.clientName,
+      clientName,
       enableE2eeRecovery: true,
       verificationMethods: verificationMethods,
       importantStateEvents: <String>{
@@ -424,9 +407,8 @@ class MatrixState extends State<Matrix> {
 
   void initSettings() {
     if (store != null) {
-      store
-          .getItem(SettingKeys.jitsiInstance)
-          .then((final instance) => jitsiInstance = instance ?? jitsiInstance);
+      store.getItem(SettingKeys.jitsiInstance).then((final instance) =>
+          AppConfig.jitsiInstance = instance ?? AppConfig.jitsiInstance);
       store.getItem(SettingKeys.wallpaper).then((final path) async {
         if (path == null) return;
         final file = File(path);

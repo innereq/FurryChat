@@ -64,6 +64,8 @@ sudo apt install ninja-build
 
 * Enable web support in Flutter: https://flutter.dev/docs/get-started/web
 
+* Optionally edit the file `lib/app_config.dart`. If you e.g. only want to change the default homeserver, then only modify the `defaultHomeserver` key.
+
 * Build with:
 ```bash
 ./scripts/prepare-web.sh

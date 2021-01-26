@@ -7,10 +7,10 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:open_noti_settings/open_noti_settings.dart';
 
+import '../../app_config.dart';
 import '../../components/adaptive_page_layout.dart';
 import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
-import '../../utils/firebase_controller.dart';
 import '../settings.dart';
 
 class NotificationSettingsItem {
@@ -68,9 +68,9 @@ class SettingsNotifications extends StatelessWidget {
     await NotificationSetting.configureChannel(
       NotificationDetails(
         android: AndroidNotificationDetails(
-          FirebaseController.CHANNEL_ID,
-          FirebaseController.CHANNEL_NAME,
-          FirebaseController.CHANNEL_DESCRIPTION,
+          AppConfig.pushNotificationsChannelId,
+          AppConfig.pushNotificationsChannelName,
+          AppConfig.pushNotificationsChannelDescription,
         ),
       ),
     );

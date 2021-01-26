@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../app_config.dart';
 import '../utils/app_route.dart';
 import '../views/chat_details.dart';
 import '../views/chat_list.dart';
@@ -33,7 +34,7 @@ class _ChatSettingsPopupMenuState extends State<ChatSettingsPopupMenu> {
 
   void startCallAction(BuildContext context) async {
     final url =
-        '${Matrix.of(context).jitsiInstance}${Uri.encodeComponent(widget.room.id.localpart)}';
+        '${AppConfig.jitsiInstance}${Uri.encodeComponent(widget.room.id.localpart)}';
     final success = await SimpleDialogs(context)
         .tryRequestWithLoadingDialog(widget.room.sendEvent({
       'msgtype': Matrix.callNamespace,

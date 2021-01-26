@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:emoji_picker/emoji_picker.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/foundation.dart';
@@ -15,6 +16,7 @@ import 'package:pedantic/pedantic.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:swipe_to_action/swipe_to_action.dart';
 
+import '../app_config.dart';
 import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
 import '../components/chat_settings_popup_menu.dart';
@@ -28,7 +30,6 @@ import '../components/list_items/message.dart';
 import '../components/matrix.dart';
 import '../components/reply_content.dart';
 import '../components/user_bottom_sheet.dart';
-import '../config/app_config.dart';
 import '../config/app_emojis.dart';
 import '../utils/app_route.dart';
 import '../utils/matrix_file_extension.dart';
@@ -588,6 +589,34 @@ class _ChatState extends State<_Chat> {
     }
   }
 
+  void _sendEmojiAction(BuildContext context, String emoji) {
+    SimpleDialogs(context).tryRequestWithLoadingDialog(
+      room.sendReaction(
+        selectedEvents.first.eventId,
+        emoji,
+      ),
+    );
+    setState(() => selectedEvents.clear());
+  }
+
+  void _pickEmojiAction(BuildContext context) async {
+    final emoji = await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Column(
+        children: [
+          Spacer(),
+          EmojiPicker(
+            onEmojiSelected: (emoji, category) =>
+                Navigator.of(context).pop<Emoji>(emoji),
+          ),
+        ],
+      ),
+    );
+    if (emoji == null) return;
+    return _sendEmojiAction(context, emoji.emoji);
+  }
+
   @override
   Widget build(BuildContext context) {
     matrix = Matrix.of(context);
@@ -621,59 +650,60 @@ class _ChatState extends State<_Chat> {
         titleSpacing: 0,
         title: selectedEvents.isEmpty
             ? StreamBuilder<Object>(
-                stream: Matrix.of(context)
-                    .client
-                    .onPresence
-                    .stream
-                    .where((p) => p.senderId == room.directChatMatrixID),
-                builder: (context, snapshot) {
-                  return ListTile(
-                    leading: Avatar(room.avatar, room.displayname),
-                    contentPadding: EdgeInsets.zero,
-                    onTap: room.isDirectChat
-                        ? () => showModalBottomSheet(
-                              context: context,
-                              builder: (context) => UserBottomSheet(
-                                user: room
-                                    .getUserByMXIDSync(room.directChatMatrixID),
-                                onMention: () => sendController.text +=
-                                    ' ${room.directChatMatrixID}',
-                              ),
-                            )
-                        : () => Navigator.of(context).push(
-                              AppRoute.defaultRoute(
-                                context,
-                                ChatDetails(room),
-                              ),
-                            ),
-                    title: Text(
-                        room.getLocalizedDisplayname(
-                            MatrixLocals(L10n.of(context))),
-                        maxLines: 1),
-                    subtitle: typingText.isEmpty
-                        ? Text(
-                            room.getLocalizedStatus(context),
-                            maxLines: 1,
-                          )
-                        : Row(
-                            children: <Widget>[
-                              Icon(Icons.edit_outlined,
-                                  color: Theme.of(context).primaryColor,
-                                  size: 13),
-                              SizedBox(width: 4),
-                              Text(
-                                typingText,
-                                maxLines: 1,
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 16,
+                stream: room.onUpdate.stream,
+                builder: (context, snapshot) => ListTile(
+                      leading: Avatar(room.avatar, room.displayname),
+                      contentPadding: EdgeInsets.zero,
+                      onTap: room.isDirectChat
+                          ? () => showModalBottomSheet(
+                                context: context,
+                                builder: (context) => UserBottomSheet(
+                                  user: room.getUserByMXIDSync(
+                                      room.directChatMatrixID),
+                                  onMention: () => sendController.text +=
+                                      ' ${room.directChatMatrixID}',
+                                ),
+                              )
+                          : () => Navigator.of(context).push(
+                                AppRoute.defaultRoute(
+                                  context,
+                                  ChatDetails(room),
                                 ),
                               ),
-                            ],
-                          ),
-                  );
-                })
+                      title: Text(
+                          room.getLocalizedDisplayname(
+                              MatrixLocals(L10n.of(context))),
+                          maxLines: 1),
+                      subtitle: typingText.isEmpty
+                          ? StreamBuilder<Object>(
+                              stream: Matrix.of(context)
+                                  .client
+                                  .onPresence
+                                  .stream
+                                  .where((p) =>
+                                      p.senderId == room.directChatMatrixID),
+                              builder: (context, snapshot) => Text(
+                                    room.getLocalizedStatus(context),
+                                    maxLines: 1,
+                                  ))
+                          : Row(
+                              children: <Widget>[
+                                Icon(Icons.edit_outlined,
+                                    color: Theme.of(context).primaryColor,
+                                    size: 13),
+                                SizedBox(width: 4),
+                                Text(
+                                  typingText,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ))
             : Text(L10n.of(context)
                 .numberSelected(selectedEvents.length.toString())),
         actions: selectMode
@@ -959,28 +989,32 @@ class _ChatState extends State<_Chat> {
                       });
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: emojis.length,
-                        itemBuilder: (c, i) => InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: () {
-                            SimpleDialogs(context).tryRequestWithLoadingDialog(
-                              room.sendReaction(
-                                selectedEvents.first.eventId,
-                                emojis[i],
+                        itemCount: emojis.length + 1,
+                        itemBuilder: (c, i) => i == emojis.length
+                            ? InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Container(
+                                  width: 56,
+                                  height: 56,
+                                  alignment: Alignment.center,
+                                  child: Icon(Icons.add_outlined),
+                                ),
+                                onTap: () => _pickEmojiAction(context),
+                              )
+                            : InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () =>
+                                    _sendEmojiAction(context, emojis[i]),
+                                child: Container(
+                                  width: 56,
+                                  height: 56,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    emojis[i],
+                                    style: TextStyle(fontSize: 30),
+                                  ),
+                                ),
                               ),
-                            );
-                            setState(() => selectedEvents.clear());
-                          },
-                          child: Container(
-                            width: 56,
-                            height: 56,
-                            alignment: Alignment.center,
-                            child: Text(
-                              emojis[i],
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                        ),
                       );
                     }),
                   ),

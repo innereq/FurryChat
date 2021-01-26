@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:matrix_link_text/link_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../config/app_config.dart';
+import '../app_config.dart';
 import '../utils/event_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/url_launcher.dart';

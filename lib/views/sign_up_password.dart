@@ -27,7 +27,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
   bool loading = false;
   bool showPassword = true;
 
-  void _signUpAction(BuildContext context, {Map<String, dynamic> auth}) async {
+  void _signUpAction(BuildContext context, {AuthenticationData auth}) async {
     var matrix = Matrix.of(context);
     if (passwordController.text.isEmpty) {
       setState(() => passwordError = L10n.of(context).pleaseEnterYourPassword);
@@ -45,7 +45,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
       await matrix.client.register(
         username: widget.username,
         password: passwordController.text,
-        initialDeviceDisplayName: matrix.widget.clientName,
+        initialDeviceDisplayName: matrix.clientName,
         auth: auth,
       );
       await waitForLogin;
@@ -62,10 +62,13 @@ class _SignUpPasswordState extends State<SignUpPassword> {
                 true);
 
         if (currentStage == 'm.login.dummy') {
-          _signUpAction(context, auth: {
-            'type': currentStage,
-            'session': exception.session,
-          });
+          _signUpAction(
+            context,
+            auth: AuthenticationData(
+              type: currentStage,
+              session: exception.session,
+            ),
+          );
         } else {
           await Navigator.of(context).push(
             AppRoute.defaultRoute(
@@ -73,9 +76,10 @@ class _SignUpPasswordState extends State<SignUpPassword> {
               AuthWebView(
                 currentStage,
                 exception.session,
-                () => _signUpAction(context, auth: {
-                  'session': exception.session,
-                }),
+                () => _signUpAction(
+                  context,
+                  auth: AuthenticationData(session: exception.session),
+                ),
               ),
             ),
           );

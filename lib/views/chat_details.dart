@@ -8,12 +8,12 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix_link_text/link_text.dart';
 
+import '../app_config.dart';
 import '../components/adaptive_page_layout.dart';
 import '../components/chat_settings_popup_menu.dart';
 import '../components/content_banner.dart';
 import '../components/dialogs/simple_dialogs.dart';
 import '../components/list_items/participant_list_item.dart';
-import '../config/app_config.dart';
 import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
 import '../utils/matrix_locals.dart';
@@ -201,7 +201,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                         IconButton(
                           icon: Icon(Icons.share_outlined),
                           onPressed: () => FluffyShare.share(
-                              AppConfig.matrixToLinkPrefix +
+                              AppConfig.inviteLinkPrefix +
                                   widget.room.canonicalAlias,
                               context),
                         ),

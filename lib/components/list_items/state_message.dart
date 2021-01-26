@@ -2,6 +2,7 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../../app_config.dart';
 import '../../utils/matrix_locals.dart';
 
 class StateMessage extends StatelessWidget {
@@ -10,7 +11,9 @@ class StateMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (event.type == EventTypes.Redaction) return Container();
+    if (event.type == EventTypes.Redaction || AppConfig.hideAllStateEvents) {
+      return Container();
+    }
     return Padding(
       padding: const EdgeInsets.only(
         left: 8.0,

@@ -41,8 +41,11 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       title: L10n.of(context).askSSSSCache,
       textFields: [
         DialogTextField(
-            hintText: L10n.of(context).passphraseOrKey, obscureText: true, minLines: 1,
-          maxLines: 1,)
+          hintText: L10n.of(context).passphraseOrKey,
+          obscureText: true,
+          minLines: 1,
+          maxLines: 1,
+        )
       ],
     );
     if (input != null) {
@@ -138,10 +141,11 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                   title: L10n.of(context).askSSSSVerify,
                   textFields: [
                     DialogTextField(
-                        hintText: L10n.of(context).passphraseOrKey,
-                        obscureText: true,
-                        minLines: 1,
-                        maxLines: 1,)
+                      hintText: L10n.of(context).passphraseOrKey,
+                      obscureText: true,
+                      minLines: 1,
+                      maxLines: 1,
+                    )
                   ],
                 );
                 if (input != null) {

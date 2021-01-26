@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../app_config.dart';
 import '../components/adaptive_page_layout.dart';
 import '../components/matrix.dart';
-import '../config/app_config.dart';
 import '../utils/app_route.dart';
 import 'settings/settings_account.dart';
 import 'settings/settings_chat.dart';
