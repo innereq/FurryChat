@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:swipe_to_action/swipe_to_action.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_config.dart';
 import '../components/adaptive_page_layout.dart';
@@ -32,6 +33,7 @@ import '../components/reply_content.dart';
 import '../components/user_bottom_sheet.dart';
 import '../config/app_emojis.dart';
 import '../utils/app_route.dart';
+import '../utils/filtered_timeline_extension.dart';
 import '../utils/matrix_file_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
@@ -86,6 +88,8 @@ class _ChatState extends State<_Chat> {
   bool currentlyTyping = false;
 
   List<Event> selectedEvents = [];
+
+  List<Event> filteredEvents;
 
   bool _collapseRoomCreate = true;
 
@@ -150,31 +154,14 @@ class _ChatState extends State<_Chat> {
 
   void updateView() {
     if (!mounted) return;
-
-    var seenByText = '';
-    if (timeline.events.isNotEmpty) {
-      var lastReceipts = List.from(timeline.events.first.receipts);
-      lastReceipts.removeWhere((r) =>
-          r.user.id == room.client.userID ||
-          r.user.id == timeline.events.first.senderId);
-      if (lastReceipts.length == 1) {
-        seenByText = L10n.of(context)
-            .seenByUser(lastReceipts.first.user.calcDisplayname());
-      } else if (lastReceipts.length == 2) {
-        seenByText = seenByText = L10n.of(context).seenByUserAndUser(
-            lastReceipts.first.user.calcDisplayname(),
-            lastReceipts[1].user.calcDisplayname());
-      } else if (lastReceipts.length > 2) {
-        seenByText = L10n.of(context).seenByUserAndCountOthers(
-            lastReceipts.first.user.calcDisplayname(),
-            (lastReceipts.length - 1).toString());
-      }
-    }
-    if (timeline != null) {
-      setState(() {
-        this.seenByText = seenByText;
-      });
-    }
+    setState(
+      () {
+        filteredEvents =
+            timeline.getFilteredEvents(collapseRoomCreate: _collapseRoomCreate);
+        seenByText =
+            room.getLocalizedSeenByText(context, timeline, filteredEvents);
+      },
+    );
   }
 
   Future<bool> getTimeline(BuildContext context) async {
@@ -391,8 +378,7 @@ class _ChatState extends State<_Chat> {
   }
 
   void _scrollToEventId(String eventId, {BuildContext context}) async {
-    var eventIndex =
-        getFilteredEvents().indexWhere((e) => e.eventId == eventId);
+    var eventIndex = filteredEvents.indexWhere((e) => e.eventId == eventId);
     if (eventIndex == -1) {
       // event id not found...maybe we can fetch it?
       // the try...finally is here to start and close the loading dialog reliably
@@ -426,8 +412,7 @@ class _ChatState extends State<_Chat> {
             }
             rethrow;
           }
-          eventIndex =
-              getFilteredEvents().indexWhere((e) => e.eventId == eventId);
+          eventIndex = filteredEvents.indexWhere((e) => e.eventId == eventId);
         }
       });
       if (context != null) {
@@ -599,7 +584,8 @@ class _ChatState extends State<_Chat> {
     setState(() => selectedEvents.clear());
   }
 
-  void _pickEmojiAction(BuildContext context) async {
+  void _pickEmojiAction(
+      BuildContext context, Iterable<Event> allReactionEvents) async {
     final emoji = await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -607,13 +593,25 @@ class _ChatState extends State<_Chat> {
         children: [
           Spacer(),
           EmojiPicker(
-            onEmojiSelected: (emoji, category) =>
-                Navigator.of(context).pop<Emoji>(emoji),
+            onEmojiSelected: (emoji, category) {
+              // recent emojis don't work, so we sadly have to re-implement them
+              // https://github.com/JeffG05/emoji_picker/issues/31
+              SharedPreferences.getInstance().then((prefs) {
+                final recents = prefs.getStringList('recents') ?? <String>[];
+                recents.insert(0, emoji.name);
+                // make sure we remove duplicates
+                prefs.setStringList('recents', recents.toSet().toList());
+              });
+              Navigator.of(context).pop<Emoji>(emoji);
+            },
           ),
         ],
       ),
     );
     if (emoji == null) return;
+    // make sure we don't send the same emoji twice
+    if (allReactionEvents
+        .any((e) => e.content['m.relates_to']['key'] == emoji.emoji)) return;
     return _sendEmojiAction(context, emoji.emoji);
   }
 
@@ -661,7 +659,7 @@ class _ChatState extends State<_Chat> {
                                   user: room.getUserByMXIDSync(
                                       room.directChatMatrixID),
                                   onMention: () => sendController.text +=
-                                      ' ${room.directChatMatrixID}',
+                                      '${room.directChatMatrixID} ',
                                 ),
                               )
                           : () => Navigator.of(context).push(
@@ -779,10 +777,12 @@ class _ChatState extends State<_Chat> {
                           timeline != null &&
                           timeline.events.isNotEmpty &&
                           Matrix.of(context).webHasFocus) {
-                        room.sendReadMarker(timeline.events.first.eventId);
+                        room.sendReadMarker(
+                          timeline.events.first.eventId,
+                          readReceiptLocationEventId:
+                              timeline.events.first.eventId,
+                        );
                       }
-
-                      final filteredEvents = getFilteredEvents();
 
                       // create a map of eventId --> index to greatly improve performance of
                       // ListView's findChildIndexCallback
@@ -891,7 +891,7 @@ class _ChatState extends State<_Chat> {
                                                       user: event.sender,
                                                       onMention: () =>
                                                           sendController.text +=
-                                                              ' ${event.senderId}',
+                                                              '${event.senderId} ',
                                                     ),
                                                   ),
                                               onSelect: (Event event) {
@@ -999,7 +999,8 @@ class _ChatState extends State<_Chat> {
                                   alignment: Alignment.center,
                                   child: Icon(Icons.add_outlined),
                                 ),
-                                onTap: () => _pickEmojiAction(context),
+                                onTap: () => _pickEmojiAction(
+                                    context, allReactionEvents),
                               )
                             : InkWell(
                                 borderRadius: BorderRadius.circular(8),

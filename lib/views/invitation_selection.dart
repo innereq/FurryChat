@@ -1,13 +1,14 @@
 import 'dart:async';
 
-import 'package:flushbar/flushbar_helper.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
+import '../components/default_app_bar_search_field.dart';
 import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
 import 'chat_list.dart';
@@ -120,35 +121,11 @@ class _InvitationSelectionState extends State<InvitationSelection> {
       firstScaffold: ChatList(activeChat: widget.room.id),
       secondScaffold: Scaffold(
           appBar: AppBar(
-            title: Text(L10n.of(context).inviteContact),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(92),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: controller,
-                  autofocus: true,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.search,
-                  onChanged: (String text) =>
-                      searchUserWithCoolDown(context, text),
-                  onSubmitted: (String text) => searchUser(context, text),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    prefixText: '@',
-                    hintText: L10n.of(context).username,
-                    labelText: L10n.of(context).inviteContactToGroup(groupName),
-                    suffixIcon: loading
-                        ? Container(
-                            padding: const EdgeInsets.all(8.0),
-                            width: 12,
-                            height: 12,
-                            child: CircularProgressIndicator(),
-                          )
-                        : Icon(Icons.search_outlined),
-                  ),
-                ),
-              ),
+            titleSpacing: 0,
+            title: DefaultAppBarSearchField(
+              autofocus: true,
+              hintText: L10n.of(context).inviteContactToGroup(groupName),
+              onChanged: (String text) => searchUserWithCoolDown(context, text),
             ),
           ),
           body: foundProfiles.isNotEmpty

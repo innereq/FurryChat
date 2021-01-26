@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
-import 'package:logger_flutter/logger_flutter.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -312,7 +311,6 @@ class MatrixState extends State<Matrix> {
   }
 
   void initMatrix() {
-    LogConsole.init();
     clientName =
         '${AppConfig.applicationName} ${kIsWeb ? 'Web' : Platform.operatingSystem}';
     final Set verificationMethods = <KeyVerificationMethod>{
@@ -350,7 +348,7 @@ class MatrixState extends State<Matrix> {
             context: context,
             title: L10n.of(context).requestToReadOlderMessages,
             message:
-                '${sender.id}\n\n${L10n.of(context).device}:\n${request.requestingDevice.deviceId}\n\n${L10n.of(context).identity}:\n${request.requestingDevice.curve25519Key.beautified}',
+                '${sender.id}\n\n${L10n.of(context).device}:\n${request.requestingDevice.deviceId}\n\n${L10n.of(context).publicKey}:\n${request.requestingDevice.ed25519Key.beautified}',
             okLabel: L10n.of(context).verify,
             cancelLabel: L10n.of(context).deny,
           ) ==

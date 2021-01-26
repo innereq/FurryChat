@@ -514,7 +514,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "downloadFile": "Lae fail alla",
+  "downloadFile": "Laadi fail alla",
   "@downloadFile": {
     "type": "text",
     "placeholders": {}
@@ -861,12 +861,12 @@
       "count": {}
     }
   },
-  "loadingPleaseWait": "Laen andmeid… Palun oota.",
+  "loadingPleaseWait": "Laadin andmeid… Palun oota.",
   "@loadingPleaseWait": {
     "type": "text",
     "placeholders": {}
   },
-  "loadMore": "Lae veel…",
+  "loadMore": "Laadi veel…",
   "@loadMore": {
     "type": "text",
     "placeholders": {}
@@ -1954,5 +1954,15 @@
     "placeholders": {
       "count": {}
     }
+  },
+  "yourPublicKey": "Sinu avalik võti",
+  "@yourPublicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "publicKey": "Avalik võti",
+  "@publicKey": {
+    "type": "text",
+    "placeholders": {}
   }
 }

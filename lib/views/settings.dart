@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:logger_flutter/logger_flutter.dart';
 
 import '../app_config.dart';
 import '../components/adaptive_page_layout.dart';
 import '../components/matrix.dart';
 import '../utils/app_route.dart';
+import 'log_view.dart';
 import 'settings/settings_account.dart';
 import 'settings/settings_chat.dart';
 import 'settings/settings_devices.dart';
@@ -232,12 +232,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: () => Navigator.of(context).push(
-                AppRoute.defaultRoute(
-                  context,
-                  LogConsole(
-                    showCloseButton: true,
-                  ),
-                ),
+                AppRoute.defaultRoute(context, LogViewer()),
               ),
             ),
           ],

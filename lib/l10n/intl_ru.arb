@@ -2009,5 +2009,15 @@
     "placeholders": {
       "count": {}
     }
+  },
+  "yourPublicKey": "Ваш открытый ключ",
+  "@yourPublicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "publicKey": "Открытый ключ",
+  "@publicKey": {
+    "type": "text",
+    "placeholders": {}
   }
 }

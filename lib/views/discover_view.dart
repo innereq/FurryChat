@@ -15,16 +15,22 @@ import 'chat.dart';
 import 'empty_page.dart';
 
 class DiscoverView extends StatelessWidget {
+  final String alias;
+
+  const DiscoverView({Key key, this.alias}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return AdaptivePageLayout(
-      firstScaffold: DiscoverPage(),
+      firstScaffold: DiscoverPage(alias: alias),
       secondScaffold: EmptyPage(),
     );
   }
 }
 
 class DiscoverPage extends StatefulWidget {
+  final String alias;
+
+  const DiscoverPage({Key key, this.alias}) : super(key: key);
   @override
   _DiscoverPageState createState() => _DiscoverPageState();
 }
@@ -114,6 +120,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   @override
   void initState() {
+    _genericSearchTerm = widget.alias;
     _scrollController.addListener(() async {
       if (_scrollController.position.pixels > 0 && _scrolledToTop) {
         setState(() => _scrolledToTop = false);
@@ -126,8 +133,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   @override
   Widget build(BuildContext context) {
+    final server = _genericSearchTerm?.isValidMatrixId ?? false
+        ? _genericSearchTerm.domain
+        : _server;
     _publicRoomsResponse ??= Matrix.of(context).client.searchPublicRooms(
-          server: _server,
+          server: server,
           genericSearchTerm: _genericSearchTerm,
         );
     return Scaffold(
@@ -136,6 +146,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         elevation: _scrolledToTop ? 0 : null,
         title: DefaultAppBarSearchField(
           onChanged: (text) => _search(context, text),
+          hintText: L10n.of(context).searchForAChat,
           suffix: IconButton(
             icon: Icon(Icons.edit_outlined),
             onPressed: () => _setServer(context),
@@ -149,7 +160,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           if (snapshot.hasError) {
             return Center(child: Text(snapshot.error.toString()));
           }
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return Center(child: CircularProgressIndicator());
           }
           final publicRoomsResponse = snapshot.data;
