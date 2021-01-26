@@ -1,4 +1,6 @@
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:famedlysdk/encryption.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
@@ -13,6 +15,8 @@ import '../message_content.dart';
 import '../message_reactions.dart';
 import '../reply_content.dart';
 import 'state_message.dart';
+import '../../views/key_verification.dart';
+import '../../utils/app_route.dart';
 
 class Message extends StatelessWidget {
   final Event event;
@@ -36,6 +40,36 @@ class Message extends StatelessWidget {
   /// Indicates wheither the user may use a mouse instead
   /// of touchscreen.
   static bool useMouse = false;
+
+  void _verifyOrRequestKey(BuildContext context) async {
+    final client = Matrix.of(context).client;
+    if (client.isUnknownSession && client.encryption.crossSigning.enabled) {
+      final req =
+          await client.userDeviceKeys[client.userID].startVerification();
+      req.onUpdate = () async {
+        if (req.state == KeyVerificationState.done) {
+          for (var i = 0; i < 12; i++) {
+            if (await client.encryption.keyManager.isCached()) {
+              break;
+            }
+            await Future.delayed(Duration(seconds: 1));
+          }
+          final timeline = await event.room.getTimeline();
+          timeline.requestKeys();
+          timeline.cancelSubscriptions();
+        }
+      };
+      await Navigator.of(context).push(
+        AppRoute.defaultRoute(
+          context,
+          KeyVerificationView(request: req),
+        ),
+      );
+    } else {
+      await SimpleDialogs(context).tryRequestWithLoadingDialog(
+          event.getDisplayEvent(timeline).requestKey());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,12 +171,13 @@ class Message extends StatelessWidget {
                       RaisedButton(
                         color: color.withAlpha(100),
                         child: Text(
-                          L10n.of(context).requestPermission,
+                          client.isUnknownSession &&
+                                  client.encryption.crossSigning.enabled
+                              ? L10n.of(context).verify
+                              : L10n.of(context).requestPermission,
                           style: TextStyle(color: textColor),
                         ),
-                        onPressed: () => SimpleDialogs(context)
-                            .tryRequestWithLoadingDialog(
-                                displayEvent.requestKey()),
+                        onPressed: () => _verifyOrRequestKey(context),
                       ),
                     SizedBox(height: 4),
                     Opacity(

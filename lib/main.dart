@@ -17,6 +17,8 @@ import 'views/homeserver_picker.dart';
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  FlutterError.onError = (FlutterErrorDetails details) =>
+      Zone.current.handleUncaughtError(details.exception, details.stack);
   runZonedGuarded(
     () => runApp(App()),
     (error, stackTrace) async {
