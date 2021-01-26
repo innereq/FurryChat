@@ -8,6 +8,7 @@ import '../utils/event_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/url_launcher.dart';
 import 'audio_player.dart';
+import '../config/app_config.dart';
 import 'html_message.dart';
 import 'image_bubble.dart';
 import 'matrix.dart';
@@ -43,7 +44,7 @@ class MessageContent extends StatelessWidget {
           case MessageTypes.Text:
           case MessageTypes.Notice:
           case MessageTypes.Emote:
-            if (Matrix.of(context).renderHtml &&
+            if (AppConfig.renderHtml &&
                 !event.redacted &&
                 event.isRichMessage) {
               String html = event.content['formatted_body'];

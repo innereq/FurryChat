@@ -9,6 +9,10 @@ import '../../components/matrix.dart';
 import '../../components/theme_switcher.dart';
 import '../settings.dart';
 
+
+import '../../config/app_config.dart';
+import '../../config/setting_keys.dart';
+
 class ThemesSettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -35,13 +39,13 @@ class _ThemesSettingsState extends State<ThemesSettings> {
     Matrix.of(context).wallpaper = File(wallpaper.path);
     await Matrix.of(context)
         .store
-        .setItem('chat.fluffy.wallpaper', wallpaper.path);
+        .setItem(SettingKeys.wallpaper, wallpaper.path);
     setState(() => null);
   }
 
   void deleteWallpaperAction(BuildContext context) async {
     Matrix.of(context).wallpaper = null;
-    await Matrix.of(context).store.deleteItem('chat.fluffy.wallpaper');
+    await Matrix.of(context).store.deleteItem(SettingKeys.wallpaper);
     setState(() => null);
   }
 

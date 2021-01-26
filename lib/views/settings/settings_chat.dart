@@ -5,6 +5,10 @@ import '../../components/adaptive_page_layout.dart';
 import '../../components/matrix.dart';
 import '../settings.dart';
 
+import '../../config/app_config.dart';
+import '../../config/setting_keys.dart';
+
+
 class ChatSettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -40,13 +44,13 @@ class _ChatSettingsState extends State<ChatSettings> {
       Matrix.of(context).swipeToEndAction = action;
       await Matrix.of(context)
           .store
-          .setItem('dev.inex.furrychat.swipeToEndAction', action);
+          .setItem(SettingKeys.swipeToEndAction, action);
       setState(() => null);
     } else {
       Matrix.of(context).swipeToStartAction = action;
       await Matrix.of(context)
           .store
-          .setItem('dev.inex.furrychat.swipeToStartAction', action);
+          .setItem(SettingKeys.swipeToStartAction, action);
       setState(() => null);
     }
   }
@@ -99,13 +103,13 @@ class _ChatSettingsState extends State<ChatSettings> {
           ListTile(
             title: Text(L10n.of(context).renderRichContent),
             trailing: Switch(
-              value: Matrix.of(context).renderHtml,
+              value: AppConfig.renderHtml,
               activeColor: Theme.of(context).primaryColor,
               onChanged: (bool newValue) async {
-                Matrix.of(context).renderHtml = newValue;
+                AppConfig.renderHtml = newValue;
                 await Matrix.of(context)
                     .store
-                    .setItem('chat.fluffy.renderHtml', newValue ? '1' : '0');
+                    .setItem(SettingKeys.renderHtml, newValue.toString());
                 setState(() => null);
               },
             ),
@@ -131,6 +135,33 @@ class _ChatSettingsState extends State<ChatSettings> {
             subtitle: Text(
                 _getActionDescription(Matrix.of(context).swipeToStartAction)),
           ),
+          Divider(thickness: 1),
+          ListTile(
+              title: Text(L10n.of(context).hideRedactedEvents),
+              trailing: Switch(
+                value: AppConfig.hideRedactedEvents,
+                activeColor: Theme.of(context).primaryColor,
+                onChanged: (bool newValue) async {
+                  AppConfig.hideRedactedEvents = newValue;
+                  await Matrix.of(context).store.setItem(
+                      SettingKeys.hideRedactedEvents, newValue.toString());
+                  setState(() => null);
+                },
+              ),
+            ),
+            ListTile(
+              title: Text(L10n.of(context).hideUnknownEvents),
+              trailing: Switch(
+                value: AppConfig.hideUnknownEvents,
+                activeColor: Theme.of(context).primaryColor,
+                onChanged: (bool newValue) async {
+                  AppConfig.hideUnknownEvents = newValue;
+                  await Matrix.of(context).store.setItem(
+                      SettingKeys.hideUnknownEvents, newValue.toString());
+                  setState(() => null);
+                },
+              ),
+            ),
         ],
       ),
     );

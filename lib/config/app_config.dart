@@ -5,4 +5,7 @@ abstract class AppConfig {
   static const String sourceCodeUrl = 'https://github.com/innereq/FurryChat';
   static const String supportUrl =
       'https://github.com/innereq/FurryChat/issues';
+  static bool renderHtml = false;
+  static bool hideRedactedEvents = false;
+  static bool hideUnknownEvents = false;
 }

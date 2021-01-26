@@ -20,6 +20,8 @@ import '../utils/firebase_controller.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
 import '../views/key_verification.dart';
+import '../config/app_config.dart';
+import '../config/setting_keys.dart';
 import 'avatar.dart';
 import 'dialogs/simple_dialogs.dart';
 
@@ -70,7 +72,6 @@ class MatrixState extends State<Matrix> {
 
   String activeRoomId;
   File wallpaper;
-  bool renderHtml = false;
 
   String swipeToEndAction;
   String swipeToStartAction = 'reply';
@@ -304,28 +305,36 @@ class MatrixState extends State<Matrix> {
     }
     if (store != null) {
       store
-          .getItem('chat.fluffy.jitsi_instance')
+          .getItem(SettingKeys.jitsiInstance)
           .then((final instance) => jitsiInstance = instance ?? jitsiInstance);
-      store.getItem('chat.fluffy.wallpaper').then((final path) async {
+      store.getItem(SettingKeys.wallpaper).then((final path) async {
         if (path == null) return;
         final file = File(path);
         if (await file.exists()) {
           wallpaper = file;
         }
       });
-      store.getItem('chat.fluffy.renderHtml').then((final render) async {
-        renderHtml = render == '1';
-      });
       store
-          .getItem('dev.inex.furrychat.swipeToEndAction')
+          .getItem(SettingKeys.swipeToEndAction)
           .then((final action) async {
         swipeToEndAction = action ?? swipeToEndAction;
       });
       store
-          .getItem('dev.inex.furrychat.swipeToStartAction')
+          .getItem(SettingKeys.swipeToStartAction)
           .then((final action) async {
         swipeToStartAction = action ?? swipeToStartAction;
       });
+      store
+          .getItemBool(SettingKeys.renderHtml, AppConfig.renderHtml)
+          .then((value) => AppConfig.renderHtml = value);
+      store
+          .getItemBool(
+              SettingKeys.hideRedactedEvents, AppConfig.hideRedactedEvents)
+          .then((value) => AppConfig.hideRedactedEvents = value);
+      store
+          .getItemBool(
+              SettingKeys.hideUnknownEvents, AppConfig.hideUnknownEvents)
+          .then((value) => AppConfig.hideUnknownEvents = value);
     }
     if (kIsWeb) {
       onFocusSub = html.window.onFocus.listen((_) => webHasFocus = true);

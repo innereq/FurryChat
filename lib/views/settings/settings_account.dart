@@ -14,6 +14,10 @@ import '../../utils/platform_infos.dart';
 import '../settings.dart';
 import 'settings_ignore_list.dart';
 
+
+import '../../config/app_config.dart';
+import '../../config/setting_keys.dart';
+
 class AccountSettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -100,7 +104,7 @@ class _AccountSettingsState extends State<AccountSettings> {
       jitsi += '/';
     }
     final matrix = Matrix.of(context);
-    await matrix.store.setItem('chat.fluffy.jitsi_instance', jitsi);
+    await matrix.store.setItem(SettingKeys.jitsiInstance, jitsi);
     matrix.jitsiInstance = jitsi;
   }
 

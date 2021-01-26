@@ -14,6 +14,9 @@ import 'settings/settings_encryption.dart';
 import 'settings/settings_homeserver.dart';
 import 'settings/settings_themes.dart';
 
+import '../config/app_config.dart';
+import '../config/setting_keys.dart';
+
 enum SettingsViews {
   account,
   homeserver,

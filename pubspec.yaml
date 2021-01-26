@@ -22,9 +22,8 @@ dependencies:
 
   famedlysdk:
     git:
-      url: https://github.com/innereq/famedlysdk-fork.git
-      ref: yiffed
-    # path: ../famedlysdk
+      url: https://gitlab.com/famedly/famedlysdk.git
+      ref: 66572bd03209c1c6488cde53a0c72c11faef341d
 
   localstorage: ^3.0.3+6
   file_picker_cross: 4.2.2
@@ -57,8 +56,8 @@ dependencies:
   random_string: ^2.1.0
   flutter_typeahead: ^1.8.8
   flutter_olm: ^1.0.1
-  intl: ^0.16.1
-  intl_translation: ^0.17.10+1
+  #intl: ^0.16.1
+  #intl_translation: ^0.17.10+1
   circular_check_box: ^1.0.4
   flutter_localizations:
     sdk: flutter
