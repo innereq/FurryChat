@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/encryption.dart';
-import 'package:famedlysdk/matrix_api.dart';
+import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -68,7 +68,7 @@ class _KeyVerificationPageState extends State<KeyVerificationDialog> {
         final textEditingController = TextEditingController();
         String input;
         final checkInput = () async {
-          if (input == null) {
+          if (input == null || input.isEmpty) {
             return;
           }
           final valid = await showFutureLoadingDialog(
@@ -78,15 +78,10 @@ class _KeyVerificationPageState extends State<KeyVerificationDialog> {
                 await Future.delayed(Duration(milliseconds: 100));
                 var valid = false;
                 try {
-                  await widget.request.openSSSS(recoveryKey: input);
+                  await widget.request.openSSSS(keyOrPassphrase: input);
                   valid = true;
                 } catch (_) {
-                  try {
-                    await widget.request.openSSSS(passphrase: input);
-                    valid = true;
-                  } catch (_) {
-                    valid = false;
-                  }
+                  valid = false;
                 }
                 return valid;
               });

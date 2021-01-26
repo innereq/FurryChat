@@ -983,7 +983,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Вместо этого включите онлайн-резервное копирование ключей из Element.",
+  "noMegolmBootstrap": "Пожалуйста, включите резервное копирование онлайн-ключей из Element.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -2017,6 +2017,16 @@
   },
   "publicKey": "Открытый ключ",
   "@publicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tooManyRequestsWarning": "Слишком много запросов. Пожалуйста, повторите попытку позже!",
+  "@tooManyRequestsWarning": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noConnectionToTheServer": "Нет соединения с сервером",
+  "@noConnectionToTheServer": {
     "type": "text",
     "placeholders": {}
   }

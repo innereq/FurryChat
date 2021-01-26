@@ -6,6 +6,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -115,10 +116,13 @@ class _ChatState extends State<_Chat> {
     if (_canLoadMore) {
       setState(() => _loadingHistory = true);
 
-      await showFutureLoadingDialog(
-        context: context,
-        future: () => timeline.requestHistory(historyCount: _loadHistoryCount),
-      );
+      try {
+        await timeline.requestHistory(historyCount: _loadHistoryCount);
+      } catch (err) {
+        await FlushbarHelper.createError(
+                message: err.toLocalizedString(context))
+            .show(context);
+      }
 
       // we do NOT setState() here as then the event order will be wrong.
       // instead, we just set our variable to false, and rely on timeline update to set the
@@ -608,11 +612,11 @@ class _ChatState extends State<_Chat> {
     return _sendEmojiAction(context, emoji.emoji);
   }
 
-  void _sendEmojiAction(BuildContext context, String emoji) {
-    showFutureLoadingDialog(
+  void _sendEmojiAction(BuildContext context, String emoji) async {
+    await showFutureLoadingDialog(
       context: context,
       future: () => room.sendReaction(
-        selectedEvents.first.eventId,
+        selectedEvents.single.eventId,
         emoji,
       ),
     );
@@ -1241,7 +1245,7 @@ class _ChatState extends State<_Chat> {
                                               Timer(Duration(seconds: 2), () {
                                             typingCoolDown = null;
                                             currentlyTyping = false;
-                                            room.sendTypingInfo(false);
+                                            room.sendTypingNotification(false);
                                           });
                                           typingTimeout ??=
                                               Timer(Duration(seconds: 30), () {
@@ -1250,7 +1254,7 @@ class _ChatState extends State<_Chat> {
                                           });
                                           if (!currentlyTyping) {
                                             currentlyTyping = true;
-                                            room.sendTypingInfo(true,
+                                            room.sendTypingNotification(true,
                                                 timeout: Duration(seconds: 30)
                                                     .inMilliseconds);
                                           }

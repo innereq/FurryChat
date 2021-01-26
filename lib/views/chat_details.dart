@@ -1,6 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:famedlysdk/matrix_api.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';

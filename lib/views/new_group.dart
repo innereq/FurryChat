@@ -1,4 +1,4 @@
-import 'package:famedlysdk/matrix_api.dart' as api;
+import 'package:famedlysdk/famedlysdk.dart' as sdk;
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -37,9 +37,9 @@ class _NewGroupState extends State<_NewGroup> {
       context: context,
       future: () => matrix.client.createRoom(
         preset: publicGroup
-            ? api.CreateRoomPreset.public_chat
-            : api.CreateRoomPreset.private_chat,
-        visibility: publicGroup ? api.Visibility.public : null,
+            ? sdk.CreateRoomPreset.public_chat
+            : sdk.CreateRoomPreset.private_chat,
+        visibility: publicGroup ? sdk.Visibility.public : null,
         roomAliasName:
             publicGroup && controller.text.isNotEmpty ? controller.text : null,
         name: controller.text.isNotEmpty ? controller.text : null,

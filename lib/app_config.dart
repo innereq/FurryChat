@@ -21,6 +21,7 @@ abstract class AppConfig {
   static const String inviteLinkPrefix = 'https://matrix.to/#/';
   static const String pushNotificationsChannelId = 'furrychat_push';
   static const String pushNotificationsChannelName = 'FurryChat push channel';
+  static const String schemePrefix = 'matrix:';
   static const String pushNotificationsChannelDescription =
       'Push notifications for FurryChat';
   static const String pushNotificationsAppId = 'dev.inex.furrychat';
