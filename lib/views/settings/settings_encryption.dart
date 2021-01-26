@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:olm/olm.dart' as olm;
 
 import '../../components/adaptive_page_layout.dart';
+import '../../components/dialogs/bootstrap_dialog.dart';
 import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
 import '../../utils/beautify_string_extension.dart';
@@ -40,7 +41,8 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       title: L10n.of(context).askSSSSCache,
       textFields: [
         DialogTextField(
-            hintText: L10n.of(context).passphraseOrKey, obscureText: true)
+            hintText: L10n.of(context).passphraseOrKey, obscureText: true, minLines: 1,
+          maxLines: 1,)
       ],
     );
     if (input != null) {
@@ -128,11 +130,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                 : null,
             onTap: () async {
               if (!client.encryption.crossSigning.enabled) {
-                await showOkAlertDialog(
-                  context: context,
-                  message: L10n.of(context).noCrossSignBootstrap,
-                );
-                return;
+                return BootstrapDialog().show(context);
               }
               if (client.isUnknownSession) {
                 final input = await showTextInputDialog(
@@ -141,7 +139,9 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                   textFields: [
                     DialogTextField(
                         hintText: L10n.of(context).passphraseOrKey,
-                        obscureText: true)
+                        obscureText: true,
+                        minLines: 1,
+                        maxLines: 1,)
                   ],
                 );
                 if (input != null) {
@@ -204,11 +204,7 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                 : null,
             onTap: () async {
               if (!client.encryption.keyManager.enabled) {
-                await showOkAlertDialog(
-                  context: context,
-                  message: L10n.of(context).noMegolmBootstrap,
-                );
-                return;
+                return BootstrapDialog().show(context);
               }
               if (!(await client.encryption.keyManager.isCached())) {
                 await requestSSSSCache(context);

@@ -57,10 +57,14 @@ class _AccountSettingsState extends State<AccountSettings> {
         DialogTextField(
           hintText: L10n.of(context).pleaseEnterYourPassword,
           obscureText: true,
+          minLines: 1,
+          maxLines: 1,
         ),
         DialogTextField(
           hintText: L10n.of(context).chooseAStrongPassword,
           obscureText: true,
+          minLines: 1,
+          maxLines: 1,
         ),
       ],
     );
@@ -92,7 +96,8 @@ class _AccountSettingsState extends State<AccountSettings> {
     final input = await showTextInputDialog(
       context: context,
       title: L10n.of(context).pleaseEnterYourPassword,
-      textFields: [DialogTextField(obscureText: true, hintText: '******')],
+      textFields: [DialogTextField(obscureText: true, hintText: '******',minLines: 1,
+          maxLines: 1,)],
     );
     if (input == null) return;
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
