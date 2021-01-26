@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
+import 'package:android_path_provider/android_path_provider.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
+import 'package:permission_handler/permission_handler.dart';
 
 import 'platform_infos.dart';
 
@@ -30,12 +30,12 @@ extension MatrixFileExtension on MatrixFile {
     } else {
       if (!(await Permission.storage.request()).isGranted) return;
       final downloadsDir = PlatformInfos.isDesktop
-          ? (await getDownloadsDirectory())
+          ? (await getDownloadsDirectory()).path
           : Platform.isAndroid
-              ? (await DownloadsPathProvider.downloadsDirectory)
-              : (await getApplicationDocumentsDirectory());
+              ? (await AndroidPathProvider.downloadsPath)
+              : (await getApplicationDocumentsDirectory()).path;
 
-      final file = File(downloadsDir.path + '/' + name.split('/').last);
+      final file = File(downloadsDir + '/' + name.split('/').last);
       file.writeAsBytesSync(bytes);
       await OpenFile.open(file.path);
     }

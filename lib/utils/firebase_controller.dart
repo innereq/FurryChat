@@ -73,7 +73,7 @@ abstract class FirebaseController {
       if (currentPushers.isNotEmpty) {
         for (final currentPusher in currentPushers) {
           currentPusher.pushkey = token;
-          currentPusher.kind = 'null';
+          currentPusher.kind = null;
           await client.setPusher(
             currentPusher,
             append: true,
@@ -180,9 +180,7 @@ abstract class FirebaseController {
         tempClient = true;
         final platform = kIsWeb ? 'Web' : Platform.operatingSystem;
         final clientName = 'FurryChat $platform';
-        client = Client(clientName);
-        client.database = await getDatabase(client);
-        client.connect();
+        client = Client(clientName, databaseBuilder: getDatabase)..init();
         debugPrint('[Push] Use a temp client');
         await client.onLoginStateChanged.stream
             .firstWhere((l) => l == LoginState.logged)

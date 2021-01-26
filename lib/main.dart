@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,6 +49,14 @@ class App extends StatelessWidget {
                 future:
                     Matrix.of(context).client.onLoginStateChanged.stream.first,
                 builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    WidgetsBinding.instance
+                        .addPostFrameCallback((_) => FlushbarHelper.createError(
+                              title: L10n.of(context).oopsSomethingWentWrong,
+                              message: snapshot.error.toString(),
+                            ).show(context));
+                    return HomeserverPicker();
+                  }
                   if (!snapshot.hasData) {
                     return Scaffold(
                       body: Center(

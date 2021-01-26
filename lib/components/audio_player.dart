@@ -8,6 +8,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 
+import '../utils/event_extension.dart';
 import '../utils/ui_fake.dart' if (dart.library.html) 'dart:ui' as ui;
 import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
@@ -68,8 +69,8 @@ class _AudioPlayerState extends State<AudioPlayer> {
   Future<void> _downloadAction() async {
     if (status != AudioPlayerStatus.NOT_DOWNLOADED) return;
     setState(() => status = AudioPlayerStatus.DOWNLOADING);
-    final matrixFile = await SimpleDialogs(context)
-        .tryRequestWithErrorToast(widget.event.downloadAndDecryptAttachment());
+    final matrixFile = await SimpleDialogs(context).tryRequestWithErrorToast(
+        widget.event.downloadAndDecryptAttachmentCached());
     setState(() {
       audioFile = matrixFile.bytes;
       status = AudioPlayerStatus.DOWNLOADED;

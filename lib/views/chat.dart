@@ -120,6 +120,9 @@ class _ChatState extends State<_Chat> {
   }
 
   void _updateScrollController() {
+    if (!mounted) {
+      return;
+    }
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         timeline.events.isNotEmpty &&
@@ -175,17 +178,27 @@ class _ChatState extends State<_Chat> {
     if (timeline == null) {
       timeline = await room.getTimeline(onUpdate: updateView);
       if (timeline.events.isNotEmpty) {
-        unawaited(room.sendReadReceipt(timeline.events.first.eventId));
+        unawaited(room
+            .sendReadReceipt(timeline.events.first.eventId)
+            .catchError((err) {
+          if (err is MatrixException && err.errcode == 'M_FORBIDDEN') {
+            // ignore if the user is not in the room (still joining)
+            return;
+          }
+          throw err;
+        }));
       }
 
       // when the scroll controller is attached we want to scroll to an event id, if specified
       // and update the scroll controller...which will trigger a request history, if the
       // "load more" button is visible on the screen
       SchedulerBinding.instance.addPostFrameCallback((_) async {
-        if (widget.scrollToEventId != null) {
-          _scrollToEventId(widget.scrollToEventId, context: context);
+        if (mounted) {
+          if (widget.scrollToEventId != null) {
+            _scrollToEventId(widget.scrollToEventId, context: context);
+          }
+          _updateScrollController();
         }
-        _updateScrollController();
       });
     }
     updateView();
@@ -287,11 +300,13 @@ class _ChatState extends State<_Chat> {
     var copyString = '';
     if (selectedEvents.length == 1) {
       return selectedEvents.first
+          .getDisplayEvent(timeline)
           .getLocalizedBody(MatrixLocals(L10n.of(context)));
     }
     for (var event in selectedEvents) {
       if (copyString.isNotEmpty) copyString += '\n\n';
-      copyString += event.getLocalizedBody(MatrixLocals(L10n.of(context)),
+      copyString += event.getDisplayEvent(timeline).getLocalizedBody(
+          MatrixLocals(L10n.of(context)),
           withSenderNamePrefix: true);
     }
     return copyString;
@@ -419,6 +434,9 @@ class _ChatState extends State<_Chat> {
       } else {
         await task;
       }
+    }
+    if (!mounted) {
+      return;
     }
     await _scrollController.scrollToIndex(eventIndex,
         preferPosition: AutoScrollPosition.middle);
