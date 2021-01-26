@@ -106,7 +106,7 @@ class _SignUpState extends State<SignUp> {
                         : Colors.white
                     : Theme.of(context).secondaryHeaderColor,
                 child: avatar == null
-                    ? Icon(Icons.camera_alt,
+                    ? Icon(Icons.camera_alt_outlined,
                         color: Theme.of(context).primaryColor)
                     : null,
               ),
@@ -132,7 +132,7 @@ class _SignUpState extends State<SignUp> {
                     ? Color(0xff121212)
                     : Colors.white,
                 child: Icon(
-                  Icons.account_circle,
+                  Icons.account_circle_outlined,
                   color: Theme.of(context).primaryColor,
                 ),
               ),

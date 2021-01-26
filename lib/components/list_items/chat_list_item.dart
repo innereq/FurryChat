@@ -196,7 +196,7 @@ class ChatListItem extends StatelessWidget {
               },
               if (typingText.isNotEmpty) ...{
                 Icon(
-                  Icons.edit,
+                  Icons.edit_outlined,
                   color: Theme.of(context).primaryColor,
                   size: 14,
                 ),
@@ -248,23 +248,25 @@ class ChatListItem extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
-              if (room.notificationCount > 0)
+              if (room.isUnread)
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 7),
-                  height: 20,
+                  height: room.notificationCount > 0 ? 20 : 14,
                   decoration: BoxDecoration(
-                    color: room.highlightCount > 0
+                    color: room.highlightCount > 0 || room.markedUnread
                         ? Colors.red
                         : Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Center(
-                    child: Text(
-                      room.notificationCount.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: room.notificationCount > 0
+                        ? Text(
+                            room.notificationCount.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          )
+                        : Container(),
                   ),
                 ),
             ],

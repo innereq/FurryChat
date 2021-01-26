@@ -253,8 +253,9 @@ class _LoginState extends State<Login> {
                   hintText: '****',
                   errorText: passwordError,
                   suffixIcon: IconButton(
-                    icon: Icon(
-                        showPassword ? Icons.visibility_off : Icons.visibility),
+                    icon: Icon(showPassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined),
                     onPressed: () =>
                         setState(() => showPassword = !showPassword),
                   ),

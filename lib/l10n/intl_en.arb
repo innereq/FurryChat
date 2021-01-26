@@ -1060,7 +1060,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "FurryChat currently does not support enabling Online Key Backup. Please enable it from within Riot.",
+  "noMegolmBootstrap": "Please turn on online key backup from within Element instead.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1209,7 +1209,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterAMatrixIdentifier": "Please enter a matrix identifier",
+  "pleaseEnterAMatrixIdentifier": "Please enter a Matrix ID.",
   "@pleaseEnterAMatrixIdentifier": {
     "type": "text",
     "placeholders": {}
@@ -1394,6 +1394,16 @@
       "username": {},
       "count": {}
     }
+  },
+  "discoverGroups": "Discover groups",
+  "@discoverGroups": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noDescription": "No description",
+  "@noDescription": {
+    "type": "text",
+    "placeholders": {}
   },
   "editBlockedServers": "Edit blocked servers",
   "@editBlockedServers": {
@@ -1690,6 +1700,21 @@
     "type": "text",
     "placeholders": {}
   },
+  "toggleFavorite": "Toggle Favorite",
+  "@toggleFavorite": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleMuted": "Toggle Muted",
+  "@toggleMuted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleUnread": "Mark Read/Unread",
+  "@toggleUnread": {
+    "type": "text",
+    "placeholders": {}
+  },
   "tryToSendAgain": "Try to send again",
   "@tryToSendAgain": {
     "type": "text",
@@ -1908,7 +1933,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "withTheseAddressesRecoveryDescription": "With these addresses you can recover you password if you need.",
+  "withTheseAddressesRecoveryDescription": "With these addresses you can recover your password.",
   "@withTheseAddressesRecoveryDescription": {
     "type": "text",
     "placeholders": {}

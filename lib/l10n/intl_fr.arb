@@ -948,7 +948,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "FurryChat ne permet pas actuellement d'activer la signature croisée. Veuillez l'activer à partir d'Element.",
+  "noCrossSignBootstrap": "Fluffychat ne prend actuellement pas en charge l'activation de la signature croisée. Veuillez l'activer depuis Element.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -958,7 +958,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Il semblerait que vous n'ayez pas de services Google sur votre téléphone. C'est une bonne décision pour votre vie privée ! Pour recevoir des notifications dans FurryChat, nous vous recommandons d'utiliser microG : https://microg.org/",
+  "noGoogleServicesWarning": "Il semble que vous n'ayez aucun service Google sur votre téléphone. C'est une bonne décision pour votre vie privée ! Pour recevoir des notifications push dans FluffyChat, nous vous recommandons d'utiliser microG : https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
@@ -1072,7 +1072,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterAMatrixIdentifier": "Veuillez renseigner un identifiant Matrix",
+  "pleaseEnterAMatrixIdentifier": "Veuillez renseigner un identifiant Matrix.",
   "@pleaseEnterAMatrixIdentifier": {
     "type": "text",
     "placeholders": {}
@@ -1860,6 +1860,91 @@
   },
   "soundVibrationLedColor": "Son, vibration couleur diode",
   "@soundVibrationLedColor": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setPermissionsLevel": "Définir le niveau de permissions",
+  "@setPermissionsLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setCustomEmotes": "Définir des émoticônes personnalisées",
+  "@setCustomEmotes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editChatPermissions": "Modifier les permissions de la conversation",
+  "@editChatPermissions": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "whoCanPerformWhichAction": "Qui peur faire quelle action",
+  "@whoCanPerformWhichAction": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "participant": "Participant(e)",
+  "@participant": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "configureChat": "Configurer la conversation",
+  "@configureChat": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "sendMessages": "Envoyer des messages",
+  "@sendMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "defaultPermissionLevel": "Niveau d'autorisation par défaut",
+  "@defaultPermissionLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editRoomAvatar": "Modifier l'avatar du salon",
+  "@editRoomAvatar": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "replaceRoomWithNewerVersion": "Remplacer le salon par une nouvelle version",
+  "@replaceRoomWithNewerVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enableEncryption": "Activer le chiffrement",
+  "@enableEncryption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editBlockedServers": "Modifier les serveurs bloqués",
+  "@editBlockedServers": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noDescription": "Pas de description",
+  "@noDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "discoverGroups": "Découvrez des groupes",
+  "@discoverGroups": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleUnread": "Marquer comme lu / non lu",
+  "@toggleUnread": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleMuted": "Activer/désactiver la sourdine",
+  "@toggleMuted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleFavorite": "Activer/désactiver en favori",
+  "@toggleFavorite": {
     "type": "text",
     "placeholders": {}
   }

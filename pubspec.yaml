@@ -25,15 +25,15 @@ dependencies:
   famedlysdk:
     git:
       url: https://gitlab.com/famedly/famedlysdk.git
-      ref: 20ae1ae20e51840643988768620cc9900f83231c
+      ref: b563aec7bbac32ec08cdea89d04b4a3fbdb6ca57
 
   localstorage: ^3.0.3+6
   file_picker_cross: 4.2.2
   image_picker: ^0.6.7+14
   url_launcher: ^5.7.10
-  cached_network_image: ^2.3.3
+  cached_network_image: ^2.4.1
   firebase_messaging: ^7.0.3
-  flutter_local_notifications: ^3.0.1+6
+  flutter_local_notifications: ^3.0.2
   # desktop_notifications: ^0.0.0-dev.4  // Currently blocked by: https://github.com/canonical/desktop_notifications.dart/issues/5
   matrix_link_text: ^0.3.2
   path_provider: ^1.6.24
@@ -51,13 +51,13 @@ dependencies:
   open_file: ^3.0.3
   mime_type: ^0.3.2
   flushbar: ^1.10.4
-  adaptive_dialog: ^0.9.2
+  adaptive_dialog: ^0.9.3
   flutter_matrix_html: ^0.1.13
   moor: ^3.4.0
   sqlite3_flutter_libs: ^0.2.0
   sqlite3: ^0.1.8
   random_string: ^2.1.0
-  flutter_typeahead: ^1.8.8
+  flutter_typeahead: ^1.9.1
   flutter_olm: ^1.0.1
   #intl: ^0.16.1
   #intl_translation: ^0.17.10+1
@@ -80,14 +80,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: "^0.7.4"
   pedantic: ^1.9.2
   dapackages: ^1.4.0
-
-flutter_icons:
-  android: "launcher_icon"
-  ios: false
-  image_path: "assets/logo.png"
 
 flutter:
   generate: true

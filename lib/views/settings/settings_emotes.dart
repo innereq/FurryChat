@@ -187,7 +187,7 @@ class _EmotesSettingsState extends State<EmotesSettings> {
       ),
       floatingActionButton: showSave
           ? FloatingActionButton(
-              child: Icon(Icons.save, color: Colors.white),
+              child: Icon(Icons.save_outlined, color: Colors.white),
               onPressed: () async {
                 await _save(context);
                 setState(() {
@@ -237,7 +237,7 @@ class _EmotesSettingsState extends State<EmotesSettings> {
                       title: _EmoteImagePicker(newMxcController),
                       trailing: InkWell(
                         child: Icon(
-                          Icons.add,
+                          Icons.add_outlined,
                           color: Colors.green,
                           size: 32.0,
                         ),
@@ -385,7 +385,7 @@ class _EmotesSettingsState extends State<EmotesSettings> {
                                   ? null
                                   : InkWell(
                                       child: Icon(
-                                        Icons.delete_forever,
+                                        Icons.delete_forever_outlined,
                                         color: Colors.red,
                                         size: 32.0,
                                       ),

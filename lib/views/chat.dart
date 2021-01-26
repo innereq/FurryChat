@@ -180,9 +180,7 @@ class _ChatState extends State<_Chat> {
     if (timeline == null) {
       timeline = await room.getTimeline(onUpdate: updateView);
       if (timeline.events.isNotEmpty) {
-        unawaited(room
-            .sendReadReceipt(timeline.events.first.eventId)
-            .catchError((err) {
+        unawaited(room.setUnread(false).catchError((err) {
           if (err is MatrixException && err.errcode == 'M_FORBIDDEN') {
             // ignore if the user is not in the room (still joining)
             return;
@@ -612,7 +610,6 @@ class _ChatState extends State<_Chat> {
     }
 
     final typingText = room.getLocalizedTypingText(context);
-
     return Scaffold(
       appBar: AppBar(
         leading: selectMode
@@ -660,7 +657,7 @@ class _ChatState extends State<_Chat> {
                           )
                         : Row(
                             children: <Widget>[
-                              Icon(Icons.edit,
+                              Icon(Icons.edit_outlined,
                                   color: Theme.of(context).primaryColor,
                                   size: 13),
                               SizedBox(width: 4),
@@ -685,16 +682,27 @@ class _ChatState extends State<_Chat> {
                     selectedEvents.first.status > 0 &&
                     selectedEvents.first.senderId == client.userID)
                   IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => editAction(selectedEvents.first),
+                    icon: Icon(Icons.edit_outlined),
+                    onPressed: () {
+                      setState(() {
+                        pendingText = sendController.text;
+                        editEvent = selectedEvents.first;
+                        inputText = sendController.text = editEvent
+                            .getDisplayEvent(timeline)
+                            .getLocalizedBody(MatrixLocals(L10n.of(context)),
+                                withSenderNamePrefix: false, hideReply: true);
+                        selectedEvents.clear();
+                      });
+                      inputFocus.requestFocus();
+                    },
                   ),
                 IconButton(
-                  icon: Icon(Icons.content_copy),
+                  icon: Icon(Icons.content_copy_outlined),
                   onPressed: () => copyEventsAction(context),
                 ),
                 if (canRedactSelectedEvents)
                   IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: Icon(Icons.delete_outlined),
                     onPressed: () => redactEventsAction(context),
                   ),
               ]
@@ -704,7 +712,7 @@ class _ChatState extends State<_Chat> {
           ? Padding(
               padding: const EdgeInsets.only(bottom: 56.0),
               child: FloatingActionButton(
-                child: Icon(Icons.arrow_downward,
+                child: Icon(Icons.arrow_downward_outlined,
                     color: Theme.of(context).primaryColor),
                 onPressed: () => _scrollController.jumpTo(0),
                 foregroundColor: Theme.of(context).textTheme.bodyText2.color,
@@ -741,7 +749,7 @@ class _ChatState extends State<_Chat> {
                           timeline != null &&
                           timeline.events.isNotEmpty &&
                           Matrix.of(context).webHasFocus) {
-                        room.sendReadReceipt(timeline.events.first.eventId);
+                        room.sendReadMarker(timeline.events.first.eventId);
                       }
 
                       final filteredEvents = getFilteredEvents();
@@ -1028,7 +1036,8 @@ class _ChatState extends State<_Chat> {
                                           forwardEventsAction(context),
                                       child: Row(
                                         children: <Widget>[
-                                          Icon(Icons.keyboard_arrow_left),
+                                          Icon(Icons
+                                              .keyboard_arrow_left_outlined),
                                           Text(L10n.of(context).forward),
                                         ],
                                       ),
@@ -1063,7 +1072,8 @@ class _ChatState extends State<_Chat> {
                                                     Text(L10n.of(context)
                                                         .tryToSendAgain),
                                                     SizedBox(width: 4),
-                                                    Icon(Icons.send, size: 16),
+                                                    Icon(Icons.send_outlined,
+                                                        size: 16),
                                                   ],
                                                 ),
                                               ),
@@ -1076,7 +1086,7 @@ class _ChatState extends State<_Chat> {
                                       height: 56,
                                       alignment: Alignment.center,
                                       child: PopupMenuButton<String>(
-                                        icon: Icon(Icons.add),
+                                        icon: Icon(Icons.add_outlined),
                                         onSelected: (String choice) async {
                                           if (choice == 'file') {
                                             sendFileAction(context);
@@ -1098,7 +1108,8 @@ class _ChatState extends State<_Chat> {
                                               leading: CircleAvatar(
                                                 backgroundColor: Colors.green,
                                                 foregroundColor: Colors.white,
-                                                child: Icon(Icons.attachment),
+                                                child: Icon(
+                                                    Icons.attachment_outlined),
                                               ),
                                               title: Text(
                                                   L10n.of(context).sendFile),
@@ -1111,7 +1122,8 @@ class _ChatState extends State<_Chat> {
                                               leading: CircleAvatar(
                                                 backgroundColor: Colors.blue,
                                                 foregroundColor: Colors.white,
-                                                child: Icon(Icons.image),
+                                                child:
+                                                    Icon(Icons.image_outlined),
                                               ),
                                               title: Text(
                                                   L10n.of(context).sendImage),
@@ -1126,7 +1138,8 @@ class _ChatState extends State<_Chat> {
                                                   backgroundColor:
                                                       Colors.purple,
                                                   foregroundColor: Colors.white,
-                                                  child: Icon(Icons.camera_alt),
+                                                  child: Icon(Icons
+                                                      .camera_alt_outlined),
                                                 ),
                                                 title: Text(L10n.of(context)
                                                     .openCamera),
@@ -1141,7 +1154,8 @@ class _ChatState extends State<_Chat> {
                                                 leading: CircleAvatar(
                                                   backgroundColor: Colors.red,
                                                   foregroundColor: Colors.white,
-                                                  child: Icon(Icons.mic),
+                                                  child: Icon(
+                                                      Icons.mic_none_outlined),
                                                 ),
                                                 title: Text(L10n.of(context)
                                                     .voiceMessage),
@@ -1215,7 +1229,7 @@ class _ChatState extends State<_Chat> {
                                       height: 56,
                                       alignment: Alignment.center,
                                       child: IconButton(
-                                        icon: Icon(Icons.mic),
+                                        icon: Icon(Icons.mic_none_outlined),
                                         onPressed: () =>
                                             voiceMessageAction(context),
                                       ),
@@ -1226,7 +1240,7 @@ class _ChatState extends State<_Chat> {
                                       height: 56,
                                       alignment: Alignment.center,
                                       child: IconButton(
-                                        icon: Icon(Icons.send),
+                                        icon: Icon(Icons.send_outlined),
                                         onPressed: () => send(),
                                       ),
                                     ),

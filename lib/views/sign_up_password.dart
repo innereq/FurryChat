@@ -155,8 +155,9 @@ class _SignUpPasswordState extends State<SignUpPassword> {
                 hintText: '****',
                 errorText: passwordError,
                 suffixIcon: IconButton(
-                  icon: Icon(
-                      showPassword ? Icons.visibility_off : Icons.visibility),
+                  icon: Icon(showPassword
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined),
                   onPressed: () => setState(() => showPassword = !showPassword),
                 ),
                 labelText: L10n.of(context).password,
