@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flushbar/flushbar_helper.dart';
@@ -36,7 +37,11 @@ class _AccountSettingsState extends State<AccountSettings> {
   dynamic profile;
 
   void logoutAction(BuildContext context) async {
-    if (await SimpleDialogs(context).askConfirmation() == false) {
+    if (await showOkCancelAlertDialog(
+          context: context,
+          title: L10n.of(context).areYouSure,
+        ) ==
+        OkCancelResult.cancel) {
       return;
     }
     var matrix = Matrix.of(context);
@@ -45,20 +50,25 @@ class _AccountSettingsState extends State<AccountSettings> {
   }
 
   void _changePasswordAccountAction(BuildContext context) async {
-    final oldPassword = await SimpleDialogs(context).enterText(
-      password: true,
-      titleText: L10n.of(context).pleaseEnterYourPassword,
+    final input = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).changePassword,
+      textFields: [
+        DialogTextField(
+          hintText: L10n.of(context).pleaseEnterYourPassword,
+          obscureText: true,
+        ),
+        DialogTextField(
+          hintText: L10n.of(context).chooseAStrongPassword,
+          obscureText: true,
+        ),
+      ],
     );
-    if (oldPassword == null) return;
-    final newPassword = await SimpleDialogs(context).enterText(
-      password: true,
-      titleText: L10n.of(context).chooseAStrongPassword,
-    );
-    if (newPassword == null) return;
+    if (input == null) return;
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
       Matrix.of(context)
           .client
-          .changePassword(newPassword, oldPassword: oldPassword),
+          .changePassword(input.last, oldPassword: input.first),
     );
     await FlushbarHelper.createSuccess(
             message: L10n.of(context).passwordHasBeenChanged)
@@ -66,39 +76,44 @@ class _AccountSettingsState extends State<AccountSettings> {
   }
 
   void _deleteAccountAction(BuildContext context) async {
-    if (await SimpleDialogs(context).askConfirmation(
-          titleText: L10n.of(context).warning,
-          contentText: L10n.of(context).deactivateAccountWarning,
-          dangerous: true,
+    if (await showOkCancelAlertDialog(
+          context: context,
+          title: L10n.of(context).warning,
+          message: L10n.of(context).deactivateAccountWarning,
         ) ==
-        false) {
+        OkCancelResult.cancel) {
       return;
     }
-    if (await SimpleDialogs(context).askConfirmation(dangerous: true) ==
-        false) {
+    if (await showOkCancelAlertDialog(
+            context: context, title: L10n.of(context).areYouSure) ==
+        OkCancelResult.cancel) {
       return;
     }
-    final password = await SimpleDialogs(context).enterText(
-      password: true,
-      titleText: L10n.of(context).pleaseEnterYourPassword,
+    final input = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).pleaseEnterYourPassword,
+      textFields: [DialogTextField(obscureText: true, hintText: '******')],
     );
-    if (password == null) return;
+    if (input == null) return;
     await SimpleDialogs(context).tryRequestWithLoadingDialog(
       Matrix.of(context).client.deactivateAccount(auth: {
         'type': 'm.login.password',
         'user': Matrix.of(context).client.userID,
-        'password': password,
+        'password': input.single,
       }),
     );
   }
 
   void setJitsiInstanceAction(BuildContext context) async {
-    var jitsi = await SimpleDialogs(context).enterText(
-      titleText: L10n.of(context).editJitsiInstance,
-      hintText: Matrix.of(context).jitsiInstance,
-      labelText: L10n.of(context).editJitsiInstance,
+    var input = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).editJitsiInstance,
+      textFields: [
+        DialogTextField(initialText: Matrix.of(context).jitsiInstance),
+      ],
     );
-    if (jitsi == null) return;
+    if (input == null) return;
+    var jitsi = input.single;
     if (!jitsi.endsWith('/')) {
       jitsi += '/';
     }
@@ -108,16 +123,20 @@ class _AccountSettingsState extends State<AccountSettings> {
   }
 
   void setDisplaynameAction(BuildContext context) async {
-    final displayname = await SimpleDialogs(context).enterText(
-      titleText: L10n.of(context).editDisplayname,
-      hintText:
-          profile?.displayname ?? Matrix.of(context).client.userID.localpart,
-      labelText: L10n.of(context).enterAUsername,
+    final input = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).editDisplayname,
+      textFields: [
+        DialogTextField(
+          initialText: profile?.displayname ??
+              Matrix.of(context).client.userID.localpart,
+        )
+      ],
     );
-    if (displayname == null) return;
+    if (input == null) return;
     final matrix = Matrix.of(context);
     final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      matrix.client.setDisplayname(matrix.client.userID, displayname),
+      matrix.client.setDisplayname(matrix.client.userID, input.single),
     );
     if (success != false) {
       setState(() {

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -84,8 +85,11 @@ class _ChatSettingsPopupMenuState extends State<ChatSettingsPopupMenu> {
       onSelected: (String choice) async {
         switch (choice) {
           case 'leave':
-            var confirmed = await SimpleDialogs(context).askConfirmation();
-            if (confirmed) {
+            var confirmed = await showOkCancelAlertDialog(
+              context: context,
+              title: L10n.of(context).areYouSure,
+            );
+            if (confirmed == OkCancelResult.ok) {
               final success = await SimpleDialogs(context)
                   .tryRequestWithLoadingDialog(widget.room.leave());
               if (success != false) {

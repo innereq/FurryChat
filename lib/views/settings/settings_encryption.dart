@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:olm/olm.dart' as olm;
@@ -34,36 +35,43 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
 
   Future<void> requestSSSSCache(BuildContext context) async {
     final handle = Matrix.of(context).client.encryption.ssss.open();
-    final str = await SimpleDialogs(context).enterText(
-      titleText: L10n.of(context).askSSSSCache,
-      hintText: L10n.of(context).passphraseOrKey,
-      password: true,
+    final input = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).askSSSSCache,
+      textFields: [
+        DialogTextField(
+            hintText: L10n.of(context).passphraseOrKey, obscureText: true)
+      ],
     );
-    if (str != null) {
-      SimpleDialogs(context).showLoadingDialog(context);
-      // make sure the loading spinner shows before we test the keys
-      await Future.delayed(Duration(milliseconds: 100));
-      var valid = false;
-      try {
-        handle.unlock(recoveryKey: str);
-        valid = true;
-      } catch (e, s) {
-        debugPrint('Couldn\'t use recovery key: ' + e.toString());
-        debugPrint(s.toString());
+    if (input != null) {
+      final valid = await SimpleDialogs(context)
+          .tryRequestWithLoadingDialog(Future.microtask(() async {
+        // make sure the loading spinner shows before we test the keys
+        await Future.delayed(Duration(milliseconds: 100));
+        var valid = false;
         try {
-          handle.unlock(passphrase: str);
+          handle.unlock(recoveryKey: input.single);
           valid = true;
         } catch (e, s) {
-          debugPrint('Couldn\'t use recovery passphrase: ' + e.toString());
+          debugPrint('Couldn\'t use recovery key: ' + e.toString());
           debugPrint(s.toString());
-          valid = false;
+          try {
+            handle.unlock(passphrase: input.single);
+            valid = true;
+          } catch (e, s) {
+            debugPrint('Couldn\'t use recovery passphrase: ' + e.toString());
+            debugPrint(s.toString());
+            valid = false;
+          }
         }
-      }
-      await Navigator.of(context)?.pop();
-      if (valid) {
+        return valid;
+      }));
+
+      if (valid == true) {
         await handle.maybeCacheAll();
-        await SimpleDialogs(context).inform(
-          contentText: L10n.of(context).cachedKeys,
+        await showOkAlertDialog(
+          context: context,
+          message: L10n.of(context).cachedKeys,
         );
         setState(() {
           crossSigningCachedFuture = null;
@@ -72,8 +80,9 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           megolmBackupCached = null;
         });
       } else {
-        await SimpleDialogs(context).inform(
-          contentText: L10n.of(context).incorrectPassphraseOrKey,
+        await showOkAlertDialog(
+          context: context,
+          message: L10n.of(context).incorrectPassphraseOrKey,
         );
       }
     }
@@ -119,39 +128,48 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                 : null,
             onTap: () async {
               if (!client.encryption.crossSigning.enabled) {
-                await SimpleDialogs(context).inform(
-                  contentText: L10n.of(context).noCrossSignBootstrap,
+                await showOkAlertDialog(
+                  context: context,
+                  message: L10n.of(context).noCrossSignBootstrap,
                 );
                 return;
               }
               if (client.isUnknownSession) {
-                final str = await SimpleDialogs(context).enterText(
-                  titleText: L10n.of(context).askSSSSVerify,
-                  hintText: L10n.of(context).passphraseOrKey,
-                  password: true,
+                final input = await showTextInputDialog(
+                  context: context,
+                  title: L10n.of(context).askSSSSVerify,
+                  textFields: [
+                    DialogTextField(
+                        hintText: L10n.of(context).passphraseOrKey,
+                        obscureText: true)
+                  ],
                 );
-                if (str != null) {
-                  SimpleDialogs(context).showLoadingDialog(context);
-                  // make sure the loading spinner shows before we test the keys
-                  await Future.delayed(Duration(milliseconds: 100));
-                  var valid = false;
-                  try {
-                    await client.encryption.crossSigning
-                        .selfSign(recoveryKey: str);
-                    valid = true;
-                  } catch (_) {
+                if (input != null) {
+                  final valid = await SimpleDialogs(context)
+                      .tryRequestWithLoadingDialog(Future.microtask(() async {
+                    // make sure the loading spinner shows before we test the keys
+                    await Future.delayed(Duration(milliseconds: 100));
+                    var valid = false;
                     try {
                       await client.encryption.crossSigning
-                          .selfSign(passphrase: str);
+                          .selfSign(recoveryKey: input.single);
                       valid = true;
                     } catch (_) {
-                      valid = false;
+                      try {
+                        await client.encryption.crossSigning
+                            .selfSign(passphrase: input.single);
+                        valid = true;
+                      } catch (_) {
+                        valid = false;
+                      }
                     }
-                  }
-                  await Navigator.of(context)?.pop();
-                  if (valid) {
-                    await SimpleDialogs(context).inform(
-                      contentText: L10n.of(context).verifiedSession,
+                    return valid;
+                  }));
+
+                  if (valid == true) {
+                    await showOkAlertDialog(
+                      context: context,
+                      message: L10n.of(context).verifiedSession,
                     );
                     setState(() {
                       crossSigningCachedFuture = null;
@@ -160,8 +178,9 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                       megolmBackupCached = null;
                     });
                   } else {
-                    await SimpleDialogs(context).inform(
-                      contentText: L10n.of(context).incorrectPassphraseOrKey,
+                    await showOkAlertDialog(
+                      context: context,
+                      message: L10n.of(context).incorrectPassphraseOrKey,
                     );
                   }
                 }
@@ -185,8 +204,9 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                 : null,
             onTap: () async {
               if (!client.encryption.keyManager.enabled) {
-                await SimpleDialogs(context).inform(
-                  contentText: L10n.of(context).noMegolmBootstrap,
+                await showOkAlertDialog(
+                  context: context,
+                  message: L10n.of(context).noMegolmBootstrap,
                 );
                 return;
               }

@@ -1,3 +1,4 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -80,8 +81,11 @@ class UrlLauncher {
       if (roomIdOrAlias[0] == '!') {
         roomId = roomIdOrAlias;
       }
-      if (await SimpleDialogs(context)
-          .askConfirmation(titleText: 'Join room $roomIdOrAlias')) {
+      if (await showOkCancelAlertDialog(
+            context: context,
+            title: 'Join room $roomIdOrAlias',
+          ) ==
+          OkCancelResult.ok) {
         final response =
             await SimpleDialogs(context).tryRequestWithLoadingDialog(
           matrix.client.joinRoomOrAlias(
@@ -115,8 +119,11 @@ class UrlLauncher {
         return;
       }
 
-      if (await SimpleDialogs(context)
-          .askConfirmation(titleText: 'Message user $identifier')) {
+      if (await showOkCancelAlertDialog(
+            context: context,
+            title: 'Message user $identifier',
+          ) ==
+          OkCancelResult.ok) {
         roomId = await SimpleDialogs(context)
             .tryRequestWithLoadingDialog(user.startDirectChat());
         Navigator.of(context).pop();

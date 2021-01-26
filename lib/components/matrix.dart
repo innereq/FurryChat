@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/encryption.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
@@ -24,7 +25,6 @@ import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
 import '../views/key_verification.dart';
 import 'avatar.dart';
-import 'dialogs/simple_dialogs.dart';
 
 class Matrix extends StatefulWidget {
   static const String callNamespace = 'chat.fluffy.jitsi_call';
@@ -259,13 +259,15 @@ class MatrixState extends State<Matrix> {
           return; // ignore share requests by others
         }
         final sender = room.getUserByMXIDSync(request.sender);
-        if (await SimpleDialogs(context).askConfirmation(
-          titleText: L10n.of(context).requestToReadOlderMessages,
-          contentText:
-              '${sender.id}\n\n${L10n.of(context).device}:\n${request.requestingDevice.deviceId}\n\n${L10n.of(context).identity}:\n${request.requestingDevice.curve25519Key.beautified}',
-          confirmText: L10n.of(context).verify,
-          cancelText: L10n.of(context).deny,
-        )) {
+        if (await showOkCancelAlertDialog(
+              context: context,
+              title: L10n.of(context).requestToReadOlderMessages,
+              message:
+                  '${sender.id}\n\n${L10n.of(context).device}:\n${request.requestingDevice.deviceId}\n\n${L10n.of(context).identity}:\n${request.requestingDevice.curve25519Key.beautified}',
+              okLabel: L10n.of(context).verify,
+              cancelLabel: L10n.of(context).deny,
+            ) ==
+            OkCancelResult.ok) {
           await request.forwardKey();
         }
       });
@@ -280,10 +282,12 @@ class MatrixState extends State<Matrix> {
           }
           hidPopup = true;
         };
-        if (await SimpleDialogs(context).askConfirmation(
-          titleText: L10n.of(context).newVerificationRequest,
-          contentText: L10n.of(context).askVerificationRequest(request.userId),
-        )) {
+        if (await showOkCancelAlertDialog(
+              context: context,
+              title: L10n.of(context).newVerificationRequest,
+              message: L10n.of(context).askVerificationRequest(request.userId),
+            ) ==
+            OkCancelResult.ok) {
           request.onUpdate = null;
           hidPopup = true;
           await request.acceptVerification();
@@ -315,14 +319,10 @@ class MatrixState extends State<Matrix> {
           wallpaper = file;
         }
       });
-      store
-          .getItem(SettingKeys.swipeToEndAction)
-          .then((final action) async {
+      store.getItem(SettingKeys.swipeToEndAction).then((final action) async {
         swipeToEndAction = action ?? swipeToEndAction;
       });
-      store
-          .getItem(SettingKeys.swipeToStartAction)
-          .then((final action) async {
+      store.getItem(SettingKeys.swipeToStartAction).then((final action) async {
         swipeToStartAction = action ?? swipeToStartAction;
       });
       store

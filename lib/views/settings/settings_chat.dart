@@ -7,7 +7,6 @@ import '../../config/app_config.dart';
 import '../../config/setting_keys.dart';
 import '../settings.dart';
 
-
 class ChatSettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -136,31 +135,31 @@ class _ChatSettingsState extends State<ChatSettings> {
           ),
           Divider(thickness: 1),
           ListTile(
-              title: Text(L10n.of(context).hideRedactedEvents),
-              trailing: Switch(
-                value: AppConfig.hideRedactedEvents,
-                activeColor: Theme.of(context).primaryColor,
-                onChanged: (bool newValue) async {
-                  AppConfig.hideRedactedEvents = newValue;
-                  await Matrix.of(context).store.setItem(
-                      SettingKeys.hideRedactedEvents, newValue.toString());
-                  setState(() => null);
-                },
-              ),
+            title: Text(L10n.of(context).hideRedactedEvents),
+            trailing: Switch(
+              value: AppConfig.hideRedactedEvents,
+              activeColor: Theme.of(context).primaryColor,
+              onChanged: (bool newValue) async {
+                AppConfig.hideRedactedEvents = newValue;
+                await Matrix.of(context).store.setItem(
+                    SettingKeys.hideRedactedEvents, newValue.toString());
+                setState(() => null);
+              },
             ),
-            ListTile(
-              title: Text(L10n.of(context).hideUnknownEvents),
-              trailing: Switch(
-                value: AppConfig.hideUnknownEvents,
-                activeColor: Theme.of(context).primaryColor,
-                onChanged: (bool newValue) async {
-                  AppConfig.hideUnknownEvents = newValue;
-                  await Matrix.of(context).store.setItem(
-                      SettingKeys.hideUnknownEvents, newValue.toString());
-                  setState(() => null);
-                },
-              ),
+          ),
+          ListTile(
+            title: Text(L10n.of(context).hideUnknownEvents),
+            trailing: Switch(
+              value: AppConfig.hideUnknownEvents,
+              activeColor: Theme.of(context).primaryColor,
+              onChanged: (bool newValue) async {
+                AppConfig.hideUnknownEvents = newValue;
+                await Matrix.of(context).store.setItem(
+                    SettingKeys.hideUnknownEvents, newValue.toString());
+                setState(() => null);
+              },
             ),
+          ),
         ],
       ),
     );
