@@ -1,14 +1,16 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:flushbar/flushbar_helper.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:pedantic/pedantic.dart';
 
 import '../../utils/app_route.dart';
 import '../../utils/date_time_extension.dart';
+import '../../utils/event_extension.dart';
 import '../../utils/matrix_locals.dart';
+import '../../utils/room_status_extension.dart';
 import '../../views/chat.dart';
 import '../avatar.dart';
 import '../dialogs/send_file_dialog.dart';
@@ -128,6 +130,9 @@ class ChatListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMuted = room.pushRuleState != PushRuleState.notify;
+    final typingText = room.getLocalizedTypingText(context);
+    final ownMessage =
+        room.lastEvent?.senderId == Matrix.of(context).client.userID;
     return Center(
       child: Material(
         color: chatListItemColor(context, activeChat, selected),
@@ -157,30 +162,23 @@ class ChatListItem extends StatelessWidget {
                   softWrap: false,
                 ),
               ),
-              room.isFavourite
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 4.0),
-                      child: Icon(
-                        Icons.favorite_outline_rounded,
-                        size: 16,
-                      ),
-                    )
-                  : Container(),
-              isMuted
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 4.0),
-                      child: Icon(
-                        Icons.notifications_off_outlined,
-                        size: 16,
-                      ),
-                    )
-                  : Container(),
+              if (isMuted)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: Icon(
+                    Icons.notifications_off_outlined,
+                    size: 16,
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.only(left: 4.0),
                 child: Text(
                   room.timeCreated.localizedTimeShort(context),
                   style: TextStyle(
                     fontSize: 13,
+                    color: room.notificationCount > 0
+                        ? Theme.of(context).primaryColor
+                        : null,
                   ),
                 ),
               ),
@@ -189,52 +187,86 @@ class ChatListItem extends StatelessWidget {
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              if (typingText.isEmpty && ownMessage) ...{
+                Icon(
+                  room.lastEvent.statusIcon,
+                  size: 14,
+                ),
+                SizedBox(width: 4),
+              },
+              if (typingText.isNotEmpty) ...{
+                Icon(
+                  Icons.edit,
+                  color: Theme.of(context).primaryColor,
+                  size: 14,
+                ),
+                SizedBox(width: 4),
+              },
               Expanded(
-                child: room.membership == Membership.invite
+                child: typingText.isNotEmpty
                     ? Text(
-                        L10n.of(context).youAreInvitedToThisChat,
+                        typingText,
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                         ),
                         softWrap: false,
                       )
-                    : Text(
-                        room.lastEvent?.getLocalizedBody(
-                              MatrixLocals(L10n.of(context)),
-                              withSenderNamePrefix: !room.isDirectChat ||
-                                  room.lastEvent.senderId == room.client.userID,
-                              hideReply: true,
-                            ) ??
-                            '',
-                        softWrap: false,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          decoration: room.lastEvent?.redacted == true
-                              ? TextDecoration.lineThrough
-                              : null,
-                        ),
-                      ),
+                    : room.membership == Membership.invite
+                        ? Text(
+                            L10n.of(context).youAreInvitedToThisChat,
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            softWrap: false,
+                          )
+                        : Text(
+                            room.lastEvent?.getLocalizedBody(
+                                  MatrixLocals(L10n.of(context)),
+                                  withSenderNamePrefix:
+                                      !ownMessage && !room.isDirectChat,
+                                  hideReply: true,
+                                ) ??
+                                '',
+                            softWrap: false,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              decoration: room.lastEvent?.redacted == true
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                          ),
               ),
               SizedBox(width: 8),
-              room.notificationCount > 0
-                  ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: room.highlightCount > 0
-                            ? Colors.red
-                            : Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(20),
+              if (room.isFavourite)
+                Padding(
+                  padding: EdgeInsets.only(
+                      right: room.notificationCount > 0 ? 4.0 : 0.0),
+                  child: Icon(
+                    Icons.favorite_rounded,
+                    size: 20,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              if (room.notificationCount > 0)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 7),
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: room.highlightCount > 0
+                        ? Colors.red
+                        : Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: Text(
+                      room.notificationCount.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
                       ),
-                      child: Center(
-                        child: Text(
-                          room.notificationCount.toString(),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    )
-                  : Text(' '),
+                    ),
+                  ),
+                ),
             ],
           ),
           onTap: () => clickAction(context),

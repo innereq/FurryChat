@@ -7,12 +7,11 @@ import 'package:matrix_link_text/link_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../config/app_config.dart';
-import '../utils/app_route.dart';
 import '../utils/event_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/url_launcher.dart';
-import '../views/key_verification.dart';
 import 'audio_player.dart';
+import 'dialogs/key_verification_dialog.dart';
 import 'dialogs/simple_dialogs.dart';
 import 'html_message.dart';
 import 'image_bubble.dart';
@@ -53,12 +52,7 @@ class MessageContent extends StatelessWidget {
           timeline.cancelSubscriptions();
         }
       };
-      await Navigator.of(context).push(
-        AppRoute.defaultRoute(
-          context,
-          KeyVerificationView(request: req),
-        ),
-      );
+      await KeyVerificationDialog(request: req).show(context);
     } else {
       final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
         event.requestKey(),
@@ -144,21 +138,46 @@ class MessageContent extends StatelessWidget {
           default:
             if (event.content['msgtype'] == Matrix.callNamespace) {
               return RaisedButton(
-                color: Theme.of(context).backgroundColor,
+                elevation: 7,
+                color: Theme.of(context).scaffoldBackgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Icon(Icons.phone),
+                    SizedBox(width: 8),
                     Text(L10n.of(context).videoCall),
                   ],
                 ),
                 onPressed: () => launch(event.body),
               );
             }
+            final fontSize = DefaultTextStyle.of(context).style.fontSize;
+            if (event.redacted) {
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.delete_forever_outlined, color: textColor),
+                  SizedBox(width: 4),
+                  Text(
+                    event.getLocalizedBody(MatrixLocals(L10n.of(context)),
+                        hideReply: true),
+                    style: TextStyle(
+                      color: textColor,
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.lineThrough,
+                      decorationThickness: 0.5,
+                    ),
+                  ),
+                ],
+              );
+            }
             final bigEmotes = event.onlyEmotes &&
                 event.numberEmotes > 0 &&
                 event.numberEmotes <= 10;
-            final fontSize = DefaultTextStyle.of(context).style.fontSize;
             return LinkText(
               text: event.getLocalizedBody(MatrixLocals(L10n.of(context)),
                   hideReply: true),

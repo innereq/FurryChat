@@ -37,6 +37,12 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (event.type == EventTypes.RoomCreate) {
+      return InkWell(
+        onTap: () => onSelect(event),
+        child: StateMessage(event),
+      );
+    }
     if (![EventTypes.Message, EventTypes.Sticker, EventTypes.Encrypted]
         .contains(event.type)) {
       return StateMessage(event);
@@ -126,7 +132,7 @@ class Message extends StatelessWidget {
                       displayEvent,
                       textColor: textColor,
                     ),
-                    SizedBox(height: 4),
+                    SizedBox(height: 3),
                     Opacity(
                       opacity: 0,
                       child: _MetaRow(
@@ -264,7 +270,7 @@ class _MetaRow extends StatelessWidget {
         if (ownMessage)
           Icon(
             displayEvent.statusIcon,
-            size: 12,
+            size: 14,
             color: color,
           ),
       ],

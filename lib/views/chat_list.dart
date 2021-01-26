@@ -15,6 +15,7 @@ import '../components/dialogs/simple_dialogs.dart';
 import '../components/list_items/chat_list_item.dart';
 import '../components/list_items/public_room_list_item.dart';
 import '../components/matrix.dart';
+import '../config/app_config.dart';
 import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
 import '../utils/matrix_file_extension.dart';
@@ -157,7 +158,7 @@ class _ChatListState extends State<ChatList> {
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).popUntil((r) => r.isFirst);
     }
-    if (text.startsWith('https://matrix.to/#/')) {
+    if (text.startsWith(AppConfig.matrixToLinkPrefix)) {
       UrlLauncher(context, text).openMatrixToUrl();
       return;
     }

@@ -20,14 +20,13 @@ import 'package:fluffychat/config/app_config.dart';
 import 'package:dbus/dbus.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';*/
 
-import '../utils/app_route.dart';
 import '../utils/beautify_string_extension.dart';
 import '../utils/famedlysdk_store.dart';
 import '../utils/firebase_controller.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
-import '../views/key_verification.dart';
 import 'avatar.dart';
+import 'dialogs/key_verification_dialog.dart';
 
 class Matrix extends StatefulWidget {
   static const String callNamespace = 'chat.fluffy.jitsi_call';
@@ -324,12 +323,7 @@ class MatrixState extends State<Matrix> {
         request.onUpdate = null;
         hidPopup = true;
         await request.acceptVerification();
-        await Navigator.of(context).push(
-          AppRoute.defaultRoute(
-            context,
-            KeyVerificationView(request: request),
-          ),
-        );
+        await KeyVerificationDialog(request: request).show(context);
       } else {
         request.onUpdate = null;
         hidPopup = true;

@@ -9,9 +9,9 @@ import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
 import '../utils/presence_extension.dart';
 import '../views/chat.dart';
-import '../views/key_verification.dart';
 import 'adaptive_page_layout.dart';
 import 'content_banner.dart';
+import 'dialogs/key_verification_dialog.dart';
 import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
 
@@ -35,35 +35,41 @@ class UserBottomSheet extends StatelessWidget {
       case 'ban':
         if (await _askConfirmation()) {
           await SimpleDialogs(context).tryRequestWithLoadingDialog(user.ban());
+          Navigator.of(context).pop();
         }
         break;
       case 'unban':
         if (await _askConfirmation()) {
           await SimpleDialogs(context)
               .tryRequestWithLoadingDialog(user.unban());
+          Navigator.of(context).pop();
         }
         break;
       case 'kick':
         if (await _askConfirmation()) {
           await SimpleDialogs(context).tryRequestWithLoadingDialog(user.kick());
+          Navigator.of(context).pop();
         }
         break;
       case 'admin':
         if (await _askConfirmation()) {
           await SimpleDialogs(context)
               .tryRequestWithLoadingDialog(user.setPower(100));
+          Navigator.of(context).pop();
         }
         break;
       case 'moderator':
         if (await _askConfirmation()) {
           await SimpleDialogs(context)
               .tryRequestWithLoadingDialog(user.setPower(50));
+          Navigator.of(context).pop();
         }
         break;
       case 'user':
         if (await _askConfirmation()) {
           await SimpleDialogs(context)
               .tryRequestWithLoadingDialog(user.setPower(0));
+          Navigator.of(context).pop();
         }
         break;
       case 'message':
@@ -81,12 +87,7 @@ class UserBottomSheet extends StatelessWidget {
   void _verifyAction(BuildContext context) async {
     final client = Matrix.of(context).client;
     final req = await client.userDeviceKeys[user.id].startVerification();
-    await Navigator.of(context).push(
-      AppRoute.defaultRoute(
-        context,
-        KeyVerificationView(request: req),
-      ),
-    );
+    await KeyVerificationDialog(request: req).show(context);
   }
 
   @override
@@ -98,13 +99,23 @@ class UserBottomSheet extends StatelessWidget {
 
     if (onMention != null) {
       items.add(
-        PopupMenuItem(child: Text(L10n.of(context).mention), value: 'mention'),
+        PopupMenuItem(
+            child: _TextWithIcon(
+              L10n.of(context).mention,
+              Icons.alternate_email_outlined,
+            ),
+            value: 'mention'),
       );
     }
-    if (user.id != Matrix.of(context).client.userID) {
+    if (user.id != Matrix.of(context).client.userID &&
+        !user.room.isDirectChat) {
       items.add(
         PopupMenuItem(
-            child: Text(L10n.of(context).sendAMessage), value: 'message'),
+            child: _TextWithIcon(
+              L10n.of(context).sendAMessage,
+              Icons.send,
+            ),
+            value: 'message'),
       );
     }
     if (user.canChangePowerLevel &&
@@ -112,7 +123,11 @@ class UserBottomSheet extends StatelessWidget {
         user.powerLevel != 100) {
       items.add(
         PopupMenuItem(
-            child: Text(L10n.of(context).makeAnAdmin), value: 'admin'),
+            child: _TextWithIcon(
+              L10n.of(context).makeAnAdmin,
+              Icons.arrow_upward,
+            ),
+            value: 'admin'),
       );
     }
     if (user.canChangePowerLevel &&
@@ -120,29 +135,50 @@ class UserBottomSheet extends StatelessWidget {
         user.powerLevel != 50) {
       items.add(
         PopupMenuItem(
-            child: Text(L10n.of(context).makeAModerator), value: 'moderator'),
+            child: _TextWithIcon(
+              L10n.of(context).makeAModerator,
+              Icons.arrow_upward_outlined,
+            ),
+            value: 'moderator'),
       );
     }
     if (user.canChangePowerLevel && user.powerLevel != 0) {
       items.add(
         PopupMenuItem(
-            child: Text(L10n.of(context).revokeAllPermissions), value: 'user'),
+            child: _TextWithIcon(
+              L10n.of(context).revokeAllPermissions,
+              Icons.arrow_downward_outlined,
+            ),
+            value: 'user'),
       );
     }
     if (user.canKick) {
       items.add(
         PopupMenuItem(
-            child: Text(L10n.of(context).kickFromChat), value: 'kick'),
+            child: _TextWithIcon(
+              L10n.of(context).kickFromChat,
+              Icons.exit_to_app_outlined,
+            ),
+            value: 'kick'),
       );
     }
     if (user.canBan && user.membership != Membership.ban) {
       items.add(
-        PopupMenuItem(child: Text(L10n.of(context).banFromChat), value: 'ban'),
+        PopupMenuItem(
+            child: _TextWithIcon(
+              L10n.of(context).banFromChat,
+              Icons.warning_sharp,
+            ),
+            value: 'ban'),
       );
     } else if (user.canBan && user.membership == Membership.ban) {
       items.add(
         PopupMenuItem(
-            child: Text(L10n.of(context).removeExile), value: 'unban'),
+            child: _TextWithIcon(
+              L10n.of(context).removeExile,
+              Icons.warning_outlined,
+            ),
+            value: 'unban'),
       );
     }
     return Center(
@@ -217,6 +253,29 @@ class UserBottomSheet extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _TextWithIcon extends StatelessWidget {
+  final String text;
+  final IconData iconData;
+
+  const _TextWithIcon(
+    this.text,
+    this.iconData, {
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(iconData),
+        SizedBox(width: 16),
+        Text(text),
+      ],
     );
   }
 }

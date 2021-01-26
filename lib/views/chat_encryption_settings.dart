@@ -7,11 +7,10 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
+import '../components/dialogs/key_verification_dialog.dart';
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
 import '../utils/beautify_string_extension.dart';
 import 'chat_list.dart';
-import 'key_verification.dart';
 
 class ChatEncryptionSettingsView extends StatelessWidget {
   final String id;
@@ -56,12 +55,7 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
             setState(() => null);
           }
         };
-        await Navigator.of(context).push(
-          AppRoute.defaultRoute(
-            context,
-            KeyVerificationView(request: req),
-          ),
-        );
+        await KeyVerificationDialog(request: req).show(context);
         break;
       case 'verify_manual':
         if (await showOkCancelAlertDialog(
@@ -84,12 +78,7 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
             setState(() => null);
           }
         };
-        await Navigator.of(context).push(
-          AppRoute.defaultRoute(
-            context,
-            KeyVerificationView(request: req),
-          ),
-        );
+        await KeyVerificationDialog(request: req).show(context);
         break;
       case 'block':
         if (key.directVerified) {

@@ -1,11 +1,10 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:flushbar/flushbar_helper.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matrix_link_text/link_text.dart';
@@ -15,7 +14,9 @@ import '../components/chat_settings_popup_menu.dart';
 import '../components/content_banner.dart';
 import '../components/dialogs/simple_dialogs.dart';
 import '../components/list_items/participant_list_item.dart';
+import '../config/app_config.dart';
 import '../utils/app_route.dart';
+import '../utils/fluffy_share.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
 import '../utils/url_launcher.dart';
@@ -197,14 +198,10 @@ class _ChatDetailsState extends State<ChatDetails> {
                       if (widget.room.canonicalAlias?.isNotEmpty ?? false)
                         IconButton(
                           icon: Icon(Icons.share),
-                          onPressed: () {
-                            Clipboard.setData(
-                              ClipboardData(text: widget.room.canonicalAlias),
-                            );
-                            FlushbarHelper.createSuccess(
-                                    message: L10n.of(context).copiedToClipboard)
-                                .show(context);
-                          },
+                          onPressed: () => FluffyShare.share(
+                              AppConfig.matrixToLinkPrefix +
+                                  widget.room.canonicalAlias,
+                              context),
                         ),
                       ChatSettingsPopupMenu(widget.room, false)
                     ],

@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
+import '../config/app_config.dart';
 import '../views/chat.dart';
 import 'app_route.dart';
 import 'matrix_identifier_string_extension.dart';
@@ -15,7 +16,7 @@ class UrlLauncher {
   const UrlLauncher(this.context, this.url);
 
   void launchUrl() {
-    if (url.startsWith('https://matrix.to/#/') ||
+    if (url.startsWith(AppConfig.matrixToLinkPrefix) ||
         {'#', '@', '!', '+', '\$'}.contains(url[0])) {
       return openMatrixToUrl();
     }
@@ -24,7 +25,7 @@ class UrlLauncher {
 
   void openMatrixToUrl() async {
     final matrix = Matrix.of(context);
-    final identifier = url.replaceAll('https://matrix.to/#/', '');
+    final identifier = url.replaceAll(AppConfig.matrixToLinkPrefix, '');
     if (identifier[0] == '#' || identifier[0] == '!') {
       // sometimes we have identifiers which have an event id and additional query parameters
       // we want to separate those.
