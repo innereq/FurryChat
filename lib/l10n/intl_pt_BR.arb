@@ -1912,5 +1912,17 @@
   "@about": {
     "type": "text",
     "placeholders": {}
+  },
+  "numUsersTyping": "{count} usuários estão digitando…",
+  "@numUsersTyping": {
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "toggleUnread": "Marcar Lido/Não Lido",
+  "@toggleUnread": {
+    "type": "text",
+    "placeholders": {}
   }
 }

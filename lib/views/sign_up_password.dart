@@ -90,7 +90,6 @@ class _SignUpPasswordState extends State<SignUpPassword> {
         return setState(() => loading = false);
       }
     } catch (exception) {
-      debugPrint(exception);
       setState(() => passwordError = exception.toString());
       return setState(() => loading = false);
     }

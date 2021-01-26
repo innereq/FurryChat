@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:logger_flutter/logger_flutter.dart';
 
 import '../app_config.dart';
 import '../components/adaptive_page_layout.dart';
@@ -220,6 +221,24 @@ class _SettingsState extends State<Settings> {
               ),
               title: Text(L10n.of(context).sourceCode),
               onTap: () => launch(AppConfig.sourceCodeUrl),
+            ),
+            Divider(thickness: 1),
+            ListTile(
+              title: Text(
+                'Log console',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onTap: () => Navigator.of(context).push(
+                AppRoute.defaultRoute(
+                  context,
+                  LogConsole(
+                    showCloseButton: true,
+                  ),
+                ),
+              ),
             ),
           ],
         ),

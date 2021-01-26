@@ -2,7 +2,6 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
@@ -57,7 +56,6 @@ class _EmotesSettingsState extends State<EmotesSettings> {
     if (readonly) {
       return;
     }
-    debugPrint('Saving....');
     final client = Matrix.of(context).client;
     // be sure to preserve any data not in "short"
     Map<String, dynamic> content;
@@ -70,7 +68,6 @@ class _EmotesSettingsState extends State<EmotesSettings> {
       content = client.accountData['im.ponies.user_emotes']?.content ??
           <String, dynamic>{};
     }
-    debugPrint(content.toString());
     if (!(content['emoticons'] is Map)) {
       content['emoticons'] = <String, dynamic>{};
     }
@@ -93,7 +90,6 @@ class _EmotesSettingsState extends State<EmotesSettings> {
     }
     // remove the old "short" key
     content.remove('short');
-    debugPrint(content.toString());
     if (widget.room != null) {
       await SimpleDialogs(context).tryRequestWithLoadingDialog(
         client.sendState(widget.room.id, 'im.ponies.room_emotes', content,

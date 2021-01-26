@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:logger_flutter/logger_flutter.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -170,7 +171,7 @@ class MatrixState extends State<Matrix> {
           ),
         );
       default:
-        debugPrint('Warning! Cannot handle the stage "$stage"');
+        Logs().w('Warning! Cannot handle the stage "$stage"');
         return;
     }
   }
@@ -305,13 +306,13 @@ class MatrixState extends State<Matrix> {
       }
       final configJson = json.decode(configJsonString);
       AppConfig.loadFromJson(configJson);
-    } catch (error) {
-      debugPrint(
-          '[ConfigLoader] Failed to load config.json: ' + error.toString());
+    } catch (e, s) {
+      Logs().w('[ConfigLoader] Failed to load config.json', e, s);
     }
   }
 
   void initMatrix() {
+    LogConsole.init();
     clientName =
         '${AppConfig.applicationName} ${kIsWeb ? 'Web' : Platform.operatingSystem}';
     final Set verificationMethods = <KeyVerificationMethod>{
