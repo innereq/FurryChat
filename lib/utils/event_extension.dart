@@ -1,9 +1,9 @@
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import '../components/dialogs/simple_dialogs.dart';
 import '../views/image_view.dart';
 import 'app_route.dart';
 import 'matrix_file_extension.dart';
@@ -19,11 +19,11 @@ extension LocalizedBody on Event {
       );
       return;
     }
-    final MatrixFile matrixFile =
-        await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      downloadAndDecryptAttachmentCached(),
+    final matrixFile = await showFutureLoadingDialog(
+      context: context,
+      future: () => downloadAndDecryptAttachmentCached(),
     );
-    matrixFile.open();
+    matrixFile.result?.open();
   }
 
   IconData get statusIcon {

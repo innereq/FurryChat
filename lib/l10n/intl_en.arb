@@ -1770,6 +1770,16 @@
       "type": {}
     }
   },
+  "noConnectionToTheServer": "No connection to the server",
+  "@noConnectionToTheServer": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tooManyRequestsWarning": "Too many requests. Please try again later!",
+  "@tooManyRequestsWarning": {
+    "type": "text",
+    "placeholders": {}
+  },
   "unpin": "Unpin",
   "@unpin": {
     "type": "text",

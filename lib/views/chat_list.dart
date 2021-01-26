@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -13,7 +14,6 @@ import '../components/adaptive_page_layout.dart';
 import '../components/connection_status_header.dart';
 import '../components/default_app_bar_search_field.dart';
 import '../components/default_drawer.dart';
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/list_items/chat_list_item.dart';
 import '../components/matrix.dart';
 import '../utils/app_route.dart';
@@ -142,24 +142,28 @@ class _ChatListState extends State<ChatList> {
 
   Future<void> _toggleUnread(BuildContext context) {
     final room = Matrix.of(context).client.getRoomById(_selectedRoomIds.single);
-    return SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.setUnread(!room.isUnread),
+    return showFutureLoadingDialog(
+      context: context,
+      future: () => room.setUnread(!room.isUnread),
     );
   }
 
   Future<void> _toggleFavouriteRoom(BuildContext context) {
     final room = Matrix.of(context).client.getRoomById(_selectedRoomIds.single);
-    return SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.setFavourite(!room.isFavourite),
+    return showFutureLoadingDialog(
+      context: context,
+      future: () => room.setFavourite(!room.isFavourite),
     );
   }
 
   Future<void> _toggleMuted(BuildContext context) {
     final room = Matrix.of(context).client.getRoomById(_selectedRoomIds.single);
-    return SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.setPushRuleState(room.pushRuleState == PushRuleState.notify
-          ? PushRuleState.mentions_only
-          : PushRuleState.notify),
+    return showFutureLoadingDialog(
+      context: context,
+      future: () => room.setPushRuleState(
+          room.pushRuleState == PushRuleState.notify
+              ? PushRuleState.mentions_only
+              : PushRuleState.notify),
     );
   }
 
@@ -170,8 +174,10 @@ class _ChatListState extends State<ChatList> {
         ) ==
         OkCancelResult.ok;
     if (!confirmed) return;
-    await SimpleDialogs(context)
-        .tryRequestWithLoadingDialog(_archiveSelectedRooms(context));
+    await showFutureLoadingDialog(
+      context: context,
+      future: () => _archiveSelectedRooms(context),
+    );
     setState(() => null);
   }
 

@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
 import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
@@ -56,15 +56,17 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
       '@' + controller.text.trim(),
       room: Room(id: '', client: matrix.client),
     );
-    final String roomID = await SimpleDialogs(context)
-        .tryRequestWithLoadingDialog(user.startDirectChat());
+    final roomID = await showFutureLoadingDialog(
+      context: context,
+      future: () => user.startDirectChat(),
+    );
     Navigator.of(context).pop();
 
-    if (roomID != null) {
+    if (roomID.error == null) {
       await Navigator.of(context).push(
         AppRoute.defaultRoute(
           context,
-          ChatView(roomID),
+          ChatView(roomID.result),
         ),
       );
     }
@@ -89,13 +91,14 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
     if (loading) return;
     setState(() => loading = true);
     final matrix = Matrix.of(context);
-    final response = await SimpleDialogs(context).tryRequestWithErrorToast(
-      matrix.client.searchUser(text, limit: 10),
+    final response = await showFutureLoadingDialog(
+      context: context,
+      future: () => matrix.client.searchUser(text, limit: 10),
     );
     setState(() => loading = false);
-    if (response == false || (response?.results?.isEmpty ?? true)) return;
+    if (response.result?.results?.isEmpty ?? true) return;
     setState(() {
-      foundProfiles = List<Profile>.from(response.results);
+      foundProfiles = List<Profile>.from(response.result.results);
     });
   }
 

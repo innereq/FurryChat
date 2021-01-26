@@ -16,6 +16,7 @@ import 'package:pedantic/pedantic.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:swipe_to_action/swipe_to_action.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 import '../app_config.dart';
 import '../components/adaptive_page_layout.dart';
@@ -24,7 +25,6 @@ import '../components/chat_settings_popup_menu.dart';
 import '../components/connection_status_header.dart';
 import '../components/dialogs/recording_dialog.dart';
 import '../components/dialogs/send_file_dialog.dart';
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/encryption_button.dart';
 import '../components/input_bar.dart';
 import '../components/list_items/message.dart';
@@ -115,8 +115,9 @@ class _ChatState extends State<_Chat> {
     if (_canLoadMore) {
       setState(() => _loadingHistory = true);
 
-      await SimpleDialogs(context).tryRequestWithErrorToast(
-        timeline.requestHistory(historyCount: _loadHistoryCount),
+      await showFutureLoadingDialog(
+        context: context,
+        future: () => timeline.requestHistory(historyCount: _loadHistoryCount),
       );
 
       // we do NOT setState() here as then the event order will be wrong.
@@ -276,8 +277,9 @@ class _ChatState extends State<_Chat> {
     final audioFile = File(result);
     // as we already explicitly say send in the recording dialog,
     // we do not need the send file dialog anymore. We can just send this straight away.
-    await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.sendFileEvent(
+    await showFutureLoadingDialog(
+      context: context,
+      future: () => room.sendFileEvent(
         MatrixAudioFile(
             bytes: audioFile.readAsBytesSync(), name: audioFile.path),
       ),
@@ -314,8 +316,9 @@ class _ChatState extends State<_Chat> {
         OkCancelResult.ok;
     if (!confirmed) return;
     for (var event in selectedEvents) {
-      await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          event.status > 0 ? event.redact() : event.remove());
+      await showFutureLoadingDialog(
+          context: context,
+          future: () => event.status > 0 ? event.redact() : event.remove());
     }
     setState(() => selectedEvents.clear());
   }
@@ -416,7 +419,7 @@ class _ChatState extends State<_Chat> {
         }
       });
       if (context != null) {
-        await SimpleDialogs(context).tryRequestWithLoadingDialog(task);
+        await showFutureLoadingDialog(context: context, future: () => task);
       } else {
         await task;
       }
@@ -574,16 +577,6 @@ class _ChatState extends State<_Chat> {
     }
   }
 
-  void _sendEmojiAction(BuildContext context, String emoji) {
-    SimpleDialogs(context).tryRequestWithLoadingDialog(
-      room.sendReaction(
-        selectedEvents.first.eventId,
-        emoji,
-      ),
-    );
-    setState(() => selectedEvents.clear());
-  }
-
   void _pickEmojiAction(
       BuildContext context, Iterable<Event> allReactionEvents) async {
     final emoji = await showModalBottomSheet(
@@ -615,6 +608,17 @@ class _ChatState extends State<_Chat> {
     return _sendEmojiAction(context, emoji.emoji);
   }
 
+  void _sendEmojiAction(BuildContext context, String emoji) {
+    showFutureLoadingDialog(
+      context: context,
+      future: () => room.sendReaction(
+        selectedEvents.first.eventId,
+        emoji,
+      ),
+    );
+    setState(() => selectedEvents.clear());
+  }
+
   @override
   Widget build(BuildContext context) {
     matrix = Matrix.of(context);
@@ -633,7 +637,7 @@ class _ChatState extends State<_Chat> {
     matrix.activeRoomId = widget.id;
 
     if (room.membership == Membership.invite) {
-      SimpleDialogs(context).tryRequestWithLoadingDialog(room.join());
+      showFutureLoadingDialog(context: context, future: () => room.join());
     }
 
     final typingText = room.getLocalizedTypingText(context);

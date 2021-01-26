@@ -1,5 +1,6 @@
 import 'package:famedlysdk/encryption/utils/key_verification.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -12,7 +13,6 @@ import '../utils/matrix_locals.dart';
 import '../utils/url_launcher.dart';
 import 'audio_player.dart';
 import 'dialogs/key_verification_dialog.dart';
-import 'dialogs/simple_dialogs.dart';
 import 'html_message.dart';
 import 'image_bubble.dart';
 import 'matrix.dart';
@@ -54,10 +54,11 @@ class MessageContent extends StatelessWidget {
       };
       await KeyVerificationDialog(request: req).show(context);
     } else {
-      final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        event.requestKey(),
+      final success = await showFutureLoadingDialog(
+        context: context,
+        future: () => event.requestKey(),
       );
-      if (success != false) {
+      if (success.error == null) {
         await FlushbarHelper.createLoading(
           title: L10n.of(context).loadingPleaseWait,
           message: L10n.of(context).requestToReadOlderMessages,

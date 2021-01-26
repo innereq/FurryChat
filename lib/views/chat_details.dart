@@ -3,6 +3,7 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flushbar/flushbar_helper.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,7 +13,6 @@ import '../app_config.dart';
 import '../components/adaptive_page_layout.dart';
 import '../components/chat_settings_popup_menu.dart';
 import '../components/content_banner.dart';
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/list_items/participant_list_item.dart';
 import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
@@ -51,10 +51,11 @@ class _ChatDetailsState extends State<ChatDetails> {
       ],
     );
     if (input == null) return;
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      widget.room.setName(input.single),
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => widget.room.setName(input.single),
     );
-    if (success != false) {
+    if (success.error == null) {
       await FlushbarHelper.createSuccess(
               message: L10n.of(context).displaynameHasBeenChanged)
           .show(context);
@@ -81,19 +82,24 @@ class _ChatDetailsState extends State<ChatDetails> {
     if (aliases.indexWhere((s) => s == canonicalAlias) == -1) {
       var newAliases = List<String>.from(aliases);
       newAliases.add(canonicalAlias);
-      final response = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        widget.room.client.requestRoomAliasInformations(canonicalAlias),
+      final response = await showFutureLoadingDialog(
+        context: context,
+        future: () =>
+            widget.room.client.requestRoomAliasInformations(canonicalAlias),
       );
-      if (response == false) {
-        final success =
-            await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          widget.room.client.createRoomAlias(canonicalAlias, widget.room.id),
+      if (response.error != null) {
+        final success = await showFutureLoadingDialog(
+          context: context,
+          future: () => widget.room.client
+              .createRoomAlias(canonicalAlias, widget.room.id),
         );
-        if (success == false) return;
+        if (success.error != null) return;
       }
     }
-    await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      widget.room.client.sendState(widget.room.id, 'm.room.canonical_alias', {
+    await showFutureLoadingDialog(
+      context: context,
+      future: () => widget.room.client
+          .sendState(widget.room.id, 'm.room.canonical_alias', {
         'alias': input.single,
       }),
     );
@@ -113,10 +119,11 @@ class _ChatDetailsState extends State<ChatDetails> {
       ],
     );
     if (input == null) return;
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      widget.room.setDescription(input.single),
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => widget.room.setDescription(input.single),
     );
-    if (success != false) {
+    if (success.error == null) {
       await FlushbarHelper.createSuccess(
               message: L10n.of(context).groupDescriptionHasBeenChanged)
           .show(context);
@@ -147,10 +154,11 @@ class _ChatDetailsState extends State<ChatDetails> {
       );
     }
 
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      widget.room.setAvatar(file),
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => widget.room.setAvatar(file),
     );
-    if (success != false) {
+    if (success.error == null) {
       await FlushbarHelper.createSuccess(
               message: L10n.of(context).avatarHasBeenChanged)
           .show(context);
@@ -158,9 +166,11 @@ class _ChatDetailsState extends State<ChatDetails> {
   }
 
   void requestMoreMembersAction(BuildContext context) async {
-    final List<User> participants = await SimpleDialogs(context)
-        .tryRequestWithLoadingDialog(widget.room.requestParticipants());
-    if (participants != null) setState(() => members = participants);
+    final participants = await showFutureLoadingDialog(
+        context: context, future: () => widget.room.requestParticipants());
+    if (participants.error == null) {
+      setState(() => members = participants.result);
+    }
   }
 
   @override
@@ -358,9 +368,10 @@ class _ChatDetailsState extends State<ChatDetails> {
                                 ),
                               ),
                               onSelected: (JoinRules joinRule) =>
-                                  SimpleDialogs(context)
-                                      .tryRequestWithLoadingDialog(
-                                widget.room.setJoinRules(joinRule),
+                                  showFutureLoadingDialog(
+                                context: context,
+                                future: () =>
+                                    widget.room.setJoinRules(joinRule),
                               ),
                               itemBuilder: (BuildContext context) =>
                                   <PopupMenuEntry<JoinRules>>[
@@ -398,9 +409,9 @@ class _ChatDetailsState extends State<ChatDetails> {
                               ),
                               onSelected:
                                   (HistoryVisibility historyVisibility) =>
-                                      SimpleDialogs(context)
-                                          .tryRequestWithLoadingDialog(
-                                widget.room
+                                      showFutureLoadingDialog(
+                                context: context,
+                                future: () => widget.room
                                     .setHistoryVisibility(historyVisibility),
                               ),
                               itemBuilder: (BuildContext context) =>
@@ -452,9 +463,10 @@ class _ChatDetailsState extends State<ChatDetails> {
                                   ),
                                 ),
                                 onSelected: (GuestAccess guestAccess) =>
-                                    SimpleDialogs(context)
-                                        .tryRequestWithLoadingDialog(
-                                  widget.room.setGuestAccess(guestAccess),
+                                    showFutureLoadingDialog(
+                                  context: context,
+                                  future: () =>
+                                      widget.room.setGuestAccess(guestAccess),
                                 ),
                                 itemBuilder: (BuildContext context) =>
                                     <PopupMenuEntry<GuestAccess>>[

@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
 import '../components/default_app_bar_search_field.dart';
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
 import '../utils/app_route.dart';
 import 'chat.dart';
@@ -101,18 +101,19 @@ class _DiscoverPageState extends State<DiscoverPage> {
         OkCancelResult.cancel) {
       return;
     }
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      _joinRoomAndWait(
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => _joinRoomAndWait(
         context,
         room.roomId,
         room.canonicalAlias ?? room.aliases.first,
       ),
     );
-    if (success != false) {
+    if (success.error == null) {
       await Navigator.of(context).push(
         AppRoute.defaultRoute(
           context,
-          ChatView(success),
+          ChatView(success.result),
         ),
       );
     }

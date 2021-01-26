@@ -4,12 +4,12 @@ import 'package:famedlysdk/matrix_api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 import '../../utils/platform_infos.dart';
 import '../../utils/string_color.dart';
 import '../avatar.dart';
 import 'adaptive_flat_button.dart';
-import 'simple_dialogs.dart';
 
 class KeyVerificationDialog extends StatefulWidget {
   Future<void> show(BuildContext context) => PlatformInfos.isCupertinoStyle
@@ -71,25 +71,26 @@ class _KeyVerificationPageState extends State<KeyVerificationDialog> {
           if (input == null) {
             return;
           }
-          final valid = await SimpleDialogs(context)
-              .tryRequestWithLoadingDialog(Future.microtask(() async {
-            // make sure the loading spinner shows before we test the keys
-            await Future.delayed(Duration(milliseconds: 100));
-            var valid = false;
-            try {
-              await widget.request.openSSSS(recoveryKey: input);
-              valid = true;
-            } catch (_) {
-              try {
-                await widget.request.openSSSS(passphrase: input);
-                valid = true;
-              } catch (_) {
-                valid = false;
-              }
-            }
-            return valid;
-          }));
-          if (valid == false) {
+          final valid = await showFutureLoadingDialog(
+              context: context,
+              future: () async {
+                // make sure the loading spinner shows before we test the keys
+                await Future.delayed(Duration(milliseconds: 100));
+                var valid = false;
+                try {
+                  await widget.request.openSSSS(recoveryKey: input);
+                  valid = true;
+                } catch (_) {
+                  try {
+                    await widget.request.openSSSS(passphrase: input);
+                    valid = true;
+                  } catch (_) {
+                    valid = false;
+                  }
+                }
+                return valid;
+              });
+          if (valid.error != null) {
             await showOkAlertDialog(
               context: context,
               message: L10n.of(context).incorrectPassphraseOrKey,

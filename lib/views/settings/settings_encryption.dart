@@ -2,10 +2,10 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:olm/olm.dart' as olm;
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 import '../../components/adaptive_page_layout.dart';
 import '../../components/dialogs/bootstrap_dialog.dart';
-import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
 import '../../utils/beautify_string_extension.dart';
 import '../settings.dart';
@@ -49,30 +49,32 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
       ],
     );
     if (input != null) {
-      final valid = await SimpleDialogs(context)
-          .tryRequestWithLoadingDialog(Future.microtask(() async {
-        // make sure the loading spinner shows before we test the keys
-        await Future.delayed(Duration(milliseconds: 100));
-        var valid = false;
-        try {
-          await handle.unlock(recoveryKey: input.single);
-          valid = true;
-        } catch (e, s) {
-          debugPrint('Couldn\'t use recovery key: ' + e.toString());
-          debugPrint(s.toString());
-          try {
-            await handle.unlock(passphrase: input.single);
-            valid = true;
-          } catch (e, s) {
-            debugPrint('Couldn\'t use recovery passphrase: ' + e.toString());
-            debugPrint(s.toString());
-            valid = false;
-          }
-        }
-        return valid;
-      }));
+      final valid = await showFutureLoadingDialog(
+          context: context,
+          future: () async {
+            // make sure the loading spinner shows before we test the keys
+            await Future.delayed(Duration(milliseconds: 100));
+            var valid = false;
+            try {
+              await handle.unlock(recoveryKey: input.single);
+              valid = true;
+            } catch (e, s) {
+              debugPrint('Couldn\'t use recovery key: ' + e.toString());
+              debugPrint(s.toString());
+              try {
+                await handle.unlock(passphrase: input.single);
+                valid = true;
+              } catch (e, s) {
+                debugPrint(
+                    'Couldn\'t use recovery passphrase: ' + e.toString());
+                debugPrint(s.toString());
+                valid = false;
+              }
+            }
+            return valid;
+          });
 
-      if (valid == true) {
+      if (valid.result == true) {
         await handle.maybeCacheAll();
         await showOkAlertDialog(
           context: context,
@@ -149,28 +151,29 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
                   ],
                 );
                 if (input != null) {
-                  final valid = await SimpleDialogs(context)
-                      .tryRequestWithLoadingDialog(Future.microtask(() async {
-                    // make sure the loading spinner shows before we test the keys
-                    await Future.delayed(Duration(milliseconds: 100));
-                    var valid = false;
-                    try {
-                      await client.encryption.crossSigning
-                          .selfSign(recoveryKey: input.single);
-                      valid = true;
-                    } catch (_) {
-                      try {
-                        await client.encryption.crossSigning
-                            .selfSign(passphrase: input.single);
-                        valid = true;
-                      } catch (_) {
-                        valid = false;
-                      }
-                    }
-                    return valid;
-                  }));
+                  final valid = await showFutureLoadingDialog(
+                      context: context,
+                      future: () async {
+                        // make sure the loading spinner shows before we test the keys
+                        await Future.delayed(Duration(milliseconds: 100));
+                        var valid = false;
+                        try {
+                          await client.encryption.crossSigning
+                              .selfSign(recoveryKey: input.single);
+                          valid = true;
+                        } catch (_) {
+                          try {
+                            await client.encryption.crossSigning
+                                .selfSign(passphrase: input.single);
+                            valid = true;
+                          } catch (_) {
+                            valid = false;
+                          }
+                        }
+                        return valid;
+                      });
 
-                  if (valid == true) {
+                  if (valid.result == true) {
                     await showOkAlertDialog(
                       context: context,
                       message: L10n.of(context).verifiedSession,

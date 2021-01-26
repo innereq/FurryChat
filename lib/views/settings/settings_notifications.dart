@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -9,7 +10,6 @@ import 'package:open_noti_settings/open_noti_settings.dart';
 
 import '../../app_config.dart';
 import '../../components/adaptive_page_layout.dart';
-import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
 import '../settings.dart';
 
@@ -107,8 +107,9 @@ class SettingsNotifications extends StatelessWidget {
 
   void _setNotificationSetting(
       BuildContext context, NotificationSettingsItem item, bool enabled) {
-    SimpleDialogs(context).tryRequestWithLoadingDialog(
-      Matrix.of(context).client.enablePushRule(
+    showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context).client.enablePushRule(
             'global',
             item.type,
             item.key,
@@ -136,9 +137,11 @@ class SettingsNotifications extends StatelessWidget {
                   value: !Matrix.of(context).client.allPushNotificationsMuted,
                   title:
                       Text(L10n.of(context).notificationsEnabledForThisAccount),
-                  onChanged: (_) =>
-                      SimpleDialogs(context).tryRequestWithLoadingDialog(
-                    Matrix.of(context).client.setMuteAllPushNotifications(
+                  onChanged: (_) => showFutureLoadingDialog(
+                    context: context,
+                    future: () => Matrix.of(context)
+                        .client
+                        .setMuteAllPushNotifications(
                           !Matrix.of(context).client.allPushNotificationsMuted,
                         ),
                   ),

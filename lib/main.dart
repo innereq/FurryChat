@@ -7,11 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 
 import 'app_config.dart';
 import 'components/matrix.dart';
 import 'components/theme_switcher.dart';
+import 'utils/localized_exception_extension.dart';
 import 'views/chat_list.dart';
 import 'views/homeserver_picker.dart';
 
@@ -52,6 +54,11 @@ class App extends StatelessWidget {
                           .stream
                           .first,
                       builder: (context, snapshot) {
+                        LoadingDialog.defaultTitle =
+                            L10n.of(context).loadingPleaseWait;
+                        LoadingDialog.defaultBackLabel = L10n.of(context).close;
+                        LoadingDialog.defaultOnError =
+                            (Object e) => e.toLocalizedString(context);
                         if (snapshot.hasError) {
                           WidgetsBinding.instance.addPostFrameCallback((_) =>
                               FlushbarHelper.createError(

@@ -4,6 +4,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
@@ -13,7 +14,6 @@ import 'adaptive_page_layout.dart';
 import 'content_banner.dart';
 import 'dialogs/key_verification_dialog.dart';
 import 'dialogs/permission_slider_dialog.dart';
-import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
 
 class UserBottomSheet extends StatelessWidget {
@@ -35,20 +35,28 @@ class UserBottomSheet extends StatelessWidget {
         break;
       case 'ban':
         if (await _askConfirmation()) {
-          await SimpleDialogs(context).tryRequestWithLoadingDialog(user.ban());
+          await showFutureLoadingDialog(
+            context: context,
+            future: () => user.ban(),
+          );
           Navigator.of(context).pop();
         }
         break;
       case 'unban':
         if (await _askConfirmation()) {
-          await SimpleDialogs(context)
-              .tryRequestWithLoadingDialog(user.unban());
+          await showFutureLoadingDialog(
+            context: context,
+            future: () => user.unban(),
+          );
           Navigator.of(context).pop();
         }
         break;
       case 'kick':
         if (await _askConfirmation()) {
-          await SimpleDialogs(context).tryRequestWithLoadingDialog(user.kick());
+          await showFutureLoadingDialog(
+            context: context,
+            future: () => user.kick(),
+          );
           Navigator.of(context).pop();
         }
         break;
@@ -58,8 +66,10 @@ class UserBottomSheet extends StatelessWidget {
                 .show(context);
         if (newPermission != null) {
           if (newPermission == 100 && await _askConfirmation() == false) break;
-          await SimpleDialogs(context)
-              .tryRequestWithLoadingDialog(user.setPower(newPermission));
+          await showFutureLoadingDialog(
+            context: context,
+            future: () => user.setPower(newPermission),
+          );
           Navigator.of(context).pop();
         }
         break;

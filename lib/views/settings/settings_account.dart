@@ -5,10 +5,10 @@ import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 import '../../components/adaptive_page_layout.dart';
 import '../../components/avatar.dart';
-import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
 import '../../config/setting_keys.dart';
 import '../../utils/app_route.dart';
@@ -45,8 +45,10 @@ class _AccountSettingsState extends State<AccountSettings> {
       return;
     }
     var matrix = Matrix.of(context);
-    await SimpleDialogs(context)
-        .tryRequestWithLoadingDialog(matrix.client.logout());
+    await showFutureLoadingDialog(
+      context: context,
+      future: () => matrix.client.logout(),
+    );
   }
 
   void _changePasswordAccountAction(BuildContext context) async {
@@ -69,8 +71,9 @@ class _AccountSettingsState extends State<AccountSettings> {
       ],
     );
     if (input == null) return;
-    await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      Matrix.of(context)
+    await showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context)
           .client
           .changePassword(input.last, oldPassword: input.first),
     );
@@ -106,8 +109,9 @@ class _AccountSettingsState extends State<AccountSettings> {
       ],
     );
     if (input == null) return;
-    await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      Matrix.of(context).client.deactivateAccount(
+    await showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context).client.deactivateAccount(
             auth: AuthenticationPassword(
               password: input.single,
               user: Matrix.of(context).client.userID,
@@ -149,10 +153,12 @@ class _AccountSettingsState extends State<AccountSettings> {
     );
     if (input == null) return;
     final matrix = Matrix.of(context);
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      matrix.client.setDisplayname(matrix.client.userID, input.single),
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () =>
+          matrix.client.setDisplayname(matrix.client.userID, input.single),
     );
-    if (success != false) {
+    if (success.error == null) {
       setState(() {
         profileFuture = null;
         profile = null;
@@ -183,10 +189,11 @@ class _AccountSettingsState extends State<AccountSettings> {
       );
     }
     final matrix = Matrix.of(context);
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      matrix.client.setAvatar(file),
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => matrix.client.setAvatar(file),
     );
-    if (success != false) {
+    if (success.error == null) {
       setState(() {
         profileFuture = null;
         profile = null;

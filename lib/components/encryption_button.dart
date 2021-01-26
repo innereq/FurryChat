@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:flushbar/flushbar_helper.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 import '../utils/app_route.dart';
 import '../views/chat_encryption_settings.dart';
-import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
 
 class EncryptionButton extends StatefulWidget {
@@ -46,8 +46,9 @@ class _EncryptionButtonState extends State<EncryptionButton> {
           okLabel: L10n.of(context).yes,
         ) ==
         OkCancelResult.ok) {
-      await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        widget.room.enableEncryption(),
+      await showFutureLoadingDialog(
+        context: context,
+        future: () => widget.room.enableEncryption(),
       );
       // we want to enable the lock icon
       setState(() => null);

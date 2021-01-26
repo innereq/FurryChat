@@ -1,6 +1,7 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/encryption.dart';
 import 'package:famedlysdk/encryption/utils/bootstrap.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import '../../utils/platform_infos.dart';
 import '../matrix.dart';
 import 'adaptive_flat_button.dart';
-import 'simple_dialogs.dart';
 
 class BootstrapDialog extends StatefulWidget {
   Future<bool> show(BuildContext context) => PlatformInfos.isCupertinoStyle
@@ -119,11 +119,12 @@ class _BootstrapDialogState extends State<BootstrapDialog> {
                 )
               ]);
               if (input?.isEmpty ?? true) return;
-              final valid =
-                  await SimpleDialogs(context).tryRequestWithLoadingDialog(
-                bootstrap.newSsssKey.unlock(keyOrPassphrase: input.single),
+              final valid = await showFutureLoadingDialog(
+                context: context,
+                future: () =>
+                    bootstrap.newSsssKey.unlock(keyOrPassphrase: input.single),
               );
-              if (valid != false) bootstrap.openExistingSsss();
+              if (valid.error == null) bootstrap.openExistingSsss();
             }));
         break;
       case BootstrapState.askWipeCrossSigning:
@@ -237,9 +238,12 @@ class _AskUnlockOldSsssState extends State<_AskUnlockOldSsss> {
       return;
     }
 
-    valid = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      widget.ssssKey.unlock(keyOrPassphrase: input),
-    );
+    valid = (await showFutureLoadingDialog(
+          context: context,
+          future: () => widget.ssssKey.unlock(keyOrPassphrase: input),
+        ))
+            .error ==
+        null;
     setState(() => null);
   }
 

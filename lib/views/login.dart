@@ -4,11 +4,11 @@ import 'dart:math';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
 import '../utils/app_route.dart';
 import '../utils/firebase_controller.dart';
@@ -118,8 +118,10 @@ class _LoginState extends State<Login> {
       final newDomain = wellKnownInformations.mHomeserver?.baseUrl;
       if ((newDomain?.isNotEmpty ?? false) &&
           newDomain != Matrix.of(context).client.homeserver.toString()) {
-        await SimpleDialogs(context).tryRequestWithErrorToast(
-            Matrix.of(context).client.checkHomeserver(newDomain));
+        await showFutureLoadingDialog(
+          context: context,
+          future: () => Matrix.of(context).client.checkHomeserver(newDomain),
+        );
         setState(() => usernameError = null);
       }
       newWellknown = wellKnownInformations;
@@ -142,14 +144,15 @@ class _LoginState extends State<Login> {
     );
     if (input == null) return;
     final clientSecret = DateTime.now().millisecondsSinceEpoch.toString();
-    final response = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      Matrix.of(context).client.resetPasswordUsingEmail(
+    final response = await showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context).client.resetPasswordUsingEmail(
             input.single,
             clientSecret,
             sendAttempt++,
           ),
     );
-    if (response == false) return;
+    if (response.error != null) return;
     final ok = await showOkAlertDialog(
       context: context,
       title: L10n.of(context).weSentYouAnEmail,
@@ -170,8 +173,9 @@ class _LoginState extends State<Login> {
       ],
     );
     if (password == null) return;
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      Matrix.of(context).client.changePassword(
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context).client.changePassword(
             password.single,
             auth: AuthenticationThreePidCreds(
               type: AuthenticationTypes.emailIdentity,
@@ -184,7 +188,7 @@ class _LoginState extends State<Login> {
             ),
           ),
     );
-    if (success != false) {
+    if (success.error == null) {
       FlushbarHelper.createSuccess(
           message: L10n.of(context).passwordHasBeenChanged);
     }
