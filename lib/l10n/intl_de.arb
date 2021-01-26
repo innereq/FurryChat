@@ -149,7 +149,7 @@
       "homeserver": {}
     }
   },
-  "cachedKeys": "Keys erfolgreich gecached!",
+  "cachedKeys": "Schlüssel zwischengespeichert",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -938,7 +938,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat kann die Online-Schlüsselsicherung noch nicht aktivieren. Bitte schalte es innerhalb von Element an.",
+  "noMegolmBootstrap": "FluffyChat kann die Online-Schlüsselsicherung noch nicht aktivieren. Bitte schalte es innerhalb von Element an.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1480,7 +1480,7 @@
       "unreadChats": {}
     }
   },
-  "useAmoledTheme": "Amoled optimierte Farben verwenden?",
+  "useAmoledTheme": "AMOLED-optimierte Farben verwenden?",
   "@useAmoledTheme": {
     "type": "text",
     "placeholders": {}
@@ -1553,7 +1553,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "verifyTitle": "Verifiziere das anderes Konto …",
+  "verifyTitle": "Anderes Konto wird verifiziert",
   "@verifyTitle": {
     "type": "text",
     "placeholders": {}
@@ -1598,7 +1598,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerNumbers": "Warten, dass der Partner die Zahlen annimmt …",
+  "waitingPartnerNumbers": "Warten, dass der Partner die Zahlen annimmt …",
   "@waitingPartnerNumbers": {
     "type": "text",
     "placeholders": {}
@@ -1618,7 +1618,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "welcomeText": "Herzlich willkommen beim knuffigsten Instant Messenger im Matrix-Netzwerk.",
+  "welcomeText": "Herzlich willkommen beim knuffigsten Instant-Messenger im Matrix-Netzwerk.",
   "@welcomeText": {
     "type": "text",
     "placeholders": {}
@@ -1755,6 +1755,111 @@
   },
   "changePassword": "Passwort ändern",
   "@changePassword": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Verschlüsselt",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceId": "Geräte-ID",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Bitte auf den Link in der E-Mail klicken und dann fortfahren.",
+  "@pleaseClickOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Passwort vergessen",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Passwort wiederherstellen",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Du hast bisher keine Möglichkeit hinzugefügt, um dein Passwort zurückzusetzen.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "Ich habe den Link angeklickt",
+  "@iHaveClickedOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterAnEmailAddress": "Gib eine E-Mail-Adresse ein",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "Mit diesen Adressen kannst du dein Passwort wiederherstellen, wenn du es vergessen hast.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Wir haben dir eine E-Mail gesendet",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Bearbeiten",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Mitgliederänderungen",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Benachrichtigungen für dieses Konto aktiviert",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Benachrichtigungen",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Bot-Nachrichten",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Enthält Benutzernamen",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Enthält Anzeigenamen",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Direkte Chats",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Push-Regeln",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Einladung für mich",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Ton, Vibration LED-Farbe",
+  "@soundVibrationLedColor": {
     "type": "text",
     "placeholders": {}
   }

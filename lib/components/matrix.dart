@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/encryption.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -15,6 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../config/app_config.dart';
 import '../config/setting_keys.dart';
+import '../utils/app_route.dart';
 /*import 'package:fluffychat/views/chat.dart';
 import 'package:fluffychat/config/app_config.dart';
 import 'package:dbus/dbus.dart';
@@ -25,6 +27,7 @@ import '../utils/famedlysdk_store.dart';
 import '../utils/firebase_controller.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
+import '../views/settings_3pid.dart';
 import 'avatar.dart';
 import 'dialogs/key_verification_dialog.dart';
 
@@ -88,6 +91,7 @@ class MatrixState extends State<Matrix> {
     var initLoginState = client.onLoginStateChanged.stream.first;
     try {
       client.init();
+
       final firstLoginState = await initLoginState;
       if (firstLoginState == LoginState.logged) {
         if (PlatformInfos.isMobile) {
@@ -96,6 +100,39 @@ class MatrixState extends State<Matrix> {
             widget.clientName,
           );
         }
+      }
+      final storeItem = await store.getItem(SettingKeys.showNoPid);
+      final configOptionMissing = storeItem == null || storeItem.isEmpty;
+      if (configOptionMissing || (!configOptionMissing && storeItem == '1')) {
+        if (configOptionMissing) {
+          await store.setItem(SettingKeys.showNoPid, '0');
+        }
+        await Matrix.of(context)
+            .client
+            .requestThirdPartyIdentifiers()
+            .then((l) {
+          if (l.isEmpty) {
+            Flushbar(
+              title: L10n.of(context).warning,
+              message: L10n.of(context).noPasswordRecoveryDescription,
+              mainButton: RaisedButton(
+                elevation: 7,
+                color: Theme.of(context).scaffoldBackgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(L10n.of(context).edit),
+                onPressed: () => Navigator.of(context).push(
+                  AppRoute.defaultRoute(
+                    context,
+                    Settings3PidView(),
+                  ),
+                ),
+              ),
+              flushbarStyle: FlushbarStyle.FLOATING,
+            ).show(context);
+          }
+        }).catchError((_) => null);
       }
     } catch (e, s) {
       client.onLoginStateChanged.sink.addError(e, s);

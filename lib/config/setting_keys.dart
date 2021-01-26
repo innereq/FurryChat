@@ -9,6 +9,7 @@ abstract class SettingKeys {
   static const String amoledEnabled = 'amoled_enabled';
   static const String codeLanguage = 'code_language';
   static const String showNoGoogle = 'chat.fluffy.show_no_google';
+  static const String showNoPid = 'chat.fluffy.show_no_pid';
   static const String databasePassword = 'database-password';
   static const String swipeToEndAction = 'dev.inex.furrychat.swipeToEndAction';
   static const String swipeToStartAction =

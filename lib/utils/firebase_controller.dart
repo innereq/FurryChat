@@ -17,6 +17,7 @@ import '../views/chat.dart';
 import 'app_route.dart';
 import 'famedlysdk_store.dart';
 import 'matrix_locals.dart';
+import 'platform_infos.dart';
 
 abstract class FirebaseController {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -32,6 +33,7 @@ abstract class FirebaseController {
 
   static Future<void> setupFirebase(
       MatrixState matrix, String clientName) async {
+    if (!PlatformInfos.isMobile) return;
     final client = matrix.client;
     if (Platform.isIOS) iOS_Permission();
 

@@ -102,7 +102,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "askVerificationRequest": "Accepter cette demande de vérification de {username} ?",
+  "askVerificationRequest": "Accepter cette demande de vérification de la part de {username} ?",
   "@askVerificationRequest": {
     "type": "text",
     "placeholders": {
@@ -149,7 +149,7 @@
       "homeserver": {}
     }
   },
-  "cachedKeys": "Clés mises en cache avec succès !",
+  "cachedKeys": "Clés mises en cache",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -263,7 +263,7 @@
       "username": {}
     }
   },
-  "changelog": "Journal des changements",
+  "changelog": "Journal des modifications",
   "@changelog": {
     "type": "text",
     "placeholders": {}
@@ -293,7 +293,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "changeWallpaper": "Changer d'image de fond",
+  "changeWallpaper": "Changer l'image de fond",
   "@changeWallpaper": {
     "type": "text",
     "placeholders": {}
@@ -328,12 +328,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "compareEmojiMatch": "Comparez et assurez-vous que les emojis suivants correspondent à ceux de l'autre appareil :",
+  "compareEmojiMatch": "Comparez les emojis suivants avec ceux de l'autre appareil et assurez-vous qu'ils correspondent :",
   "@compareEmojiMatch": {
     "type": "text",
     "placeholders": {}
   },
-  "compareNumbersMatch": "Comparez et assurez-vous que les chiffres suivants correspondent à ceux de l'autre appareil :",
+  "compareNumbersMatch": "Comparez les chiffres suivants avec ceux de l'autre appareil et assurez-vous qu'ils correspondent :",
   "@compareNumbersMatch": {
     "type": "text",
     "placeholders": {}
@@ -385,7 +385,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "couldNotSetDisplayname": "Impossible de changer de nom",
+  "couldNotSetDisplayname": "Impossible de changer de nom d'affichage",
   "@couldNotSetDisplayname": {
     "type": "text",
     "placeholders": {}
@@ -464,7 +464,7 @@
       "day": {}
     }
   },
-  "deactivateAccountWarning": "Ceci désactivera votre compte et ne peut pas être annulé ! Êtes-vous sûr·e ?",
+  "deactivateAccountWarning": "Cette opération va désactiver votre compte. Une fois cette action effectuée, aucun retour en arrière n'est possible ! Êtes-vous sûr·e ?",
   "@deactivateAccountWarning": {
     "type": "text",
     "placeholders": {}
@@ -489,12 +489,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "device": "Périphérique",
+  "device": "Appareil",
   "@device": {
     "type": "text",
     "placeholders": {}
   },
-  "devices": "Périphériques",
+  "devices": "Appareils",
   "@devices": {
     "type": "text",
     "placeholders": {}
@@ -519,7 +519,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "editDisplayname": "Changer de nom",
+  "editDisplayname": "Changer de nom d'affichage",
   "@editDisplayname": {
     "type": "text",
     "placeholders": {}
@@ -544,7 +544,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "emoteShortcode": "Raccourci d'émoticône",
+  "emoteShortcode": "Raccourci de l'émoticône",
   "@emoteShortcode": {
     "type": "text",
     "placeholders": {}
@@ -559,7 +559,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "enableEncryptionWarning": "Vous ne pourrez plus désactiver le chiffrement. Êtes-vous sûr(e) ?",
+  "enableEncryptionWarning": "Vous ne pourrez plus désactiver le chiffrement. Êtes-vous sûr(e) ?",
   "@enableEncryptionWarning": {
     "type": "text",
     "placeholders": {}
@@ -574,7 +574,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "encryptionNotEnabled": "Le chiffrement n'est pas actif",
+  "encryptionNotEnabled": "Le chiffrement n'est pas activé",
   "@encryptionNotEnabled": {
     "type": "text",
     "placeholders": {}
@@ -651,7 +651,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "groupDescriptionHasBeenChanged": "La description du groupe a été changée",
+  "groupDescriptionHasBeenChanged": "La description du groupe a été modifiée",
   "@groupDescriptionHasBeenChanged": {
     "type": "text",
     "placeholders": {}
@@ -948,7 +948,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "FurryChat ne permet pas actuellement d'activer la signature croisée. Veuillez l'activer à partir de Riot.",
+  "noCrossSignBootstrap": "FurryChat ne permet pas actuellement d'activer la signature croisée. Veuillez l'activer à partir d'Element.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -963,7 +963,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "FurryChat ne prend pas actuellement en charge l'activation de la sauvegarde des clés en ligne. Veuillez l'activer à partir de Riot.",
+  "noMegolmBootstrap": "FurryChat ne prend pas actuellement en charge l'activation de la sauvegarde des clés en ligne. Veuillez l'activer à partir d'Element.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -995,7 +995,7 @@
       "number": {}
     }
   },
-  "ok": "OK",
+  "ok": "Valider",
   "@ok": {
     "type": "text",
     "placeholders": {}
@@ -1072,7 +1072,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterAMatrixIdentifier": "Renseignez un identifiant Matrix",
+  "pleaseEnterAMatrixIdentifier": "Veuillez renseigner un identifiant Matrix",
   "@pleaseEnterAMatrixIdentifier": {
     "type": "text",
     "placeholders": {}
@@ -1510,7 +1510,7 @@
       "unreadChats": {}
     }
   },
-  "useAmoledTheme": "Utiliser des couleurs compatibles Amoled ?",
+  "useAmoledTheme": "Utiliser des couleurs compatibles AMOLED ?",
   "@useAmoledTheme": {
     "type": "text",
     "placeholders": {}
@@ -1638,7 +1638,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "warning": "Attention !",
+  "warning": "Attention !",
   "@warning": {
     "type": "text",
     "placeholders": {}
@@ -1755,6 +1755,111 @@
   },
   "changePassword": "Changer de mot de passe",
   "@changePassword": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Chiffré",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceId": "Identifiant de l'appareil",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "Grâce à ces adresses, vous pouvez récupérer votre mot de passe si vous en avez besoin.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Nous vous avons envoyé un courriel",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Veuillez cliquer sur le lien contenu dans le courriel puis continuez.",
+  "@pleaseClickOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Mot de passe oublié",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Récupération du mot de passe",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Vous n'avez pas encore ajouté de moyen pour récupérer votre mot de passe.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "J'ai cliqué sur le lien",
+  "@iHaveClickedOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Modifier",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterAnEmailAddress": "Saisissez une adresse de courriel",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Contient un nom d'utilisateur",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Contient un nom d'affichage",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Notifications activées pour ce compte",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Messages de bot",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Discussions directes",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Règles de notifications",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Changements de membres",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Inviter pour moi",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Son, vibration couleur diode",
+  "@soundVibrationLedColor": {
     "type": "text",
     "placeholders": {}
   }

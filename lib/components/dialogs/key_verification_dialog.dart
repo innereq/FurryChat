@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import '../../utils/platform_infos.dart';
 import '../../utils/string_color.dart';
 import '../avatar.dart';
+import 'adaptive_flat_button.dart';
 import 'simple_dialogs.dart';
 
 class KeyVerificationDialog extends StatefulWidget {
@@ -122,14 +123,14 @@ class _KeyVerificationPageState extends State<KeyVerificationDialog> {
             mainAxisSize: MainAxisSize.min,
           ),
         );
-        buttons.add(_AdaptiveFlatButton(
+        buttons.add(AdaptiveFlatButton(
           child: Text(L10n.of(context).submit),
           onPressed: () {
             input = textEditingController.text;
             checkInput();
           },
         ));
-        buttons.add(_AdaptiveFlatButton(
+        buttons.add(AdaptiveFlatButton(
           child: Text(L10n.of(context).skip),
           onPressed: () => widget.request.openSSSS(skip: true),
         ));
@@ -141,11 +142,11 @@ class _KeyVerificationPageState extends State<KeyVerificationDialog> {
               style: TextStyle(fontSize: 20)),
           margin: EdgeInsets.only(left: 8.0, right: 8.0),
         );
-        buttons.add(_AdaptiveFlatButton(
+        buttons.add(AdaptiveFlatButton(
           child: Text(L10n.of(context).accept),
           onPressed: () => widget.request.acceptVerification(),
         ));
-        buttons.add(_AdaptiveFlatButton(
+        buttons.add(AdaptiveFlatButton(
           child: Text(L10n.of(context).reject),
           onPressed: () {
             widget.request.rejectVerification().then((_) {
@@ -205,11 +206,11 @@ class _KeyVerificationPageState extends State<KeyVerificationDialog> {
           ],
           mainAxisSize: MainAxisSize.min,
         );
-        buttons.add(_AdaptiveFlatButton(
+        buttons.add(AdaptiveFlatButton(
           child: Text(L10n.of(context).theyMatch),
           onPressed: () => widget.request.acceptSas(),
         ));
-        buttons.add(_AdaptiveFlatButton(
+        buttons.add(AdaptiveFlatButton(
           textColor: Colors.red,
           child: Text(L10n.of(context).theyDontMatch),
           onPressed: () => widget.request.rejectSas(),
@@ -245,7 +246,7 @@ class _KeyVerificationPageState extends State<KeyVerificationDialog> {
           ],
           mainAxisSize: MainAxisSize.min,
         );
-        buttons.add(_AdaptiveFlatButton(
+        buttons.add(AdaptiveFlatButton(
           child: Text(L10n.of(context).close),
           onPressed: () => Navigator.of(context).pop(),
         ));
@@ -357,35 +358,6 @@ class _Emoji extends StatelessWidget {
         Text(emoji.name),
         Container(height: 10, width: 5),
       ],
-    );
-  }
-}
-
-class _AdaptiveFlatButton extends StatelessWidget {
-  final Widget child;
-  final Color textColor;
-  final Function onPressed;
-
-  const _AdaptiveFlatButton({
-    Key key,
-    this.child,
-    this.textColor,
-    this.onPressed,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (PlatformInfos.isCupertinoStyle) {
-      return CupertinoDialogAction(
-        child: child,
-        onPressed: onPressed,
-        textStyle: textColor != null ? TextStyle(color: textColor) : null,
-      );
-    }
-    return FlatButton(
-      child: child,
-      textColor: textColor,
-      onPressed: onPressed,
     );
   }
 }

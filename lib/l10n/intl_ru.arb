@@ -1812,5 +1812,15 @@
   "@changePassword": {
     "type": "text",
     "placeholders": {}
+  },
+  "encrypted": "Зашифровано",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceId": "Идентификатор устройства",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
   }
 }

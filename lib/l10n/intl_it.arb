@@ -52,7 +52,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "cachedKeys": "Chiavi salvate in cache con successo!",
+  "cachedKeys": "Chiavi in cache",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -87,7 +87,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "avatarHasBeenChanged": "L'avatar è stato cambiato",
+  "avatarHasBeenChanged": "Avatar cambiato",
   "@avatarHasBeenChanged": {
     "type": "text",
     "placeholders": {}
@@ -579,7 +579,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "crossSigningDisabled": "La firma incrociata è disabilitata",
+  "crossSigningDisabled": "Firma incrociata disabilitata",
   "@crossSigningDisabled": {
     "type": "text",
     "placeholders": {}
@@ -679,7 +679,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "groupDescriptionHasBeenChanged": "La descrizione del gruppo è stata modificata",
+  "groupDescriptionHasBeenChanged": "Descrizione del gruppo modificata",
   "@groupDescriptionHasBeenChanged": {
     "type": "text",
     "placeholders": {}
@@ -734,7 +734,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "crossSigningEnabled": "La firma incrociata è abilitata",
+  "crossSigningEnabled": "Firma incrociata abilitata",
   "@crossSigningEnabled": {
     "type": "text",
     "placeholders": {}
@@ -832,7 +832,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "useAmoledTheme": "Usare i colori compatibili con Amoled?",
+  "useAmoledTheme": "Usare i colori compatibili con AMOLED?",
   "@useAmoledTheme": {
     "type": "text",
     "placeholders": {}
@@ -928,7 +928,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "Fluffychat attualmente non supporta l'abilitazione della firma incrociata. Abilitala da Riot.",
+  "noCrossSignBootstrap": "Fluffychat attualmente non supporta l'abilitazione della firma incrociata. Abilitala da Element.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1623,7 +1623,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Fluffychat attualmente non supporta l'attivazione del backup delle chiavi in linea. Abilitalo da Riot.",
+  "noMegolmBootstrap": "Fluffychat attualmente non supporta l'attivazione del backup delle chiavi in linea. Abilitalo da Element.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1730,5 +1730,125 @@
       "username": {},
       "targetName": {}
     }
+  },
+  "deviceId": "ID del dispositivo",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hideUnknownEvents": "Nascondi gli eventi sconosciuti",
+  "@hideUnknownEvents": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hideRedactedEvents": "Nascondi gli eventi eliminati",
+  "@hideRedactedEvents": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Crittografato",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "changePassword": "Cambia la password",
+  "@changePassword": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "Con questi indirizzi puoi recuperare la tua password se necessario.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Ti abbiamo inviato un'e-mail",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Clicca sul collegamenti nell'e-mail e poi procedi.",
+  "@pleaseClickOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Password dimenticata",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Recupero della password",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Non hai ancora aggiunto un modo per recuperare la tua password.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "Ho cliccato sul collegamento",
+  "@iHaveClickedOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Modifica",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterAnEmailAddress": "Inserisci un indirizzo e-mail",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Regole notifiche",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Cambiamenti di membri",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Invita per me",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Contiene nome utente",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Contiene nome visibile",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Discussioni dirette",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Notifiche abilitate per questo account",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Notifiche",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Messaggi bot",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Suono, vibrazione, colore diodo",
+  "@soundVibrationLedColor": {
+    "type": "text",
+    "placeholders": {}
   }
 }

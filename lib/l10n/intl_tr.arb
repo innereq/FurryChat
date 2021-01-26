@@ -149,7 +149,7 @@
       "homeserver": {}
     }
   },
-  "cachedKeys": "Anahtarlar başarıyla önbelleğe alındı!",
+  "cachedKeys": "Önbelleğe alınan anahtarlar",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -414,12 +414,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "crossSigningDisabled": "Çapraz imzalama devre dışı bırakıldı",
+  "crossSigningDisabled": "Çapraz imzalama kapalı",
   "@crossSigningDisabled": {
     "type": "text",
     "placeholders": {}
   },
-  "crossSigningEnabled": "Çapraz imzalama etkinleştirildi",
+  "crossSigningEnabled": "Çapraz imzalama açık",
   "@crossSigningEnabled": {
     "type": "text",
     "placeholders": {}
@@ -1409,7 +1409,7 @@
       "unreadChats": {}
     }
   },
-  "useAmoledTheme": "Amolede uyumlu renkler kullanılsın mı?",
+  "useAmoledTheme": "AMOLEDe uyumlu renkler kullanılsın mı?",
   "@useAmoledTheme": {
     "type": "text",
     "placeholders": {}
@@ -1755,6 +1755,111 @@
   },
   "changePassword": "Parolayı değiştir",
   "@changePassword": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Şifreli",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceId": "Aygıt kimliği",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "Bu adresler ile ihtiyacınız olursa parolanızı kurtarabilirsiniz.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Size bir e-posta gönderdik",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Lütfen e-postadaki bağlantıya tıklayın ve devam edin.",
+  "@pleaseClickOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Parola unutuldu",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Parola kurtarma",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "Bağlantıya tıkladım",
+  "@iHaveClickedOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Düzenle",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterAnEmailAddress": "Bir e-posta adresi girin",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Henüz parolanızı kurtarmak için bir yol eklemediniz.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Bu hesap için bildirimler etkinleştirildi",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Bildirimler",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Gönderme kuralları",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Bot mesajları",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Üye değişiklikleri",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Benim için davet et",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Kullanıcı adı içerir",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Görünen ad içerir",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Doğrudan Sohbetler",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Ses, titreşim, LED rengi",
+  "@soundVibrationLedColor": {
     "type": "text",
     "placeholders": {}
   }

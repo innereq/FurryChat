@@ -154,7 +154,7 @@
       "homeserver": {}
     }
   },
-  "cachedKeys": "Successfully cached keys!",
+  "cachedKeys": "Keys cached",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -429,12 +429,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "crossSigningDisabled": "Cross-Signing is disabled",
+  "crossSigningDisabled": "Cross-signing off",
   "@crossSigningDisabled": {
     "type": "text",
     "placeholders": {}
   },
-  "crossSigningEnabled": "Cross-Signing is enabled",
+  "crossSigningEnabled": "Cross-signing on",
   "@crossSigningEnabled": {
     "type": "text",
     "placeholders": {}
@@ -549,6 +549,11 @@
     "type": "text",
     "placeholders": {}
   },
+  "enterAnEmailAddress": "Enter an email address",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
   "emoteExists": "Emote already exists!",
   "@emoteExists": {
     "type": "text",
@@ -566,6 +571,56 @@
   },
   "emptyChat": "Empty chat",
   "@emptyChat": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Direct Chats",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Contains display name",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Contains username",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Invite for me",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Member changes",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Bot messages",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Push rules",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Notifications enabled for this account",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Edit",
+  "@edit": {
     "type": "text",
     "placeholders": {}
   },
@@ -671,7 +726,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "groupDescriptionHasBeenChanged": "Group description has been changed",
+  "groupDescriptionHasBeenChanged": "Group description changed",
   "@groupDescriptionHasBeenChanged": {
     "type": "text",
     "placeholders": {}
@@ -811,6 +866,11 @@
   },
   "isTyping": "is typing…",
   "@isTyping": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "I have clicked on the link",
+  "@iHaveClickedOnLink": {
     "type": "text",
     "placeholders": {}
   },
@@ -990,7 +1050,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "FurryChat currently does not support enabling Cross-Signing. Please enable it from within Riot.",
+  "noPasswordRecoveryDescription": "You have not added a way to recover your password yet.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noCrossSignBootstrap": "Fluffychat currently does not support enabling Cross-Signing. Please enable it from within Element.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -1107,6 +1172,16 @@
     "type": "text",
     "placeholders": {}
   },
+  "passwordRecovery": "Password recovery",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Password forgotten",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
   "pickImage": "Pick image",
   "@pickImage": {
     "type": "text",
@@ -1126,6 +1201,11 @@
   },
   "pleaseChooseAUsername": "Please choose a username",
   "@pleaseChooseAUsername": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Please click on the link in the email and then proceed.",
+  "@pleaseClickOnLink": {
     "type": "text",
     "placeholders": {}
   },
@@ -1315,13 +1395,78 @@
       "count": {}
     }
   },
+  "editBlockedServers": "Edit blocked servers",
+  "@editBlockedServers": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enableEncryption": "Enable encryption",
+  "@enableEncryption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "replaceRoomWithNewerVersion": "Replace room with newer version",
+  "@replaceRoomWithNewerVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editRoomAvatar": "Edit room avatar",
+  "@editRoomAvatar": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "defaultPermissionLevel": "Default permission level",
+  "@defaultPermissionLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "sendMessages": "Send messages",
+  "@sendMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "configureChat": "Configure chat",
+  "@configureChat": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "participant": "Participant",
+  "@participant": {
+    "type": "text",
+    "placeholders": {}
+  },
   "send": "Send",
   "@send": {
     "type": "text",
     "placeholders": {}
   },
+  "whoCanPerformWhichAction": "Who can perform which action",
+  "@whoCanPerformWhichAction": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editChatPermissions": "Edit chat permissions",
+  "@editChatPermissions": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setCustomEmotes": "Set custom emotes",
+  "@setCustomEmotes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setPermissionsLevel": "Set permissions level",
+  "@setPermissionsLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
   "sendAMessage": "Send a message",
   "@sendAMessage": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Sound, vibration LED-color",
+  "@soundVibrationLedColor": {
     "type": "text",
     "placeholders": {}
   },
@@ -1464,7 +1609,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "useAmoledTheme": "Use Amoled compatible colors?",
+  "useAmoledTheme": "Use AMOLED compatible colors?",
   "@useAmoledTheme": {
     "type": "text",
     "placeholders": {}
@@ -1753,8 +1898,18 @@
     "type": "text",
     "placeholders": {}
   },
+  "weSentYouAnEmail": "We sent you an email",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
   "welcomeText": "Welcome to the cutest instant messenger in the Matrix network.",
   "@welcomeText": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "With these addresses you can recover you password if you need.",
+  "@withTheseAddressesRecoveryDescription": {
     "type": "text",
     "placeholders": {}
   },

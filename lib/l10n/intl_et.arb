@@ -114,7 +114,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "avatarHasBeenChanged": "Tunnuspilt on muudetud",
+  "avatarHasBeenChanged": "Tunnuspilt on muutunud",
   "@avatarHasBeenChanged": {
     "type": "text",
     "placeholders": {}
@@ -149,7 +149,7 @@
       "homeserver": {}
     }
   },
-  "cachedKeys": "Krüptovõtmed on edukalt puhverdatud!",
+  "cachedKeys": "Puhverdatud krüptovõtmed",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -1510,7 +1510,7 @@
       "unreadChats": {}
     }
   },
-  "useAmoledTheme": "Kas kasutame amoled-tehnoloogiaga ühilduvaid värve?",
+  "useAmoledTheme": "Kas kasutame AMOLED-tehnoloogiaga ühilduvaid värve?",
   "@useAmoledTheme": {
     "type": "text",
     "placeholders": {}
@@ -1755,6 +1755,111 @@
   },
   "changePassword": "Muuda salasõna",
   "@changePassword": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Krüptitud",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceId": "Seadme tunnus",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "Nende e-posti aadresside abil saad vajadusel taastada oma salasõna.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Jätkamiseks palun klõpsi sulle saadetud e-kirjas leiduvat linki.",
+  "@pleaseClickOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Me saatsime sulle e-kirja",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Salasõna on ununenud",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Salasõna taastamine",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Sa pole veel lisanud võimalust salasõna taastamiseks.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "Ma olen klõpsinud saadetud linki",
+  "@iHaveClickedOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterAnEmailAddress": "Sisesta e-posti aadress",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Muuda",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Sisaldab kasutajanime",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Teavitused on sellel kontol kasutusel",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Teavitused",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Tõukereeglid",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Robotite sõnumid",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Muudatused liikmeskonnas",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Kutse minu jaoks",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Sisaldab kuvatavat nime",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Otsevestlused",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Heli, värin, LED-värvid",
+  "@soundVibrationLedColor": {
     "type": "text",
     "placeholders": {}
   }

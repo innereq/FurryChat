@@ -12,6 +12,7 @@ import 'settings/settings_devices.dart';
 import 'settings/settings_emotes.dart';
 import 'settings/settings_encryption.dart';
 import 'settings/settings_homeserver.dart';
+import 'settings/settings_notifications.dart';
 import 'settings/settings_themes.dart';
 
 enum SettingsViews {
@@ -22,6 +23,7 @@ enum SettingsViews {
   emotes,
   encryption,
   devices,
+  notifications,
 }
 
 class SettingsView extends StatelessWidget {
@@ -163,6 +165,17 @@ class _SettingsState extends State<Settings> {
                   : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               onTap: () => _handleTap(EncryptionSettingsView()),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.notifications_outlined,
+              ),
+              title: Text(L10n.of(context).notifications),
+              selected: widget.currentSetting == SettingsViews.notifications
+                  ? true
+                  : false,
+              selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
+              onTap: () => _handleTap(NotificationsSettingsView()),
             ),
             ListTile(
               leading: Icon(

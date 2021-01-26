@@ -3,7 +3,6 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:famedlysdk/matrix_api.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flushbar/flushbar_helper.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +20,7 @@ import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
 import '../utils/url_launcher.dart';
 import 'chat_list.dart';
+import 'chat_permissions_settings.dart';
 import 'invitation_selection.dart';
 import 'settings/settings_emotes.dart';
 import 'settings/settings_multiple_emotes.dart';
@@ -107,6 +107,8 @@ class _ChatDetailsState extends State<ChatDetails> {
         DialogTextField(
           hintText: L10n.of(context).setGroupDescription,
           initialText: widget.room.topic,
+          minLines: 1,
+          maxLines: 4,
         )
       ],
     );
@@ -217,8 +219,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                     backgroundColor: Theme.of(context).appBarTheme.color,
                     flexibleSpace: FlexibleSpaceBar(
                       background: ContentBanner(widget.room.avatar,
-                          onEdit: widget.room.canSendEvent('m.room.avatar') &&
-                                  !kIsWeb
+                          onEdit: widget.room.canSendEvent('m.room.avatar')
                               ? () => setAvatarAction(context)
                               : null),
                     ),
@@ -315,6 +316,7 @@ class _ChatDetailsState extends State<ChatDetails> {
                                 child: Icon(Icons.insert_emoticon),
                               ),
                               title: Text(L10n.of(context).emoteSettings),
+                              subtitle: Text(L10n.of(context).setCustomEmotes),
                               onTap: () async {
                                 // okay, we need to test if there are any emote state events other than the default one
                                 // if so, we need to be directed to a selection screen for which pack we want to look at
@@ -475,6 +477,24 @@ class _ChatDetailsState extends State<ChatDetails> {
                                     ),
                                 ],
                               ),
+                            ListTile(
+                              title: Text(L10n.of(context).editChatPermissions),
+                              subtitle: Text(
+                                  L10n.of(context).whoCanPerformWhichAction),
+                              leading: CircleAvatar(
+                                backgroundColor:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                foregroundColor: Colors.grey,
+                                child: Icon(Icons.edit_attributes_outlined),
+                              ),
+                              onTap: () => Navigator.of(context).push(
+                                AppRoute.defaultRoute(
+                                  context,
+                                  ChatPermissionsSettingsView(
+                                      roomId: widget.room.id),
+                                ),
+                              ),
+                            ),
                             Divider(thickness: 1),
                             ListTile(
                               title: Text(
