@@ -26,7 +26,7 @@ abstract class AppConfig {
       'Push notifications for FurryChat';
   static const String pushNotificationsAppId = 'dev.inex.furrychat';
   static const String pushNotificationsGatewayUrl =
-      'https://push-gateway.inex.dev:443/';
+      'https://push-gateway.inex.dev:443/_matrix/push/v1/notify';
   static const String pushNotificationsPusherFormat = 'event_id_only';
 
   static void loadFromJson(Map<String, dynamic> json) {

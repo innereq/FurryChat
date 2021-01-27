@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:pedantic/pedantic.dart';
 
+import '../../config/themes.dart';
 import '../../utils/app_route.dart';
 import '../../utils/date_time_extension.dart';
 import '../../utils/event_extension.dart';
@@ -17,7 +18,6 @@ import '../avatar.dart';
 import '../dialogs/send_file_dialog.dart';
 import '../matrix.dart';
 import '../mouse_over_builder.dart';
-import '../theme_switcher.dart';
 
 enum ArchivedRoomAction { delete, rejoin }
 
@@ -141,7 +141,7 @@ class ChatListItem extends StatelessWidget {
         room.lastEvent?.senderId == Matrix.of(context).client.userID;
     return Center(
       child: Material(
-        color: chatListItemColor(context, activeChat, selected),
+        color: FluffyThemes.chatListItemColor(context, activeChat, selected),
         child: ListTile(
           onLongPress: onLongPress,
           leading: MouseOverBuilder(

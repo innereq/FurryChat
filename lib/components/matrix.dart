@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,12 +43,8 @@ class Matrix extends StatefulWidget {
   MatrixState createState() => MatrixState();
 
   /// Returns the (nearest) Client instance of your application.
-  static MatrixState of(BuildContext context) {
-    var newState =
-        (context.dependOnInheritedWidgetOfExactType<_InheritedMatrix>()).data;
-    newState.context = FirebaseController.context = context;
-    return newState;
-  }
+  static MatrixState of(BuildContext context) =>
+      Provider.of<MatrixState>(context, listen: false);
 }
 
 class MatrixState extends State<Matrix> {
@@ -55,8 +52,6 @@ class MatrixState extends State<Matrix> {
   Store store = Store();
   @override
   BuildContext context;
-
-  static const String userStatusesType = 'chat.fluffy.user_statuses';
 
   Map<String, dynamic> get shareContent => _shareContent;
   set shareContent(Map<String, dynamic> content) {
@@ -448,26 +443,9 @@ class MatrixState extends State<Matrix> {
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedMatrix(
-      data: this,
+    return Provider(
+      create: (_) => this,
       child: widget.child,
     );
-  }
-}
-
-class _InheritedMatrix extends InheritedWidget {
-  final MatrixState data;
-
-  _InheritedMatrix({Key key, this.data, Widget child})
-      : super(key: key, child: child);
-
-  @override
-  bool updateShouldNotify(_InheritedMatrix old) {
-    var update = old.data.client.accessToken != data.client.accessToken ||
-        old.data.client.userID != data.client.userID ||
-        old.data.client.deviceID != data.client.deviceID ||
-        old.data.client.deviceName != data.client.deviceName ||
-        old.data.client.homeserver != data.client.homeserver;
-    return update;
   }
 }
