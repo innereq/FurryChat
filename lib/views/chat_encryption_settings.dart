@@ -5,28 +5,10 @@ import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
 import '../components/dialogs/key_verification_dialog.dart';
 import '../components/matrix.dart';
 import '../utils/beautify_string_extension.dart';
-import 'chat_list.dart';
-
-class ChatEncryptionSettingsView extends StatelessWidget {
-  final String id;
-
-  const ChatEncryptionSettingsView(this.id, {Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      firstScaffold: ChatList(
-        activeChat: id,
-      ),
-      secondScaffold: ChatEncryptionSettings(id),
-      primaryPage: FocusPage.SECOND,
-    );
-  }
-}
 
 class ChatEncryptionSettings extends StatefulWidget {
   final String id;
@@ -110,6 +92,7 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).participatingUserDevices),
       ),
       body: StreamBuilder(

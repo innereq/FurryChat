@@ -1,4 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flushbar/flushbar_helper.dart';
@@ -8,12 +9,10 @@ import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:pedantic/pedantic.dart';
 
 import '../../config/themes.dart';
-import '../../utils/app_route.dart';
 import '../../utils/date_time_extension.dart';
 import '../../utils/event_extension.dart';
 import '../../utils/matrix_locals.dart';
 import '../../utils/room_status_extension.dart';
-import '../../views/chat.dart';
 import '../avatar.dart';
 import '../dialogs/send_file_dialog.dart';
 import '../matrix.dart';
@@ -101,11 +100,8 @@ class ChatListItem extends StatelessWidget {
           }
           Matrix.of(context).shareContent = null;
         }
-        await Navigator.pushAndRemoveUntil(
-          context,
-          AppRoute.defaultRoute(context, ChatView(room.id)),
-          (r) => r.isFirst,
-        );
+        await AdaptivePageLayout.of(context)
+            .pushNamedAndRemoveUntilIsFirst('/rooms/${room.id}');
       }
     }
   }

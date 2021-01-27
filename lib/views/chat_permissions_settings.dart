@@ -6,32 +6,13 @@ import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/adaptive_page_layout.dart';
 import '../components/dialogs/permission_slider_dialog.dart';
 import '../components/matrix.dart';
-import 'chat_list.dart';
-
-class ChatPermissionsSettingsView extends StatelessWidget {
-  final String roomId;
-
-  const ChatPermissionsSettingsView({Key key, this.roomId}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      firstScaffold: ChatList(
-        activeChat: roomId,
-      ),
-      secondScaffold: ChatPermissionsSettings(roomId: roomId),
-      primaryPage: FocusPage.SECOND,
-    );
-  }
-}
 
 class ChatPermissionsSettings extends StatelessWidget {
   final String roomId;
 
-  const ChatPermissionsSettings({Key key, @required this.roomId})
-      : super(key: key);
+  const ChatPermissionsSettings(this.roomId, {Key key}) : super(key: key);
 
   void _editPowerLevel(BuildContext context, String key, int currentLevel,
       {String category}) async {
@@ -65,7 +46,10 @@ class ChatPermissionsSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).editChatPermissions)),
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(L10n.of(context).editChatPermissions),
+      ),
       body: StreamBuilder(
         stream: Matrix.of(context).client.onSync.stream.where(
               (e) =>

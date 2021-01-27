@@ -3,21 +3,7 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-
-import '../components/adaptive_page_layout.dart';
 import '../components/matrix.dart';
-import 'chat_list.dart';
-
-class Settings3PidView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
-      secondScaffold: Settings3Pid(),
-    );
-  }
-}
 
 class Settings3Pid extends StatefulWidget {
   static int sendAttempt = 0;
@@ -109,6 +95,7 @@ class _Settings3PidState extends State<Settings3Pid> {
     _request ??= Matrix.of(context).client.requestThirdPartyIdentifiers();
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).passwordRecovery),
         actions: [
           IconButton(

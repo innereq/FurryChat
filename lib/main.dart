@@ -1,22 +1,19 @@
 // @dart=2.9
 import 'dart:async';
 
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:famedlysdk/famedlysdk.dart';
-import 'package:flushbar/flushbar_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 
 import 'app_config.dart';
 import 'components/matrix.dart';
+import 'config/routes.dart';
 import 'config/themes.dart';
-import 'utils/localized_exception_extension.dart';
-import 'views/chat_list.dart';
-import 'views/homeserver_picker.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -33,51 +30,38 @@ void main() async {
 }
 
 class App extends StatelessWidget {
+  final GlobalKey<AdaptivePageLayoutState> _apl =
+      GlobalKey<AdaptivePageLayoutState>();
   @override
   Widget build(BuildContext context) {
-    return Matrix(
-      child: Builder(
-        builder: (BuildContext context) => AdaptiveTheme(
-          light: FluffyThemes.light,
-          dark: FluffyThemes.dark,
-          initial: AdaptiveThemeMode.system,
-          builder: (theme, darkTheme) => MaterialApp(
-            title: '${AppConfig.applicationName}',
-            theme: theme,
-            darkTheme: darkTheme,
-            localizationsDelegates: L10n.localizationsDelegates,
-            supportedLocales: L10n.supportedLocales,
-            locale: kIsWeb
-                ? Locale(html.window.navigator.language.split('-').first)
-                : null,
-            home: FutureBuilder<LoginState>(
-              future:
-                  Matrix.of(context).client.onLoginStateChanged.stream.first,
-              builder: (context, snapshot) {
-                LoadingDialog.defaultTitle = L10n.of(context).loadingPleaseWait;
-                LoadingDialog.defaultBackLabel = L10n.of(context).close;
-                LoadingDialog.defaultOnError =
-                    (Object e) => e.toLocalizedString(context);
-                if (snapshot.hasError) {
-                  WidgetsBinding.instance
-                      .addPostFrameCallback((_) => FlushbarHelper.createError(
-                            title: L10n.of(context).oopsSomethingWentWrong,
-                            message: snapshot.error.toString(),
-                          ).show(context));
-                  return HomeserverPicker();
-                }
-                if (!snapshot.hasData) {
-                  return Scaffold(
-                    body: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-                if (Matrix.of(context).client.isLogged()) {
-                  return ChatListView();
-                }
-                return HomeserverPicker();
-              },
+    return AdaptiveTheme(
+      light: FluffyThemes.light,
+      dark: FluffyThemes.dark,
+      initial: AdaptiveThemeMode.system,
+      builder: (theme, darkTheme) => MaterialApp(
+        title: '${AppConfig.applicationName}',
+        theme: theme,
+        darkTheme: darkTheme,
+        localizationsDelegates: L10n.localizationsDelegates,
+        supportedLocales: L10n.supportedLocales,
+        locale: kIsWeb
+            ? Locale(html.window.navigator.language.split('-').first)
+            : null,
+        home: Builder(
+          builder: (context) => Matrix(
+            context: context,
+            apl: _apl,
+            child: Builder(
+              builder: (context) => AdaptivePageLayout(
+                key: _apl,
+                onGenerateRoute: FluffyRoutes(context).onGenerateRoute,
+                dividerColor: Theme.of(context).dividerColor,
+                columnWidth: FluffyThemes.columnWidth,
+                routeBuilder: (builder, settings) =>
+                    _apl.currentState.columnMode(context)
+                        ? FadeRoute(page: builder(context))
+                        : CupertinoPageRoute(builder: builder),
+              ),
             ),
           ),
         ),

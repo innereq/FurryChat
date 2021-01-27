@@ -9,26 +9,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:open_noti_settings/open_noti_settings.dart';
 
 import '../../app_config.dart';
-import '../../components/adaptive_page_layout.dart';
 import '../../components/matrix.dart';
-import '../settings.dart';
 
 class NotificationSettingsItem {
   final PushRuleKind type;
   final String key;
   final String Function(BuildContext) title;
   NotificationSettingsItem(this.type, this.key, this.title);
-}
-
-class NotificationsSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.notifications),
-      secondScaffold: SettingsNotifications(),
-    );
-  }
 }
 
 class SettingsNotifications extends StatelessWidget {
@@ -122,6 +109,7 @@ class SettingsNotifications extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).notifications),
       ),
       body: StreamBuilder(

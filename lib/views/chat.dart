@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:emoji_picker/emoji_picker.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
@@ -12,15 +13,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:swipe_to_action/swipe_to_action.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:swipe_to_action/swipe_to_action.dart';
 
 import '../app_config.dart';
-import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
 import '../components/chat_settings_popup_menu.dart';
 import '../components/connection_status_header.dart';
@@ -33,45 +33,25 @@ import '../components/matrix.dart';
 import '../components/reply_content.dart';
 import '../components/user_bottom_sheet.dart';
 import '../config/app_emojis.dart';
-import '../utils/app_route.dart';
+import '../config/themes.dart';
 import '../utils/filtered_timeline_extension.dart';
 import '../utils/matrix_file_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
 import '../utils/room_status_extension.dart';
-import 'chat_details.dart';
-import 'chat_list.dart';
 
-class ChatView extends StatelessWidget {
+class Chat extends StatefulWidget {
   final String id;
   final String scrollToEventId;
 
-  const ChatView(this.id, {Key key, this.scrollToEventId}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(
-        activeChat: id,
-      ),
-      secondScaffold: _Chat(id, scrollToEventId: scrollToEventId),
-    );
-  }
-}
-
-class _Chat extends StatefulWidget {
-  final String id;
-  final String scrollToEventId;
-
-  const _Chat(this.id, {Key key, this.scrollToEventId}) : super(key: key);
+  Chat(this.id, {Key key, this.scrollToEventId})
+      : super(key: key ?? Key('chatroom-$id'));
 
   @override
   _ChatState createState() => _ChatState();
 }
 
-class _ChatState extends State<_Chat> {
+class _ChatState extends State<Chat> {
   Room room;
 
   Timeline timeline;
@@ -346,7 +326,7 @@ class _ChatState extends State<_Chat> {
       };
     }
     setState(() => selectedEvents.clear());
-    Navigator.of(context).popUntil((r) => r.isFirst);
+    AdaptivePageLayout.of(context).popUntilIsFirst();
   }
 
   void sendAgainAction(Timeline timeline) {
@@ -653,7 +633,8 @@ class _ChatState extends State<_Chat> {
                 onPressed: () => setState(() => selectedEvents.clear()),
               )
             : null,
-        titleSpacing: 0,
+        titleSpacing:
+            AdaptivePageLayout.of(context).columnMode(context) ? null : 0,
         title: selectedEvents.isEmpty
             ? StreamBuilder<Object>(
                 stream: room.onUpdate.stream,
@@ -670,12 +651,13 @@ class _ChatState extends State<_Chat> {
                                       '${room.directChatMatrixID} ',
                                 ),
                               )
-                          : () => Navigator.of(context).push(
-                                AppRoute.defaultRoute(
-                                  context,
-                                  ChatDetails(room),
-                                ),
-                              ),
+                          : () => AdaptivePageLayout.of(context)
+                                      .viewDataStack
+                                      .length <
+                                  3
+                              ? AdaptivePageLayout.of(context)
+                                  .pushNamed('/rooms/${room.id}/details')
+                              : null,
                       title: Text(
                           room.getLocalizedDisplayname(
                               MatrixLocals(L10n.of(context))),
@@ -804,8 +786,7 @@ class _ChatState extends State<_Chat> {
                           horizontal: max(
                               0,
                               (MediaQuery.of(context).size.width -
-                                      AdaptivePageLayout.defaultMinWidth *
-                                          3.5) /
+                                      FluffyThemes.columnWidth * 3.5) /
                                   2),
                         ),
                         reverse: true,

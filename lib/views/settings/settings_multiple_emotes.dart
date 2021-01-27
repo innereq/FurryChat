@@ -1,36 +1,21 @@
-import 'package:flutter/material.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../../components/adaptive_page_layout.dart';
-import '../../utils/app_route.dart';
-import '../settings.dart';
-import 'settings_emotes.dart';
-
-class MultipleEmotesSettingsView extends StatelessWidget {
-  final Room room;
-
-  MultipleEmotesSettingsView({this.room});
-
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.emotes),
-      secondScaffold: MultipleEmotesSettings(room: room),
-    );
-  }
-}
+import '../../components/matrix.dart';
 
 class MultipleEmotesSettings extends StatelessWidget {
-  final Room room;
+  final String roomId;
 
-  MultipleEmotesSettings({this.room});
+  MultipleEmotesSettings(this.roomId, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final room = Matrix.of(context).client.getRoomById(roomId);
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).emotePacks),
       ),
       body: StreamBuilder(
@@ -59,11 +44,9 @@ class MultipleEmotesSettings extends StatelessWidget {
                 return ListTile(
                   title: Text(packName),
                   onTap: () async {
-                    await Navigator.of(context).push(
-                      AppRoute.defaultRoute(
-                        context,
-                        EmotesSettingsView(room: room, stateKey: keys[i]),
-                      ),
+                    await AdaptivePageLayout.of(context).pushNamed(
+                      '/settings/emotes',
+                      arguments: room,
                     );
                   },
                 );

@@ -10,9 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
 import '../utils/firebase_controller.dart';
-import 'chat_list.dart';
 
 class Login extends StatefulWidget {
   Login({Key key, this.username, this.wellknown}) : super(key: key);
@@ -94,8 +92,7 @@ class _LoginState extends State<Login> {
             'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/';
       }
     }*/
-    await Navigator.of(context).pushAndRemoveUntil(
-        AppRoute.defaultRoute(context, ChatListView()), (r) => false);
+    if (mounted) setState(() => loading = false);
   }
 
   Timer _coolDown;
@@ -213,7 +210,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: loading ? Container() : null,
+        leading: loading ? Container() : BackButton(),
         elevation: 0,
         title: Text(
           L10n.of(context).logInTo(Matrix.of(context)

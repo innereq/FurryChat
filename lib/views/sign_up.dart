@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,9 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
-import 'login.dart';
-import 'sign_up_password.dart';
 
 class SignUp extends StatefulWidget {
   SignUp({Key key, this.wellknown}) : super(key: key);
@@ -65,15 +63,9 @@ class _SignUpState extends State<SignUp> {
       return setState(() => loading = false);
     }
     setState(() => loading = false);
-    await Navigator.of(context).push(
-      AppRoute(
-        SignUpPassword(
-          preferredUsername,
-          avatar: avatar,
-          displayname: usernameController.text,
-          wellknown: widget.wellknown,
-        ),
-      ),
+    await AdaptivePageLayout.of(context).pushNamed(
+      '/signup/password/${Uri.encodeComponent(preferredUsername)}/${Uri.encodeComponent(usernameController.text)}',
+      arguments: avatar,
     );
   }
 
@@ -82,7 +74,7 @@ class _SignUpState extends State<SignUp> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: loading ? Container() : null,
+        leading: loading ? Container() : BackButton(),
         title: Text(
           Matrix.of(context)
               .client
@@ -180,9 +172,8 @@ class _SignUpState extends State<SignUp> {
                     fontSize: 16,
                   ),
                 ),
-                onPressed: () => Navigator.of(context).push(
-                  AppRoute(Login()),
-                ),
+                onPressed: () =>
+                    AdaptivePageLayout.of(context).pushNamed('/login'),
               ),
             ),
           ]),

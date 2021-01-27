@@ -5,21 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../components/adaptive_page_layout.dart';
 import '../../components/matrix.dart';
 import '../../config/setting_keys.dart';
-import '../settings.dart';
-
-class ThemesSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.themes),
-      secondScaffold: ThemesSettings(),
-    );
-  }
-}
 
 class ThemesSettings extends StatefulWidget {
   @override
@@ -63,7 +50,8 @@ class _ThemesSettingsState extends State<ThemesSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).changeTheme)),
+      appBar: AppBar(
+          leading: BackButton(), title: Text(L10n.of(context).changeTheme)),
       body: ListView(children: [
         Column(
           children: <Widget>[

@@ -1,3 +1,4 @@
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -14,7 +15,7 @@ class ImageView extends StatelessWidget {
 
   void _forwardAction(BuildContext context) async {
     Matrix.of(context).shareContent = event.content;
-    Navigator.of(context).popUntil((r) => r.isFirst);
+    AdaptivePageLayout.of(context).popUntilIsFirst();
   }
 
   @override

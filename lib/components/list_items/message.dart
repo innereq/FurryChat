@@ -1,10 +1,10 @@
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 
+import '../../config/themes.dart';
 import '../../utils/date_time_extension.dart';
 import '../../utils/event_extension.dart';
 import '../../utils/string_color.dart';
-import '../adaptive_page_layout.dart';
 import '../avatar.dart';
 import '../matrix.dart';
 import '../message_content.dart';
@@ -88,8 +88,7 @@ class Message extends StatelessWidget {
               color: color,
               borderRadius: BorderRadius.circular(radius),
             ),
-            constraints:
-                BoxConstraints(maxWidth: AdaptivePageLayout.defaultMinWidth),
+            constraints: BoxConstraints(maxWidth: FluffyThemes.columnWidth),
             child: Stack(
               children: <Widget>[
                 Column(

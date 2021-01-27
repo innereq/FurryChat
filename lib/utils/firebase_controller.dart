@@ -14,8 +14,6 @@ import 'package:path_provider/path_provider.dart';
 import '../app_config.dart';
 import '../components/matrix.dart';
 import '../config/setting_keys.dart';
-import '../views/chat.dart';
-import 'app_route.dart';
 import 'famedlysdk_store.dart';
 import 'matrix_locals.dart';
 import 'platform_infos.dart';
@@ -111,12 +109,8 @@ abstract class FirebaseController {
           roomId = (message['data'] ?? message)['room_id'];
         }
         if (roomId?.isEmpty ?? true) throw ('Bad roomId');
-        await Navigator.of(context).pushAndRemoveUntil(
-            AppRoute.defaultRoute(
-              context,
-              ChatView(roomId),
-            ),
-            (r) => r.isFirst);
+        await matrix.widget.apl.currentState
+            .pushNamedAndRemoveUntilIsFirst('/rooms/${roomId}');
       } catch (_) {
         await FlushbarHelper.createError(message: 'Failed to open chat...')
             .show(context);

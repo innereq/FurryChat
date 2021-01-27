@@ -1,35 +1,21 @@
 import 'dart:async';
 
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
-import 'chat.dart';
-import 'chat_list.dart';
 
-class NewPrivateChatView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
-      secondScaffold: _NewPrivateChat(),
-    );
-  }
-}
-
-class _NewPrivateChat extends StatefulWidget {
+class NewPrivateChat extends StatefulWidget {
   @override
   _NewPrivateChatState createState() => _NewPrivateChatState();
 }
 
-class _NewPrivateChatState extends State<_NewPrivateChat> {
+class _NewPrivateChatState extends State<NewPrivateChat> {
   TextEditingController controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
@@ -59,15 +45,10 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
       context: context,
       future: () => user.startDirectChat(),
     );
-    Navigator.of(context).pop();
 
     if (roomID.error == null) {
-      await Navigator.of(context).push(
-        AppRoute.defaultRoute(
-          context,
-          ChatView(roomID.result),
-        ),
-      );
+      await AdaptivePageLayout.of(context)
+          .popAndPushNamed('/rooms/${roomID.result}');
     }
   }
 
@@ -105,6 +86,7 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).newPrivateChat),
         elevation: 0,
       ),

@@ -7,26 +7,8 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../components/adaptive_page_layout.dart';
 import '../../components/matrix.dart';
 import '../../utils/platform_infos.dart';
-import '../settings.dart';
-
-class EmotesSettingsView extends StatelessWidget {
-  final Room room;
-  final String stateKey;
-
-  EmotesSettingsView({this.room, this.stateKey});
-
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.emotes),
-      secondScaffold: EmotesSettings(room: room, stateKey: stateKey),
-    );
-  }
-}
 
 class EmotesSettings extends StatefulWidget {
   final Room room;
@@ -184,6 +166,7 @@ class _EmotesSettingsState extends State<EmotesSettings> {
     }
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).emoteSettings),
       ),
       floatingActionButton: showSave

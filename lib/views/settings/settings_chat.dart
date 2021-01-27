@@ -2,21 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../../app_config.dart';
-import '../../components/adaptive_page_layout.dart';
 import '../../components/matrix.dart';
 import '../../config/setting_keys.dart';
-import '../settings.dart';
-
-class ChatSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.chat),
-      secondScaffold: ChatSettings(),
-    );
-  }
-}
 
 class ChatSettings extends StatefulWidget {
   @override
@@ -95,7 +82,7 @@ class _ChatSettingsState extends State<ChatSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).chat)),
+      appBar: AppBar(leading: BackButton(), title: Text(L10n.of(context).chat)),
       body: ListView(
         children: [
           ListTile(

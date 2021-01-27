@@ -4,22 +4,9 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:olm/olm.dart' as olm;
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 
-import '../../components/adaptive_page_layout.dart';
 import '../../components/dialogs/bootstrap_dialog.dart';
 import '../../components/matrix.dart';
 import '../../utils/beautify_string_extension.dart';
-import '../settings.dart';
-
-class EncryptionSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.encryption),
-      secondScaffold: EncryptionSettings(),
-    );
-  }
-}
 
 class EncryptionSettings extends StatefulWidget {
   @override
@@ -114,7 +101,8 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
     });
 
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).encryption)),
+      appBar: AppBar(
+          leading: BackButton(), title: Text(L10n.of(context).encryption)),
       body: ListView(
         children: [
           ListTile(

@@ -1,4 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
 import 'package:flushbar/flushbar_helper.dart';
@@ -7,25 +8,10 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 
-import '../../components/adaptive_page_layout.dart';
 import '../../components/avatar.dart';
 import '../../components/matrix.dart';
 import '../../config/setting_keys.dart';
-import '../../utils/app_route.dart';
 import '../../utils/platform_infos.dart';
-import '../settings.dart';
-import 'settings_ignore_list.dart';
-
-class AccountSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.account),
-      secondScaffold: AccountSettings(),
-    );
-  }
-}
 
 class AccountSettings extends StatefulWidget {
   @override
@@ -209,7 +195,8 @@ class _AccountSettingsState extends State<AccountSettings> {
       return p;
     });
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).account)),
+      appBar:
+          AppBar(leading: BackButton(), title: Text(L10n.of(context).account)),
       body: ListView(
         children: [
           ListTile(
@@ -236,12 +223,8 @@ class _AccountSettingsState extends State<AccountSettings> {
           ListTile(
             leading: Icon(Icons.block_outlined),
             title: Text(L10n.of(context).ignoredUsers),
-            onTap: () async => await Navigator.of(context).push(
-              AppRoute.defaultRoute(
-                context,
-                SettingsIgnoreListView(),
-              ),
-            ),
+            onTap: () async =>
+                AdaptivePageLayout.of(context).pushNamed('/settings/ignore'),
           ),
           Divider(thickness: 1),
           ListTile(

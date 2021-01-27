@@ -1,47 +1,21 @@
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app_config.dart';
-import '../components/adaptive_page_layout.dart';
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
-import 'log_view.dart';
-import 'settings/settings_account.dart';
-import 'settings/settings_chat.dart';
-import 'settings/settings_devices.dart';
-import 'settings/settings_emotes.dart';
-import 'settings/settings_encryption.dart';
-import 'settings/settings_homeserver.dart';
-import 'settings/settings_notifications.dart';
-import 'settings/settings_themes.dart';
 
 enum SettingsViews {
   account,
   homeserver,
-  themes,
+  style,
   chat,
   emotes,
   encryption,
   devices,
   notifications,
-}
-
-class SettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.FIRST,
-      firstScaffold: Settings(
-        isInFocus: true,
-      ),
-      secondScaffold: Scaffold(
-        body: Center(
-          child: Image.asset('assets/logo.png', width: 100, height: 100),
-        ),
-      ),
-    );
-  }
+  thridpid,
 }
 
 class Settings extends StatefulWidget {
@@ -59,22 +33,6 @@ class _SettingsState extends State<Settings> {
   Future<dynamic> profileFuture;
   dynamic profile;
 
-  void _handleTap(Widget child) {
-    widget.isInFocus
-        ? Navigator.of(context).push(
-            AppRoute.defaultRoute(
-              context,
-              child,
-            ),
-          )
-        : Navigator.of(context).pushReplacement(
-            AppRoute.defaultRoute(
-              context,
-              child,
-            ),
-          );
-  }
-
   @override
   Widget build(BuildContext context) {
     final client = Matrix.of(context).client;
@@ -82,7 +40,6 @@ class _SettingsState extends State<Settings> {
       if (mounted) setState(() => profile = p);
       return p;
     });
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) =>
@@ -112,7 +69,8 @@ class _SettingsState extends State<Settings> {
                   widget.currentSetting == SettingsViews.account ? true : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               subtitle: Text(client.userID),
-              onTap: () => _handleTap(AccountSettingsView()),
+              onTap: () =>
+                  AdaptivePageLayout.of(context).pushNamed('/settings/account'),
             ),
             ListTile(
               leading: Icon(
@@ -124,7 +82,8 @@ class _SettingsState extends State<Settings> {
                   : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
               subtitle: Text(client.homeserver.host),
-              onTap: () => _handleTap(HomeserverSettingsView()),
+              onTap: () => AdaptivePageLayout.of(context)
+                  .pushNamed('/settings/homeserver'),
             ),
             ListTile(
               leading: Icon(
@@ -132,9 +91,10 @@ class _SettingsState extends State<Settings> {
               ),
               title: Text(L10n.of(context).changeTheme),
               selected:
-                  widget.currentSetting == SettingsViews.themes ? true : false,
+                  widget.currentSetting == SettingsViews.style ? true : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
-              onTap: () => _handleTap(ThemesSettingsView()),
+              onTap: () =>
+                  AdaptivePageLayout.of(context).pushNamed('/settings/style'),
             ),
             ListTile(
               leading: Icon(
@@ -144,7 +104,8 @@ class _SettingsState extends State<Settings> {
               selected:
                   widget.currentSetting == SettingsViews.chat ? true : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
-              onTap: () => _handleTap(ChatSettingsView()),
+              onTap: () =>
+                  AdaptivePageLayout.of(context).pushNamed('/settings/chat'),
             ),
             ListTile(
               leading: Icon(
@@ -154,7 +115,8 @@ class _SettingsState extends State<Settings> {
               selected:
                   widget.currentSetting == SettingsViews.emotes ? true : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
-              onTap: () => _handleTap(EmotesSettingsView()),
+              onTap: () =>
+                  AdaptivePageLayout.of(context).pushNamed('/settings/emotes'),
             ),
             ListTile(
               leading: Icon(
@@ -165,7 +127,8 @@ class _SettingsState extends State<Settings> {
                   ? true
                   : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
-              onTap: () => _handleTap(EncryptionSettingsView()),
+              onTap: () => AdaptivePageLayout.of(context)
+                  .pushNamed('/settings/encryption'),
             ),
             ListTile(
               leading: Icon(
@@ -176,7 +139,8 @@ class _SettingsState extends State<Settings> {
                   ? true
                   : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
-              onTap: () => _handleTap(NotificationsSettingsView()),
+              onTap: () => AdaptivePageLayout.of(context)
+                  .pushNamed('/settings/notifications'),
             ),
             ListTile(
               leading: Icon(
@@ -186,7 +150,8 @@ class _SettingsState extends State<Settings> {
               selected:
                   widget.currentSetting == SettingsViews.devices ? true : false,
               selectedTileColor: Theme.of(context).primaryColor.withAlpha(30),
-              onTap: () => _handleTap(DevicesSettingsView()),
+              onTap: () =>
+                  AdaptivePageLayout.of(context).pushNamed('/settings/devices'),
             ),
             Divider(thickness: 1),
             ListTile(
@@ -224,16 +189,11 @@ class _SettingsState extends State<Settings> {
             ),
             Divider(thickness: 1),
             ListTile(
-              title: Text(
-                'Log console',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
+              leading: Icon(
+                Icons.bug_report_outlined,
               ),
-              onTap: () => Navigator.of(context).push(
-                AppRoute.defaultRoute(context, LogViewer()),
-              ),
+              title: Text('Log console'),
+              onTap: () => AdaptivePageLayout.of(context).pushNamed('/logs'),
             ),
           ],
         ),
