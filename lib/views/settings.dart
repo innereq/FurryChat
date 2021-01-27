@@ -1,10 +1,15 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_screen_lock/lock_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:furrychat/utils/platform_infos.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app_config.dart';
 import '../components/matrix.dart';
+import '../config/setting_keys.dart';
 
 enum SettingsViews {
   account,
@@ -32,6 +37,44 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   Future<dynamic> profileFuture;
   dynamic profile;
+
+  void _setAppLockAction(BuildContext context) async {
+    final currentLock =
+        await FlutterSecureStorage().read(key: SettingKeys.appLockKey);
+    if (currentLock?.isNotEmpty ?? false) {
+      var unlocked = false;
+      await showLockScreen(
+        context: context,
+        correctString: currentLock,
+        onUnlocked: () => unlocked = true,
+        canBiometric: true,
+      );
+      if (unlocked != true) return;
+    }
+    final newLock = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).pleaseChooseAPasscode,
+      message: L10n.of(context).pleaseEnter4Digits,
+      textFields: [
+        DialogTextField(
+          validator: (text) {
+            if (text.length != 4 && text.isNotEmpty) {
+              return L10n.of(context).pleaseEnter4Digits;
+            }
+            return null;
+          },
+          keyboardType: TextInputType.number,
+          obscureText: true,
+          maxLines: 1,
+          minLines: 1,
+        )
+      ],
+    );
+    if (newLock != null) {
+      await FlutterSecureStorage()
+          .write(key: SettingKeys.appLockKey, value: newLock.first);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +128,7 @@ class _SettingsState extends State<Settings> {
               onTap: () => AdaptivePageLayout.of(context)
                   .pushNamed('/settings/homeserver'),
             ),
+            Divider(thickness: 1),
             ListTile(
               leading: Icon(
                 Icons.color_lens_outlined,
@@ -130,6 +174,12 @@ class _SettingsState extends State<Settings> {
               onTap: () => AdaptivePageLayout.of(context)
                   .pushNamed('/settings/encryption'),
             ),
+            if (PlatformInfos.isMobile)
+                ListTile(
+                  trailing: Icon(Icons.pan_tool_outlined),
+                  title: Text(L10n.of(context).appLock),
+                  onTap: () => _setAppLockAction(context),
+                ),
             ListTile(
               leading: Icon(
                 Icons.notifications_outlined,

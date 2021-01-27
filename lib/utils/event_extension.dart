@@ -1,11 +1,10 @@
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 import '../views/image_view.dart';
-import 'app_route.dart';
 import 'matrix_file_extension.dart';
 
 extension LocalizedBody on Event {
@@ -13,9 +12,7 @@ extension LocalizedBody on Event {
     if (!downloadOnly &&
         [MessageTypes.Image, MessageTypes.Sticker].contains(messageType)) {
       await Navigator.of(context).push(
-        AppRoute(
-          ImageView(this),
-        ),
+        MaterialPageRoute(builder: (_) => ImageView(this)),
       );
       return;
     }

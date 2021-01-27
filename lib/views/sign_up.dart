@@ -153,7 +153,7 @@ class _SignUpState extends State<SignUp> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: loading
-                      ? CircularProgressIndicator()
+                      ? LinearProgressIndicator()
                       : Text(
                           L10n.of(context).signUp.toUpperCase(),
                           style: TextStyle(color: Colors.white, fontSize: 16),

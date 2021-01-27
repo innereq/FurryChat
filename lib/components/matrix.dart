@@ -10,6 +10,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,7 @@ import 'package:desktop_notifications/desktop_notifications.dart';*/
 import '../utils/beautify_string_extension.dart';
 import '../utils/famedlysdk_store.dart';
 import '../utils/firebase_controller.dart';
+import '../utils/localized_exception_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
 import 'avatar.dart';
@@ -318,13 +320,9 @@ class MatrixState extends State<Matrix> {
       },
       databaseBuilder: getDatabase,
     );
-    onJitsiCallSub ??= client.onEvent.stream
-        .where((e) =>
-            e.type == EventUpdateType.timeline &&
-            e.eventType == 'm.room.message' &&
-            e.content['content']['msgtype'] == Matrix.callNamespace &&
-            e.content['sender'] != client.userID)
-        .listen(onJitsiCall);
+    LoadingDialog.defaultTitle = L10n.of(context).loadingPleaseWait;
+    LoadingDialog.defaultBackLabel = L10n.of(context).close;
+    LoadingDialog.defaultOnError = (Object e) => e.toLocalizedString(context);
 
     onRoomKeyRequestSub ??=
         client.onRoomKeyRequest.stream.listen((RoomKeyRequest request) async {
@@ -441,7 +439,7 @@ class MatrixState extends State<Matrix> {
   void dispose() {
     onRoomKeyRequestSub?.cancel();
     onKeyVerificationRequestSub?.cancel();
-    onJitsiCallSub?.cancel();
+    onLoginStateChanged?.cancel();
     onNotification?.cancel();
     onFocusSub?.cancel();
     onBlurSub?.cancel();

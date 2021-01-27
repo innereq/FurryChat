@@ -248,6 +248,7 @@ class _ChatListState extends State<ChatList> {
                           searchController: searchController,
                           hintText: L10n.of(context).searchForAChat,
                           onChanged: (_) => setState(() => null),
+                          suffix: Icon(Icons.search_outlined),
                         ),
             ),
             floatingActionButton:
@@ -283,43 +284,32 @@ class _ChatListState extends State<ChatList> {
                                           searchController.text.toLowerCase() ??
                                               '')));
                               if (rooms.isEmpty && (!searchMode)) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Icon(
-                                        searchMode
-                                            ? Icons.search_outlined
-                                            : Icons.chat_bubble_outline,
-                                        size: 80,
-                                        color: Colors.grey,
-                                      ),
-                                      Text(searchMode
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Icon(
+                                      searchMode
+                                          ? Icons.search_outlined
+                                          : Icons.maps_ugc_outlined,
+                                      size: 80,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      searchMode
                                           ? L10n.of(context).noRoomsFound
-                                          : L10n.of(context)
-                                              .startYourFirstChat),
-                                    ],
-                                  ),
+                                          : L10n.of(context).startYourFirstChat,
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
                                 );
                               }
                               final totalCount = rooms.length;
-                              return ListView.separated(
+                              return ListView.builder(
                                 controller: _scrollController,
-                                separatorBuilder:
-                                    (BuildContext context, int i) =>
-                                        i == totalCount
-                                            ? ListTile(
-                                                title: Text(
-                                                  L10n.of(context).publicRooms +
-                                                      ':',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                  ),
-                                                ),
-                                              )
-                                            : Container(),
                                 itemCount: totalCount,
                                 itemBuilder: (BuildContext context, int i) =>
                                     ChatListItem(

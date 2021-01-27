@@ -8,7 +8,6 @@ import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 import '../../utils/platform_infos.dart';
 import '../../utils/string_color.dart';
-import '../avatar.dart';
 import 'adaptive_flat_button.dart';
 
 class KeyVerificationDialog extends StatefulWidget {
@@ -307,14 +306,7 @@ class _KeyVerificationPageState extends State<KeyVerificationDialog> {
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
     );
-    final title = PlatformInfos.isCupertinoStyle
-        ? Text(L10n.of(context).verifyTitle)
-        : ListTile(
-            leading: Avatar(profile?.avatarUrl, otherName),
-            contentPadding: EdgeInsets.zero,
-            subtitle: Text(L10n.of(context).verifyTitle, maxLines: 1),
-            title: userNameTitle,
-          );
+    final title = Text(L10n.of(context).verifyTitle);
     final content = Scrollbar(
       isAlwaysShown: true,
       controller: _scrollController,

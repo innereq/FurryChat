@@ -19,6 +19,7 @@ import 'package:pedantic/pedantic.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipe_to_action/swipe_to_action.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../app_config.dart';
 import '../components/avatar.dart';
@@ -82,8 +83,6 @@ class _ChatState extends State<Chat> {
 
   bool get selectMode => selectedEvents.isNotEmpty;
 
-  bool _loadingHistory = false;
-
   final int _loadHistoryCount = 100;
 
   String inputText = '';
@@ -92,10 +91,22 @@ class _ChatState extends State<Chat> {
 
   bool get _canLoadMore => timeline.events.last.type != EventTypes.RoomCreate;
 
+  void startCallAction(BuildContext context) async {
+    final url =
+        '${AppConfig.jitsiInstance}${Uri.encodeComponent(Matrix.of(context).client.generateUniqueTransactionId())}';
+
+    final success = await showFutureLoadingDialog(
+        context: context,
+        future: () => room.sendEvent({
+              'msgtype': Matrix.callNamespace,
+              'body': url,
+            }));
+    if (success.error != null) return;
+    await launch(url);
+  }
+
   void requestHistory() async {
     if (_canLoadMore) {
-      setState(() => _loadingHistory = true);
-
       try {
         await timeline.requestHistory(historyCount: _loadHistoryCount);
       } catch (err) {
@@ -103,11 +114,6 @@ class _ChatState extends State<Chat> {
                 message: err.toLocalizedString(context))
             .show(context);
       }
-
-      // we do NOT setState() here as then the event order will be wrong.
-      // instead, we just set our variable to false, and rely on timeline update to set the
-      // new state, thus triggering a re-render, for us
-      _loadingHistory = false;
     }
   }
 
@@ -189,7 +195,7 @@ class _ChatState extends State<Chat> {
   TextEditingController sendController = TextEditingController();
 
   void send() {
-    if (sendController.text.isEmpty) return;
+    if (sendController.text.trim().isEmpty) return;
     room.sendTextEvent(sendController.text,
         inReplyTo: replyEvent, editEventId: editEvent?.eventId);
     sendController.text = pendingText;
@@ -623,8 +629,6 @@ class _ChatState extends State<Chat> {
     if (room.membership == Membership.invite) {
       showFutureLoadingDialog(context: context, future: () => room.join());
     }
-
-    final typingText = room.getLocalizedTypingText(context);
     return Scaffold(
       appBar: AppBar(
         leading: selectMode
@@ -636,7 +640,7 @@ class _ChatState extends State<Chat> {
         titleSpacing:
             AdaptivePageLayout.of(context).columnMode(context) ? null : 0,
         title: selectedEvents.isEmpty
-            ? StreamBuilder<Object>(
+            ? StreamBuilder(
                 stream: room.onUpdate.stream,
                 builder: (context, snapshot) => ListTile(
                       leading: Avatar(room.avatar, room.displayname),
@@ -662,7 +666,7 @@ class _ChatState extends State<Chat> {
                           room.getLocalizedDisplayname(
                               MatrixLocals(L10n.of(context))),
                           maxLines: 1),
-                      subtitle: typingText.isEmpty
+                      subtitle: room.getLocalizedTypingText(context).isEmpty
                           ? StreamBuilder<Object>(
                               stream: Matrix.of(context)
                                   .client
@@ -681,7 +685,7 @@ class _ChatState extends State<Chat> {
                                     size: 13),
                                 SizedBox(width: 4),
                                 Text(
-                                  typingText,
+                                  room.getLocalizedTypingText(context),
                                   maxLines: 1,
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
@@ -724,7 +728,13 @@ class _ChatState extends State<Chat> {
                     onPressed: () => redactEventsAction(context),
                   ),
               ]
-            : <Widget>[ChatSettingsPopupMenu(room, !room.isDirectChat)],
+            : <Widget>[
+                IconButton(
+                  icon: Icon(Icons.call_outlined),
+                  onPressed: () => startCallAction(context),
+                ),
+                ChatSettingsPopupMenu(room, !room.isDirectChat),
+              ],
       ),
       floatingActionButton: showScrollDownButton
           ? Padding(
@@ -786,7 +796,13 @@ class _ChatState extends State<Chat> {
                           horizontal: max(
                               0,
                               (MediaQuery.of(context).size.width -
-                                      FluffyThemes.columnWidth * 3.5) /
+                                      FluffyThemes.columnWidth *
+                                          (AdaptivePageLayout.of(context)
+                                                      .currentViewData
+                                                      .rightView !=
+                                                  null
+                                              ? 4.5
+                                              : 3.5)) /
                                   2),
                         ),
                         reverse: true,
@@ -794,7 +810,7 @@ class _ChatState extends State<Chat> {
                         childrenDelegate: SliverChildBuilderDelegate(
                           (BuildContext context, int i) {
                             return i == filteredEvents.length + 1
-                                ? _loadingHistory
+                                ? timeline.isRequestingHistory
                                     ? Container(
                                         height: 50,
                                         alignment: Alignment.center,

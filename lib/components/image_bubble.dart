@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../utils/app_route.dart';
 import '../utils/event_extension.dart';
 import '../views/image_view.dart';
 
@@ -235,8 +234,8 @@ class _ImageBubbleState extends State<ImageBubble> {
         onTap: () {
           if (!widget.tapToView) return;
           Navigator.of(context).push(
-            AppRoute(
-              ImageView(widget.event, onLoaded: () {
+            MaterialPageRoute(
+              builder: (_) => ImageView(widget.event, onLoaded: () {
                 // If the original file didn't load yet, we want to do that now.
                 // This is so that the original file displays after going on the image viewer,
                 // waiting for it to load, and then hitting back. This ensures that we always

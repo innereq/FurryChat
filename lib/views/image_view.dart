@@ -1,11 +1,11 @@
 import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 
 import '../components/image_bubble.dart';
 import '../components/matrix.dart';
 import '../utils/event_extension.dart';
+import '../utils/platform_infos.dart';
 
 class ImageView extends StatelessWidget {
   final Event event;
@@ -20,6 +20,8 @@ class ImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var calcVelocity = MediaQuery.of(context).size.height * 1.50;
+
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
@@ -44,19 +46,28 @@ class ImageView extends StatelessWidget {
           ),
         ],
       ),
-      body: PhotoView.customChild(
+      body: InteractiveViewer(
+        child: Center(
+          child: ImageBubble(
+            event,
+            tapToView: false,
+            onLoaded: onLoaded,
+            fit: BoxFit.contain,
+            backgroundColor: Colors.black,
+            maxSize: false,
+            radius: 0.0,
+            thumbnailOnly: false,
+          ),
+        ),
         minScale: 1.0,
         maxScale: 10.0,
-        child: ImageBubble(
-          event,
-          tapToView: false,
-          onLoaded: onLoaded,
-          fit: BoxFit.contain,
-          backgroundColor: Colors.black,
-          maxSize: false,
-          radius: 0.0,
-          thumbnailOnly: false,
-        ),
+        onInteractionEnd: (ScaleEndDetails endDetails) {
+          if (PlatformInfos.usesTouchscreen == false) {
+            if (endDetails.velocity.pixelsPerSecond.dy > calcVelocity) {
+              Navigator.of(context).pop();
+            }
+          }
+        },
       ),
     );
   }

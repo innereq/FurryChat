@@ -92,7 +92,7 @@ build_android_appbundle:
   only:
     - main
 
-upload_to_fdroid_repo:
+upload-fdroid:
   stage: release
   before_script:
     - 'which ssh-agent || (sudo apt-get update -y && sudo apt-get install openssh-client -y )'
@@ -106,8 +106,8 @@ upload_to_fdroid_repo:
   script:
     - cd build/android/
     - export UPDATE_VERSION=$(pcregrep -o1 'version:\s([0-9]*\.[0-9]*\.[0-9]*)\+[0-9]*' ../../pubspec.yaml) && mv app-release.apk "${UPDATE_VERSION}.apk"
-    - rsync -rav -e ssh ./ fluffy@fdroid.nordgedanken.dev:/fdroid/repo
-    - ssh fluffy@fdroid.nordgedanken.dev "cd fdroid && fdroid update"
+    - rsync -rav -e ssh ./ fluffy@fdroid.nordgedanken.dev:/opt/fdroid/fluffychat/repo
+    - ssh fluffy@fdroid.nordgedanken.dev "cd /opt/fdroid/fluffychat && fdroid update --verbose"
   needs: ["build_android_apk"]
   resource_group: playstore_release
   allow_failure: true
@@ -143,35 +143,35 @@ build_linux:
     paths:
       - build/linux/release/bundle/
 
-snap:edge:
-  stage: release
-  image: "cibuilds/snapcraft:core18"
-  variables:
-    SNAPCRAFT_LOGIN_FILE: ${SNAPCRAFT_LOGIN_FILE}
-  only:
-    - main
-  script: [./scripts/publish-snap-edge.sh]
-  artifacts:
-    paths:
-      - './*.snap'
-    when: on_success
-  allow_failure: true
+#snap:edge:
+#  stage: release
+#  image: "cibuilds/snapcraft:core18"
+#  variables:
+#    SNAPCRAFT_LOGIN_FILE: ${SNAPCRAFT_LOGIN_FILE}
+#  only:
+#    - main
+#  script: [./scripts/publish-snap-edge.sh]
+#  artifacts:
+#    paths:
+#      - './*.snap'
+#    when: on_success
+#  allow_failure: true
 
-snap:publish:
-  stage: release
-  image: "cibuilds/snapcraft:core18"
-  variables:
-    SNAPCRAFT_LOGIN_FILE: ${SNAPCRAFT_LOGIN_FILE}
-  only:
-    - tags
-  script: [./scripts/publish-snap-stable.sh]
-  artifacts:
-    paths:
-      - './*.snap'
-    when: on_success
-    expire_in: 1 week
-  needs: []
-  allow_failure: true
+#snap:publish:
+#  stage: release
+#  image: "cibuilds/snapcraft:core18"
+#  variables:
+#    SNAPCRAFT_LOGIN_FILE: ${SNAPCRAFT_LOGIN_FILE}
+#  only:
+#    - tags
+#  script: [./scripts/publish-snap-stable.sh]
+#  artifacts:
+#    paths:
+#      - './*.snap'
+#    when: on_success
+#    expire_in: 1 week
+#  needs: []
+#  allow_failure: true
 
 update-dependencies:
   stage: coverage

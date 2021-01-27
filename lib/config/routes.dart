@@ -41,7 +41,6 @@ class FluffyRoutes {
 
   ViewData onGenerateRoute(RouteSettings settings) {
     final parts = settings.name.split('/');
-    Logs().v(settings.name);
 
     // Routes if the app is loading
     if (Matrix.of(context).loginState == null) {
@@ -133,7 +132,7 @@ class FluffyRoutes {
         case 'archive':
           return ViewData(
             mainView: (_) => Archive(),
-            emptyView: (_) => Chat(parts[2]),
+            emptyView: (_) => EmptyPage(),
           );
         case 'discover':
           return ViewData(

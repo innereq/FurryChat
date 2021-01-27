@@ -216,7 +216,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "0c89098b7a3231680d87cd79e1494d326a41574e"
+      resolved-ref: "4597ea344553e78a0817d7cdad16ac72079c8034"
       url: "https://gitlab.com/famedly/famedlysdk.git"
     source: git
     version: "0.0.1"
@@ -309,6 +309,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_app_lock:
+    dependency: "direct main"
+    description:
+      name: flutter_app_lock
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0+1"
   flutter_blurhash:
     dependency: "direct main"
     description:
@@ -398,6 +405,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.11"
+  flutter_screen_lock:
+    dependency: "direct main"
+    description:
+      name: flutter_screen_lock
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.6"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -705,12 +719,12 @@ packages:
     source: hosted
     version: "1.9.3"
   package_info:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: package_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3"
+    version: "0.4.3+2"
   password_hash:
     dependency: transitive
     description:
