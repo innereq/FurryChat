@@ -1,8 +1,9 @@
-import 'package:fluffychat/config/setting_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_screen_lock/lock_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../config/setting_keys.dart';
 
 class LockScreen extends StatelessWidget {
   @override

@@ -1,15 +1,16 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:flutter_screen_lock/lock_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:furrychat/utils/platform_infos.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app_config.dart';
 import '../components/matrix.dart';
 import '../config/setting_keys.dart';
+import '../utils/platform_infos.dart';
 
 enum SettingsViews {
   account,
@@ -72,7 +73,12 @@ class _SettingsState extends State<Settings> {
     );
     if (newLock != null) {
       await FlutterSecureStorage()
-          .write(key: SettingKeys.appLockKey, value: newLock.first);
+          .write(key: SettingKeys.appLockKey, value: newLock.single);
+      if (newLock.single.isEmpty) {
+        AppLock.of(context).disable();
+      } else {
+        AppLock.of(context).enable();
+      }
     }
   }
 
@@ -175,11 +181,11 @@ class _SettingsState extends State<Settings> {
                   .pushNamed('/settings/encryption'),
             ),
             if (PlatformInfos.isMobile)
-                ListTile(
-                  trailing: Icon(Icons.pan_tool_outlined),
-                  title: Text(L10n.of(context).appLock),
-                  onTap: () => _setAppLockAction(context),
-                ),
+              ListTile(
+                trailing: Icon(Icons.pan_tool_outlined),
+                title: Text(L10n.of(context).appLock),
+                onTap: () => _setAppLockAction(context),
+              ),
             ListTile(
               leading: Icon(
                 Icons.notifications_outlined,

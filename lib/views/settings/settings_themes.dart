@@ -49,6 +49,7 @@ class _ThemesSettingsState extends State<ThemesSettings> {
 
   @override
   Widget build(BuildContext context) {
+    _currentTheme ??= AdaptiveTheme.of(context).mode;
     return Scaffold(
       appBar: AppBar(
           leading: BackButton(), title: Text(L10n.of(context).changeTheme)),
