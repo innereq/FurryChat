@@ -1367,7 +1367,7 @@
       "senderName": {}
     }
   },
-  "startYourFirstChat": "Alusta oma esimest vestlust :-)",
+  "startYourFirstChat": "Alusta oma esimest vestlust kohe nüüd 🙂\n- Klõpsi „+“ ikooni\n- Sisesta teise osapoole kasutajanimi\n- Ja lase vestlusel kulgeda",
   "@startYourFirstChat": {
     "type": "text",
     "placeholders": {}
@@ -1972,6 +1972,26 @@
   },
   "noConnectionToTheServer": "Puudub ühendus koduserveriga",
   "@noConnectionToTheServer": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "security": "Turvalisus",
+  "@security": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "appLock": "Rakenduse lukustus",
+  "@appLock": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseChooseAPasscode": "Palun vali rakenduse PIN-kood",
+  "@pleaseChooseAPasscode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnter4Digits": "Rakenduse luku jaoks sisesta 4 numbrit või kui sa sellist võimalust ei soovi kasutada, siis jäta nad tühjaks.",
+  "@pleaseEnter4Digits": {
     "type": "text",
     "placeholders": {}
   }

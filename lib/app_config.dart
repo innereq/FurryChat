@@ -11,6 +11,7 @@ abstract class AppConfig {
   static String _privacyUrl = 'https://fluffychat.im/en/privacy.html';
   static String get privacyUrl => _privacyUrl;
   static const String sourceCodeUrl = 'https://github.com/innereq/FurryChat';
+  static const String appId = 'dev.inex.furrychat';
   static const String supportUrl =
       'https://github.com/innereq/FurryChat/issues';
   static bool renderHtml = false;

@@ -33,6 +33,7 @@ import '../views/settings/settings_themes.dart';
 import '../views/settings_3pid.dart';
 import '../views/sign_up.dart';
 import '../views/sign_up_password.dart';
+import '../views/sso_web_view.dart';
 
 class FluffyRoutes {
   final BuildContext context;
@@ -52,6 +53,8 @@ class FluffyRoutes {
           return ViewData(mainView: (_) => HomeserverPicker());
         case 'login':
           return ViewData(mainView: (_) => Login());
+        case 'sso':
+          return ViewData(mainView: (_) => SsoWebView());
         case 'signup':
           if (parts.length == 5 && parts[2] == 'password') {
             return ViewData(
@@ -134,6 +137,17 @@ class FluffyRoutes {
             mainView: (_) => Archive(),
             emptyView: (_) => EmptyPage(),
           );
+        case 'authwebview':
+          if (parts.length == 4) {
+            return ViewData(
+              mainView: (_) => AuthWebView(
+                parts[2],
+                Uri.decodeComponent(parts[3]),
+                settings.arguments,
+              ),
+            );
+          }
+          break;
         case 'discover':
           return ViewData(
             mainView: (_) =>

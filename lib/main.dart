@@ -29,6 +29,7 @@ void main() async {
         ? AppLock(
             builder: (args) => App(),
             lockScreen: LockScreen(),
+            enabled: false,
           )
         : App()),
     (error, stackTrace) async {
@@ -39,7 +40,7 @@ void main() async {
 }
 
 class App extends StatelessWidget {
-  final GlobalKey<AdaptivePageLayoutState> _apl =
+  static final GlobalKey<AdaptivePageLayoutState> _apl =
       GlobalKey<AdaptivePageLayoutState>();
   @override
   Widget build(BuildContext context) {

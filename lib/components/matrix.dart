@@ -9,10 +9,11 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 import 'package:url_launcher/url_launcher.dart';
@@ -159,8 +160,13 @@ class MatrixState extends State<Matrix> {
           ),
         );
       default:
-        Logs().w('Warning! Cannot handle the stage "$stage"');
-        return;
+        await widget.apl.currentState.pushNamed(
+          '/authwebview/$stage/${uiaRequest.session}',
+          arguments: () => null,
+        );
+        return uiaRequest.completeStage(
+          AuthenticationData(session: uiaRequest.session),
+        );
     }
   }
 
@@ -271,37 +277,34 @@ class MatrixState extends State<Matrix> {
   void initState() {
     super.initState();
     initMatrix();
-    initConfig().then((_) => initSettings());
+    if (PlatformInfos.isWeb) initConfig().then((_) => initSettings());
   }
 
   Future<void> initConfig() async {
-    if (PlatformInfos.isMobile) {
-      return;
-    }
     try {
-      var configJsonString = '';
-      if (PlatformInfos.isWeb) {
-        configJsonString =
-            utf8.decode((await http.get('config.json')).bodyBytes);
-      } else if (PlatformInfos.isBetaDesktop) {
-        final appDocDir = await getApplicationSupportDirectory();
-        configJsonString =
-            await File('${appDocDir.path}/config.json').readAsString();
-      } else {
-        final appDocDir = await getApplicationDocumentsDirectory();
-        configJsonString =
-            await File('${appDocDir.path}/config.json').readAsString();
-      }
+      var configJsonString =
+          utf8.decode((await http.get('config.json')).bodyBytes);
       final configJson = json.decode(configJsonString);
       AppConfig.loadFromJson(configJson);
     } catch (e, s) {
-      Logs().w('[ConfigLoader] Failed to load config.json', e, s);
+      Logs().v('[ConfigLoader] Failed to load config.json', e, s);
     }
   }
 
   LoginState loginState;
 
   void initMatrix() {
+    // Display the app lock
+    if (PlatformInfos.isMobile) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FlutterSecureStorage().read(key: SettingKeys.appLockKey).then((lock) {
+          if (lock?.isNotEmpty ?? false) {
+            AppLock.of(context).enable();
+            AppLock.of(context).showLockScreen();
+          }
+        });
+      });
+    }
     clientName =
         '${AppConfig.applicationName} ${kIsWeb ? 'Web' : Platform.operatingSystem}';
     final Set verificationMethods = <KeyVerificationMethod>{
