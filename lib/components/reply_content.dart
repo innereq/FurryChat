@@ -2,9 +2,9 @@ import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../app_config.dart';
 import '../utils/matrix_locals.dart';
 import 'html_message.dart';
-import 'matrix.dart';
 
 class ReplyContent extends StatelessWidget {
   final Event replyEvent;
@@ -22,7 +22,7 @@ class ReplyContent extends StatelessWidget {
         ? replyEvent.getDisplayEvent(timeline)
         : replyEvent;
     if (displayEvent != null &&
-        Matrix.of(context).renderHtml &&
+        AppConfig.renderHtml &&
         [EventTypes.Message, EventTypes.Encrypted]
             .contains(displayEvent.type) &&
         [MessageTypes.Text, MessageTypes.Notice, MessageTypes.Emote]
@@ -34,16 +34,18 @@ class ReplyContent extends StatelessWidget {
       if (displayEvent.messageType == MessageTypes.Emote) {
         html = '* $html';
       }
+      final fontSize = DefaultTextStyle.of(context).style.fontSize;
       replyBody = HtmlMessage(
         html: html,
         defaultTextStyle: TextStyle(
           color: lightText
               ? Colors.white
               : Theme.of(context).textTheme.bodyText2.color,
-          fontSize: DefaultTextStyle.of(context).style.fontSize,
+          fontSize: fontSize,
         ),
         maxLines: 1,
         room: displayEvent.room,
+        emoteSize: fontSize * 1.5,
       );
     } else {
       replyBody = Text(

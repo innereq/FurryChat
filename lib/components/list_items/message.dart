@@ -1,13 +1,11 @@
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/l10n.dart';
 
+import '../../config/themes.dart';
 import '../../utils/date_time_extension.dart';
 import '../../utils/event_extension.dart';
 import '../../utils/string_color.dart';
-import '../adaptive_page_layout.dart';
 import '../avatar.dart';
-import '../dialogs/simple_dialogs.dart';
 import '../matrix.dart';
 import '../message_content.dart';
 import '../message_reactions.dart';
@@ -39,8 +37,11 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (event.type == EventTypes.Unknown) {
-      return Container();
+    if (event.type == EventTypes.RoomCreate) {
+      return InkWell(
+        onTap: () => onSelect(event),
+        child: StateMessage(event),
+      );
     }
     if (![EventTypes.Message, EventTypes.Sticker, EventTypes.Encrypted]
         .contains(event.type)) {
@@ -88,7 +89,7 @@ class Message extends StatelessWidget {
               borderRadius: BorderRadius.circular(radius),
             ),
             constraints:
-                BoxConstraints(maxWidth: AdaptivePageLayout.defaultMinWidth),
+                BoxConstraints(maxWidth: FluffyThemes.columnWidth * 1.5),
             child: Stack(
               children: <Widget>[
                 Column(
@@ -131,20 +132,7 @@ class Message extends StatelessWidget {
                       displayEvent,
                       textColor: textColor,
                     ),
-                    if (displayEvent.type == EventTypes.Encrypted &&
-                        displayEvent.messageType == MessageTypes.BadEncrypted &&
-                        displayEvent.content['can_request_session'] == true)
-                      RaisedButton(
-                        color: color.withAlpha(100),
-                        child: Text(
-                          L10n.of(context).requestPermission,
-                          style: TextStyle(color: textColor),
-                        ),
-                        onPressed: () => SimpleDialogs(context)
-                            .tryRequestWithLoadingDialog(
-                                displayEvent.requestKey()),
-                      ),
-                    SizedBox(height: 4),
+                    SizedBox(height: 3),
                     Opacity(
                       opacity: 0,
                       child: _MetaRow(
@@ -273,7 +261,7 @@ class _MetaRow extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 2.0),
             child: Icon(
-              Icons.edit,
+              Icons.edit_outlined,
               size: 12,
               color: color,
             ),
@@ -282,7 +270,7 @@ class _MetaRow extends StatelessWidget {
         if (ownMessage)
           Icon(
             displayEvent.statusIcon,
-            size: 12,
+            size: 14,
             color: color,
           ),
       ],

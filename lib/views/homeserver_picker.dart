@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
 import '../utils/app_route.dart';
 import 'login.dart';
@@ -25,15 +25,20 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
       if (!homeserver.startsWith('@')) {
         homeserver = '@$homeserver';
       }
-      wellknown = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          Matrix.of(context)
-              .client
-              .getWellKnownInformationsByUserId(homeserver));
-      final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          Matrix.of(context).client.checkHomeserver(
-              wellknown.mHomeserver != null
-                  ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
-                  : homeserver));
+      wellknown = (await showFutureLoadingDialog(
+              context: context,
+              future: () => Matrix.of(context)
+                  .client
+                  .getWellKnownInformationsByUserId(homeserver)))
+          .result;
+      final success = (await showFutureLoadingDialog(
+              context: context,
+              future: () => checkHomeserver(
+                  wellknown.mHomeserver != null
+                      ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
+                      : homeserver,
+                  Matrix.of(context).client)))
+          .result;
       if (success != false) {
         await Navigator.of(context).push(AppRoute(Login(
           username: homeserver,
@@ -45,22 +50,32 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
       if (homeserver.endsWith('/')) {
         homeserver = homeserver.substring(0, homeserver.length - 1);
       }
-      wellknown = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          Matrix.of(context)
-              .client
-              .getWellKnownInformationsByDomain(homeserver));
+      wellknown = (await showFutureLoadingDialog(
+              context: context,
+              future: () => Matrix.of(context)
+                  .client
+                  .getWellKnownInformationsByUserId(homeserver)))
+          .result;
 
-      final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-          Matrix.of(context).client.checkHomeserver(
-              wellknown.mHomeserver != null
-                  ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
-                  : homeserver));
+      final success = (await showFutureLoadingDialog(
+              context: context,
+              future: () => checkHomeserver(
+                  wellknown.mHomeserver != null
+                      ? 'https://${Uri.parse(wellknown.mHomeserver.baseUrl).host}'
+                      : homeserver,
+                  Matrix.of(context).client)))
+          .result;
       if (success != false) {
         await Navigator.of(context).push(AppRoute(SignUp(
           wellknown: wellknown,
         )));
       }
     }
+  }
+
+  Future<bool> checkHomeserver(dynamic homeserver, Client client) async {
+    await client.checkHomeserver(homeserver);
+    return true;
   }
 
   final textController = TextEditingController();
@@ -76,11 +91,6 @@ class _HomeserverPickerState extends State<HomeserverPicker> {
         _isMXID = false;
       });
     }
-  }
-
-  Future<bool> checkHomeserver(dynamic homeserver, Client client) async {
-    await client.checkHomeserver(homeserver);
-    return true;
   }
 
   @override

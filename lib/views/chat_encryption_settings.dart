@@ -1,32 +1,14 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/encryption.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
-import '../components/dialogs/simple_dialogs.dart';
+import '../components/dialogs/key_verification_dialog.dart';
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
 import '../utils/beautify_string_extension.dart';
-import 'chat_list.dart';
-import 'key_verification.dart';
-
-class ChatEncryptionSettingsView extends StatelessWidget {
-  final String id;
-
-  const ChatEncryptionSettingsView(this.id, {Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      firstScaffold: ChatList(
-        activeChat: id,
-      ),
-      secondScaffold: ChatEncryptionSettings(id),
-      primaryPage: FocusPage.SECOND,
-    );
-  }
-}
 
 class ChatEncryptionSettings extends StatefulWidget {
   final String id;
@@ -55,18 +37,18 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
             setState(() => null);
           }
         };
-        await Navigator.of(context).push(
-          AppRoute.defaultRoute(
-            context,
-            KeyVerificationView(request: req),
-          ),
-        );
+        await KeyVerificationDialog(
+          request: req,
+          l10n: L10n.of(context),
+        ).show(context);
         break;
       case 'verify_manual':
-        if (await SimpleDialogs(context).askConfirmation(
-          titleText: L10n.of(context).isDeviceKeyCorrect,
-          contentText: key.ed25519Key.beautified,
-        )) {
+        if (await showOkCancelAlertDialog(
+              context: context,
+              title: L10n.of(context).isDeviceKeyCorrect,
+              message: key.ed25519Key.beautified,
+            ) ==
+            OkCancelResult.ok) {
           await unblock();
           await key.setVerified(true);
           setState(() => null);
@@ -81,12 +63,10 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
             setState(() => null);
           }
         };
-        await Navigator.of(context).push(
-          AppRoute.defaultRoute(
-            context,
-            KeyVerificationView(request: req),
-          ),
-        );
+        await KeyVerificationDialog(
+          request: req,
+          l10n: L10n.of(context),
+        ).show(context);
         break;
       case 'block':
         if (key.directVerified) {
@@ -103,11 +83,22 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => FlushbarHelper.createInformation(
+              message: L10n.of(context).warningEncryptionInBeta)
+          .show(context),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final room = Matrix.of(context).client.getRoomById(widget.id);
 
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).participatingUserDevices),
       ),
       body: StreamBuilder(
@@ -143,11 +134,10 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
                             itemBuilder: (c) {
                               var items = <PopupMenuEntry<String>>[];
                               if (room
-                                          .client
-                                          .userDeviceKeys[deviceKeys[i].userId]
-                                          .verified ==
-                                      UserVerifiedStatus.unknown &&
-                                  deviceKeys[i].userId != room.client.userID) {
+                                      .client
+                                      .userDeviceKeys[deviceKeys[i].userId]
+                                      .verified ==
+                                  UserVerifiedStatus.unknown) {
                                 items.add(PopupMenuItem(
                                   child: Text(L10n.of(context).verifyUser),
                                   value: 'verify_user',
@@ -211,7 +201,7 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
                         },
                         child: ListTile(
                           title: Text(
-                            "${deviceKeys[i].unsigned["device_display_name"] ?? L10n.of(context).unknownDevice} - ${deviceKeys[i].deviceId}",
+                            '${deviceKeys[i].deviceDisplayName ?? L10n.of(context).unknownDevice}',
                             style: TextStyle(
                                 color: deviceKeys[i].blocked
                                     ? Colors.red
@@ -220,14 +210,7 @@ class _ChatEncryptionSettingsState extends State<ChatEncryptionSettings> {
                                         : Colors.orange),
                           ),
                           subtitle: Text(
-                            deviceKeys[i]
-                                .keys['ed25519:${deviceKeys[i].deviceId}']
-                                .beautified,
-                            style: TextStyle(
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .color),
+                            '${L10n.of(context).deviceId}: ${deviceKeys[i].deviceId}',
                           ),
                         ),
                       ),

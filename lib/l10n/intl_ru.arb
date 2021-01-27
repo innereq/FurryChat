@@ -87,7 +87,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "askSSSSCache": "Пожалуйста, введите вашу парольную фразу или ключ восстановления для кэширования ключей.",
+  "askSSSSCache": "Пожалуйста, введите вашу парольную фразу или ключ восстановления для кэширования ключей",
   "@askSSSSCache": {
     "type": "text",
     "placeholders": {}
@@ -154,7 +154,7 @@
       "homeserver": {}
     }
   },
-  "cachedKeys": "Ключи успешно кэшированы",
+  "cachedKeys": "Ключи кэшированы",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -656,7 +656,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "groupDescriptionHasBeenChanged": "Описание группы было изменено",
+  "groupDescriptionHasBeenChanged": "Описание группы изменено",
   "@groupDescriptionHasBeenChanged": {
     "type": "text",
     "placeholders": {}
@@ -784,7 +784,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "isTyping": "Печатает...",
+  "isTyping": "Печатает…",
   "@isTyping": {
     "type": "text",
     "placeholders": {}
@@ -876,12 +876,12 @@
       "count": {}
     }
   },
-  "loadingPleaseWait": "Пожалуйста, подождите...",
+  "loadingPleaseWait": "Пожалуйста, подождите…",
   "@loadingPleaseWait": {
     "type": "text",
     "placeholders": {}
   },
-  "loadMore": "Загрузить больше...",
+  "loadMore": "Загрузить больше…",
   "@loadMore": {
     "type": "text",
     "placeholders": {}
@@ -983,7 +983,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "В настоящее время FurryChat не поддерживает функцию резервного копирования онлайн-ключей. Пожалуйста, включите её в Element.",
+  "noMegolmBootstrap": "Пожалуйста, включите резервное копирование онлайн-ключей из Element.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -998,7 +998,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noRoomsFound": "Комнаты не найдены...",
+  "noRoomsFound": "Комнаты не найдены…",
   "@noRoomsFound": {
     "type": "text",
     "placeholders": {}
@@ -1045,7 +1045,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "oopsSomethingWentWrong": "Упс! Что-то пошло не так...",
+  "oopsSomethingWentWrong": "Упс! Что-то пошло не так…",
   "@oopsSomethingWentWrong": {
     "type": "text",
     "placeholders": {}
@@ -1102,7 +1102,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterAMatrixIdentifier": "Пожалуйста, введите идентификатор Matrix",
+  "pleaseEnterAMatrixIdentifier": "Пожалуйста, введите Matrix ID",
   "@pleaseEnterAMatrixIdentifier": {
     "type": "text",
     "placeholders": {}
@@ -1397,7 +1397,7 @@
       "senderName": {}
     }
   },
-  "startYourFirstChat": "Начните свой первый чат :-)",
+  "startYourFirstChat": "Начни свой первый чат прямо сейчас! 🙂\n- Нажмите \"+\"\n- Введите логин друга\n- Веселитесь в чате",
   "@startYourFirstChat": {
     "type": "text",
     "placeholders": {}
@@ -1555,7 +1555,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "userAndOthersAreTyping": "{username} и {count} других участников печатают...",
+  "userAndOthersAreTyping": "{username} и {count} других участников печатают…",
   "@userAndOthersAreTyping": {
     "type": "text",
     "placeholders": {
@@ -1563,7 +1563,7 @@
       "count": {}
     }
   },
-  "userAndUserAreTyping": "{username} и {username2} печатают...",
+  "userAndUserAreTyping": "{username} и {username2} печатают…",
   "@userAndUserAreTyping": {
     "type": "text",
     "placeholders": {
@@ -1571,7 +1571,7 @@
       "username2": {}
     }
   },
-  "userIsTyping": "{username} печатает...",
+  "userIsTyping": "{username} печатает…",
   "@userIsTyping": {
     "type": "text",
     "placeholders": {
@@ -1668,7 +1668,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerNumbers": "В ожидании партнёра, чтобы принять числа...",
+  "waitingPartnerNumbers": "В ожидании партнёра, чтобы принять числа…",
   "@waitingPartnerNumbers": {
     "type": "text",
     "placeholders": {}
@@ -1698,7 +1698,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "writeAMessage": "Напишите сообщение...",
+  "writeAMessage": "Напишите сообщение…",
   "@writeAMessage": {
     "type": "text",
     "placeholders": {}
@@ -1777,5 +1777,284 @@
   "@changeDeviceName": {
     "type": "text",
     "placeholders": {}
+  },
+  "mention": "Упомянуть",
+  "@mention": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "offline": "Не в сети",
+  "@offline": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "online": "В сети",
+  "@online": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "unavailable": "Недоступен",
+  "@unavailable": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hideUnknownEvents": "Скрыть неизвестные события",
+  "@hideUnknownEvents": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hideRedactedEvents": "Скрыть отредактированные события",
+  "@hideRedactedEvents": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "changePassword": "Изменить пароль",
+  "@changePassword": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Зашифровано",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceId": "Идентификатор устройства",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "sendMessages": "Отправить сообщения",
+  "@sendMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Приглашение для меня",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "По этим адресам вы можете восстановить свой пароль.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Мы отправили вам электронное письмо",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleUnread": "Отметить как прочитанное/непрочитанное",
+  "@toggleUnread": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleMuted": "Переключить без звука",
+  "@toggleMuted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleFavorite": "Переключить избранное",
+  "@toggleFavorite": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Звук, вибрация, цвет светодиода",
+  "@soundVibrationLedColor": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setPermissionsLevel": "Установить уровень разрешений",
+  "@setPermissionsLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setCustomEmotes": "Установить пользовательские эмоции",
+  "@setCustomEmotes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editChatPermissions": "Изменить разрешения чата",
+  "@editChatPermissions": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "whoCanPerformWhichAction": "Кто и какое действие может выполнять",
+  "@whoCanPerformWhichAction": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "participant": "Участник",
+  "@participant": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "configureChat": "Настроить чат",
+  "@configureChat": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "defaultPermissionLevel": "Уровень разрешений по умолчанию",
+  "@defaultPermissionLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editRoomAvatar": "Изменить аватар комнаты",
+  "@editRoomAvatar": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "replaceRoomWithNewerVersion": "Заменить комнату более новой версией",
+  "@replaceRoomWithNewerVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enableEncryption": "Включить шифрование",
+  "@enableEncryption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editBlockedServers": "Редактировать заблокированные серверы",
+  "@editBlockedServers": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noDescription": "Нет описания",
+  "@noDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "discoverGroups": "Обзор групп",
+  "@discoverGroups": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Пожалуйста, нажмите на ссылку в электронной почте, для того чтобы продолжить.",
+  "@pleaseClickOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Забыли пароль",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Восстановление пароля",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Вы ещё не добавили способ восстановления пароля.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "Я перешёл по ссылке",
+  "@iHaveClickedOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Редактировать",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Уведомления включены для этой учётной записи",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Уведомления",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Правила push",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Сообщения ботов",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Изменения участников",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Содержит имя пользователя",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Содержит отображаемое имя",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Прямые чаты",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterAnEmailAddress": "Введите адрес электронной почты",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "numUsersTyping": "{count} пользователей печатают…",
+  "@numUsersTyping": {
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "yourPublicKey": "Ваш открытый ключ",
+  "@yourPublicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "publicKey": "Открытый ключ",
+  "@publicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tooManyRequestsWarning": "Слишком много запросов. Пожалуйста, повторите попытку позже!",
+  "@tooManyRequestsWarning": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noConnectionToTheServer": "Нет соединения с сервером",
+  "@noConnectionToTheServer": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "security": "Безопасность",
+  "@security": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "appLock": "Блокировка приложения",
+  "@appLock": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseChooseAPasscode": "Пожалуйста, выберите код доступа",
+  "@pleaseChooseAPasscode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnter4Digits": "Введите 4 цифры или оставьте поле пустым, чтобы отключить блокировку приложения.",
+  "@pleaseEnter4Digits": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "youWillBeConnectedTo": "Вы будете подключены к {homeserver}",
+  "@youWillBeConnectedTo": {
+    "type": "text",
+    "placeholders": {
+      "homeserver": {}
+    }
   }
 }

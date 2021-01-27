@@ -1,23 +1,12 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:olm/olm.dart' as olm;
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
-import '../../components/adaptive_page_layout.dart';
-import '../../components/dialogs/simple_dialogs.dart';
+import '../../components/dialogs/bootstrap_dialog.dart';
 import '../../components/matrix.dart';
 import '../../utils/beautify_string_extension.dart';
-import '../settings.dart';
-
-class EncryptionSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.encryption),
-      secondScaffold: EncryptionSettings(),
-    );
-  }
-}
 
 class EncryptionSettings extends StatefulWidget {
   @override
@@ -34,36 +23,49 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
 
   Future<void> requestSSSSCache(BuildContext context) async {
     final handle = Matrix.of(context).client.encryption.ssss.open();
-    final str = await SimpleDialogs(context).enterText(
-      titleText: L10n.of(context).askSSSSCache,
-      hintText: L10n.of(context).passphraseOrKey,
-      password: true,
+    final input = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).askSSSSCache,
+      textFields: [
+        DialogTextField(
+          hintText: L10n.of(context).passphraseOrKey,
+          obscureText: true,
+          minLines: 1,
+          maxLines: 1,
+        )
+      ],
     );
-    if (str != null) {
-      SimpleDialogs(context).showLoadingDialog(context);
-      // make sure the loading spinner shows before we test the keys
-      await Future.delayed(Duration(milliseconds: 100));
-      var valid = false;
-      try {
-        handle.unlock(recoveryKey: str);
-        valid = true;
-      } catch (e, s) {
-        debugPrint('Couldn\'t use recovery key: ' + e.toString());
-        debugPrint(s.toString());
-        try {
-          handle.unlock(passphrase: str);
-          valid = true;
-        } catch (e, s) {
-          debugPrint('Couldn\'t use recovery passphrase: ' + e.toString());
-          debugPrint(s.toString());
-          valid = false;
-        }
-      }
-      await Navigator.of(context)?.pop();
-      if (valid) {
+    if (input != null) {
+      final valid = await showFutureLoadingDialog(
+          context: context,
+          future: () async {
+            // make sure the loading spinner shows before we test the keys
+            await Future.delayed(Duration(milliseconds: 100));
+            var valid = false;
+            try {
+              await handle.unlock(recoveryKey: input.single);
+              valid = true;
+            } catch (e, s) {
+              debugPrint('Couldn\'t use recovery key: ' + e.toString());
+              debugPrint(s.toString());
+              try {
+                await handle.unlock(passphrase: input.single);
+                valid = true;
+              } catch (e, s) {
+                debugPrint(
+                    'Couldn\'t use recovery passphrase: ' + e.toString());
+                debugPrint(s.toString());
+                valid = false;
+              }
+            }
+            return valid;
+          });
+
+      if (valid.result == true) {
         await handle.maybeCacheAll();
-        await SimpleDialogs(context).inform(
-          contentText: L10n.of(context).cachedKeys,
+        await showOkAlertDialog(
+          context: context,
+          message: L10n.of(context).cachedKeys,
         );
         setState(() {
           crossSigningCachedFuture = null;
@@ -72,8 +74,9 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
           megolmBackupCached = null;
         });
       } else {
-        await SimpleDialogs(context).inform(
-          contentText: L10n.of(context).incorrectPassphraseOrKey,
+        await showOkAlertDialog(
+          context: context,
+          message: L10n.of(context).incorrectPassphraseOrKey,
         );
       }
     }
@@ -98,102 +101,19 @@ class _EncryptionSettingsState extends State<EncryptionSettings> {
     });
 
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).encryption)),
+      appBar: AppBar(
+          leading: BackButton(), title: Text(L10n.of(context).encryption)),
       body: ListView(
         children: [
           ListTile(
-            leading: Icon(Icons.compare_arrows_outlined),
-            title: Text(client.encryption.crossSigning.enabled
-                ? L10n.of(context).crossSigningEnabled
-                : L10n.of(context).crossSigningDisabled),
-            subtitle: client.encryption.crossSigning.enabled
-                ? Text(client.isUnknownSession
-                    ? L10n.of(context).unknownSessionVerify
-                    : L10n.of(context).sessionVerified +
-                        ', ' +
-                        (crossSigningCached == null
-                            ? '⌛'
-                            : (crossSigningCached
-                                ? L10n.of(context).keysCached
-                                : L10n.of(context).keysMissing)))
-                : null,
-            onTap: () async {
-              if (!client.encryption.crossSigning.enabled) {
-                await SimpleDialogs(context).inform(
-                  contentText: L10n.of(context).noCrossSignBootstrap,
-                );
-                return;
-              }
-              if (client.isUnknownSession) {
-                final str = await SimpleDialogs(context).enterText(
-                  titleText: L10n.of(context).askSSSSVerify,
-                  hintText: L10n.of(context).passphraseOrKey,
-                  password: true,
-                );
-                if (str != null) {
-                  SimpleDialogs(context).showLoadingDialog(context);
-                  // make sure the loading spinner shows before we test the keys
-                  await Future.delayed(Duration(milliseconds: 100));
-                  var valid = false;
-                  try {
-                    await client.encryption.crossSigning
-                        .selfSign(recoveryKey: str);
-                    valid = true;
-                  } catch (_) {
-                    try {
-                      await client.encryption.crossSigning
-                          .selfSign(passphrase: str);
-                      valid = true;
-                    } catch (_) {
-                      valid = false;
-                    }
-                  }
-                  await Navigator.of(context)?.pop();
-                  if (valid) {
-                    await SimpleDialogs(context).inform(
-                      contentText: L10n.of(context).verifiedSession,
-                    );
-                    setState(() {
-                      crossSigningCachedFuture = null;
-                      crossSigningCached = null;
-                      megolmBackupCachedFuture = null;
-                      megolmBackupCached = null;
-                    });
-                  } else {
-                    await SimpleDialogs(context).inform(
-                      contentText: L10n.of(context).incorrectPassphraseOrKey,
-                    );
-                  }
-                }
-              }
-              if (!(await client.encryption.crossSigning.isCached())) {
-                await requestSSSSCache(context);
-              }
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.wb_cloudy_outlined),
-            title: Text(client.encryption.keyManager.enabled
-                ? L10n.of(context).onlineKeyBackupEnabled
-                : L10n.of(context).onlineKeyBackupDisabled),
-            subtitle: client.encryption.keyManager.enabled
-                ? Text(megolmBackupCached == null
-                    ? '⌛'
-                    : (megolmBackupCached
-                        ? L10n.of(context).keysCached
-                        : L10n.of(context).keysMissing))
-                : null,
-            onTap: () async {
-              if (!client.encryption.keyManager.enabled) {
-                await SimpleDialogs(context).inform(
-                  contentText: L10n.of(context).noMegolmBootstrap,
-                );
-                return;
-              }
-              if (!(await client.encryption.keyManager.isCached())) {
-                await requestSSSSCache(context);
-              }
-            },
+            title: Text(L10n.of(context).cachedKeys),
+            trailing: Icon(Icons.wb_cloudy_outlined),
+            subtitle: Text(
+                '${client.encryption.keyManager.enabled ? L10n.of(context).onlineKeyBackupEnabled : L10n.of(context).onlineKeyBackupDisabled}\n${client.encryption.crossSigning.enabled ? L10n.of(context).crossSigningEnabled : L10n.of(context).crossSigningDisabled}'),
+            onTap: () => BootstrapDialog(
+              l10n: L10n.of(context),
+              client: Matrix.of(context).client,
+            ).show(context),
           ),
           Divider(thickness: 1),
           ListTile(

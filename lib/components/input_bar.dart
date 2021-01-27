@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'avatar.dart';
+import 'matrix.dart';
 
 class InputBar extends StatelessWidget {
   final Room room;
@@ -104,19 +105,24 @@ class InputBar extends StatelessWidget {
     if (roomMatch != null) {
       final roomSearch = roomMatch[1].toLowerCase();
       for (final r in room.client.rooms) {
-        final state = r.getState('m.room.canonical_alias');
-        if (state != null &&
-            ((state.content['alias'] is String &&
-                    state.content['alias']
-                        .split(':')[0]
-                        .toLowerCase()
-                        .contains(roomSearch)) ||
-                (state.content['alt_aliases'] is List &&
-                    state.content['alt_aliases'].any((l) =>
-                        l is String &&
-                        l.split(':')[0].toLowerCase().contains(roomSearch))) ||
-                (room.name != null &&
-                    room.name.toLowerCase().contains(roomSearch)))) {
+        if (r.getState(EventTypes.RoomTombstone) != null) {
+          continue; // we don't care about tombstoned rooms
+        }
+        final state = r.getState(EventTypes.RoomCanonicalAlias);
+        if ((state != null &&
+                ((state.content['alias'] is String &&
+                        state.content['alias']
+                            .split(':')[0]
+                            .toLowerCase()
+                            .contains(roomSearch)) ||
+                    (state.content['alt_aliases'] is List &&
+                        state.content['alt_aliases'].any((l) =>
+                            l is String &&
+                            l
+                                .split(':')[0]
+                                .toLowerCase()
+                                .contains(roomSearch))))) ||
+            (r.name != null && r.name.toLowerCase().contains(roomSearch))) {
           ret.add({
             'type': 'room',
             'mxid': (r.canonicalAlias != null && r.canonicalAlias.isNotEmpty)
@@ -134,7 +140,11 @@ class InputBar extends StatelessWidget {
     return ret;
   }
 
-  Widget buildSuggestion(BuildContext context, Map<String, String> suggestion) {
+  Widget buildSuggestion(
+    BuildContext context,
+    Map<String, String> suggestion,
+    Client client,
+  ) {
     if (suggestion['type'] == 'emote') {
       final size = 30.0;
       final ratio = MediaQuery.of(context).devicePixelRatio;
@@ -143,6 +153,7 @@ class InputBar extends StatelessWidget {
         width: size * ratio,
         height: size * ratio,
         method: ThumbnailMethod.scale,
+        animated: true,
       );
       return Container(
         padding: EdgeInsets.all(4.0),
@@ -177,8 +188,12 @@ class InputBar extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Avatar(url, suggestion['displayname'] ?? suggestion['mxid'],
-                size: size),
+            Avatar(
+              url,
+              suggestion['displayname'] ?? suggestion['mxid'],
+              size: size,
+              client: client,
+            ),
             SizedBox(width: 6),
             Text(suggestion['displayname'] ?? suggestion['mxid']),
           ],
@@ -264,18 +279,21 @@ class InputBar extends StatelessWidget {
         autofocus: autofocus,
         onSubmitted: (text) {
           // fix for library for now
+          // it sets the types for the callback incorrectly
           onSubmitted(text);
         },
         focusNode: focusNode,
         controller: controller,
         decoration: decoration,
         onChanged: (text) {
+          // fix for the library for now
+          // it sets the types for the callback incorrectly
           onChanged(text);
         },
         textCapitalization: TextCapitalization.sentences,
       ),
       suggestionsCallback: getSuggestions,
-      itemBuilder: buildSuggestion,
+      itemBuilder: (c, s) => buildSuggestion(c, s, Matrix.of(context).client),
       onSuggestionSelected: (Map<String, String> suggestion) =>
           insertSuggestion(context, suggestion),
       errorBuilder: (BuildContext context, Object error) => Container(),

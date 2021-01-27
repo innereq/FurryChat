@@ -2,21 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:olm/olm.dart' as olm;
 
-import '../../components/adaptive_page_layout.dart';
 import '../../components/matrix.dart';
 import '../../utils/beautify_string_extension.dart';
-import '../settings.dart';
-
-class AppInfoView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(),
-      secondScaffold: AppInfo(),
-    );
-  }
-}
 
 class AppInfo extends StatelessWidget {
   @override
@@ -24,6 +11,7 @@ class AppInfo extends StatelessWidget {
     var client = Matrix.of(context).client;
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).accountInformation),
       ),
       body: ListView(

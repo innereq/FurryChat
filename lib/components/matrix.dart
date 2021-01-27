@@ -1,61 +1,66 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/encryption.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
-import 'package:url_launcher/url_launcher.dart';
+
+import '../app_config.dart';
+import '../config/setting_keys.dart';
 /*import 'package:fluffychat/views/chat.dart';
-import 'package:fluffychat/config/app_config.dart';
+import 'package:fluffychat/app_config.dart';
 import 'package:dbus/dbus.dart';
 import 'package:desktop_notifications/desktop_notifications.dart';*/
 
-import '../utils/app_route.dart';
 import '../utils/beautify_string_extension.dart';
 import '../utils/famedlysdk_store.dart';
 import '../utils/firebase_controller.dart';
+import '../utils/localized_exception_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
-import '../views/key_verification.dart';
-import 'avatar.dart';
-import 'dialogs/simple_dialogs.dart';
+import 'dialogs/key_verification_dialog.dart';
 
 class Matrix extends StatefulWidget {
   static const String callNamespace = 'chat.fluffy.jitsi_call';
 
   final Widget child;
 
-  final String clientName;
+  final GlobalKey<AdaptivePageLayoutState> apl;
 
-  final Client client;
+  final BuildContext context;
 
-  final Store store;
-
-  Matrix({this.child, this.clientName, this.client, this.store, Key key})
-      : super(key: key);
+  Matrix({
+    this.child,
+    @required this.apl,
+    @required this.context,
+    Key key,
+  }) : super(key: key);
 
   @override
   MatrixState createState() => MatrixState();
 
   /// Returns the (nearest) Client instance of your application.
-  static MatrixState of(BuildContext context) {
-    var newState =
-        (context.dependOnInheritedWidgetOfExactType<_InheritedMatrix>()).data;
-    newState.context = FirebaseController.context = context;
-    return newState;
-  }
+  static MatrixState of(BuildContext context) =>
+      Provider.of<MatrixState>(context, listen: false);
 }
 
 class MatrixState extends State<Matrix> {
   Client client;
-  Store store;
+  Store store = Store();
   @override
-  BuildContext context;
-
-  static const String userStatusesType = 'chat.fluffy.user_statuses';
+  BuildContext get context => widget.context;
 
   Map<String, dynamic> get shareContent => _shareContent;
   set shareContent(Map<String, dynamic> content) {
@@ -70,32 +75,49 @@ class MatrixState extends State<Matrix> {
 
   String activeRoomId;
   File wallpaper;
-  bool renderHtml = false;
 
   String swipeToEndAction;
   String swipeToStartAction = 'reply';
 
   String jitsiInstance = 'https://meet.jit.si/';
 
+  String clientName;
+
   void clean() async {
     if (!kIsWeb) return;
 
-    await store.deleteItem(widget.clientName);
+    await store.deleteItem(clientName);
   }
 
   void _initWithStore() async {
-    var initLoginState = client.onLoginStateChanged.stream.first;
     try {
-      client.database = await getDatabase(client);
-      await client.connect();
-      final firstLoginState = await initLoginState;
-      if (firstLoginState == LoginState.logged) {
-        if (PlatformInfos.isMobile) {
-          await FirebaseController.setupFirebase(
-            this,
-            widget.clientName,
-          );
+      client.init();
+
+      final storeItem = await store.getItem(SettingKeys.showNoPid);
+      final configOptionMissing = storeItem == null || storeItem.isEmpty;
+      if (configOptionMissing || (!configOptionMissing && storeItem == '1')) {
+        if (configOptionMissing) {
+          await store.setItem(SettingKeys.showNoPid, '0');
         }
+        await client.requestThirdPartyIdentifiers().then((l) {
+          if (l.isEmpty) {
+            Flushbar(
+              title: L10n.of(context).warning,
+              message: L10n.of(context).noPasswordRecoveryDescription,
+              mainButton: RaisedButton(
+                elevation: 7,
+                color: Theme.of(context).scaffoldBackgroundColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(L10n.of(context).edit),
+                onPressed: () =>
+                    AdaptivePageLayout.of(context).pushNamed('/settings/3pid'),
+              ),
+              flushbarStyle: FlushbarStyle.FLOATING,
+            ).show(context);
+          }
+        }).catchError((_) => null);
       }
     } catch (e, s) {
       client.onLoginStateChanged.sink.addError(e, s);
@@ -103,77 +125,52 @@ class MatrixState extends State<Matrix> {
     }
   }
 
-  Map<String, dynamic> getAuthByPassword(String password, [String session]) => {
-        'type': 'm.login.password',
-        'identifier': {
-          'type': 'm.id.user',
-          'user': client.userID,
-        },
-        'user': client.userID,
-        'password': password,
-        if (session != null) 'session': session,
-      };
-
   StreamSubscription onRoomKeyRequestSub;
   StreamSubscription onKeyVerificationRequestSub;
   StreamSubscription onJitsiCallSub;
   StreamSubscription onNotification;
+  StreamSubscription<LoginState> onLoginStateChanged;
+  StreamSubscription<UiaRequest> onUiaRequest;
   StreamSubscription<html.Event> onFocusSub;
   StreamSubscription<html.Event> onBlurSub;
 
-  void onJitsiCall(EventUpdate eventUpdate) {
-    final event = Event.fromJson(
-        eventUpdate.content, client.getRoomById(eventUpdate.roomID));
-    if (DateTime.now().millisecondsSinceEpoch -
-            event.originServerTs.millisecondsSinceEpoch >
-        1000 * 60 * 5) {
-      return;
-    }
-    final senderName = event.sender.calcDisplayname();
-    final senderAvatar = event.sender.avatarUrl;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(L10n.of(context).videoCall),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              contentPadding: EdgeInsets.all(0),
-              leading: Avatar(senderAvatar, senderName),
-              title: Text(
-                senderName,
-                style: TextStyle(fontSize: 18),
-              ),
-              subtitle:
-                  event.room.isDirectChat ? null : Text(event.room.displayname),
-            ),
-            Divider(),
-            Row(
-              children: <Widget>[
-                Spacer(),
-                FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  child: Icon(Icons.phone_missed),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                Spacer(),
-                FloatingActionButton(
-                  backgroundColor: Colors.green,
-                  child: Icon(Icons.phone),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    launch(event.body);
-                  },
-                ),
-                Spacer(),
-              ],
-            ),
+  void _onUiaRequest(UiaRequest uiaRequest) async {
+    uiaRequest.onUpdate = (_) => _onUiaRequest(uiaRequest);
+    if (uiaRequest.state != UiaRequestState.waitForUser ||
+        uiaRequest.nextStages.isEmpty) return;
+    final stage = uiaRequest.nextStages.first;
+    switch (stage) {
+      case AuthenticationTypes.password:
+        final input = await showTextInputDialog(
+          context: context,
+          title: L10n.of(context).pleaseEnterYourPassword,
+          textFields: [
+            DialogTextField(
+              minLines: 1,
+              maxLines: 1,
+              obscureText: true,
+              hintText: '******',
+            )
           ],
-        ),
-      ),
-    );
-    return;
+        );
+        if (input?.isEmpty ?? true) return;
+        return uiaRequest.completeStage(
+          AuthenticationPassword(
+            session: uiaRequest.session,
+            user: client.userID,
+            password: input.single,
+            identifier: AuthenticationUserIdentifier(user: client.userID),
+          ),
+        );
+      default:
+        await widget.apl.currentState.pushNamed(
+          '/authwebview/$stage/${uiaRequest.session}',
+          arguments: () => null,
+        );
+        return uiaRequest.completeStage(
+          AuthenticationData(session: uiaRequest.session),
+        );
+    }
   }
 
   bool webHasFocus = true;
@@ -226,98 +223,135 @@ class MatrixState extends State<Matrix> {
 
   @override
   void initState() {
-    store = widget.store ?? Store();
-    if (widget.client == null) {
-      debugPrint('[Matrix] Init matrix client');
-      final Set verificationMethods = <KeyVerificationMethod>{
-        KeyVerificationMethod.numbers
-      };
-      if (PlatformInfos.isMobile) {
-        // emojis don't show in web somehow
-        verificationMethods.add(KeyVerificationMethod.emoji);
-      }
-      client = Client(widget.clientName,
-          enableE2eeRecovery: true,
-          verificationMethods: verificationMethods,
-          importantStateEvents: <String>{
-            'im.ponies.room_emotes', // we want emotes to work properly
-          });
-      onJitsiCallSub ??= client.onEvent.stream
-          .where((e) =>
-              e.type == EventUpdateType.timeline &&
-              e.eventType == 'm.room.message' &&
-              e.content['content']['msgtype'] == Matrix.callNamespace &&
-              e.content['sender'] != client.userID)
-          .listen(onJitsiCall);
-
-      onRoomKeyRequestSub ??=
-          client.onRoomKeyRequest.stream.listen((RoomKeyRequest request) async {
-        final room = request.room;
-        if (request.sender != room.client.userID) {
-          return; // ignore share requests by others
-        }
-        final sender = room.getUserByMXIDSync(request.sender);
-        if (await SimpleDialogs(context).askConfirmation(
-          titleText: L10n.of(context).requestToReadOlderMessages,
-          contentText:
-              '${sender.id}\n\n${L10n.of(context).device}:\n${request.requestingDevice.deviceId}\n\n${L10n.of(context).identity}:\n${request.requestingDevice.curve25519Key.beautified}',
-          confirmText: L10n.of(context).verify,
-          cancelText: L10n.of(context).deny,
-        )) {
-          await request.forwardKey();
-        }
-      });
-      onKeyVerificationRequestSub ??= client.onKeyVerificationRequest.stream
-          .listen((KeyVerification request) async {
-        if (await SimpleDialogs(context).askConfirmation(
-          titleText: L10n.of(context).newVerificationRequest,
-          contentText: L10n.of(context).askVerificationRequest(request.userId),
-        )) {
-          await request.acceptVerification();
-          await Navigator.of(context).push(
-            AppRoute.defaultRoute(
-              context,
-              KeyVerificationView(request: request),
-            ),
-          );
-        } else {
-          await request.rejectVerification();
-        }
-      });
-      _initWithStore();
+    super.initState();
+    initMatrix();
+    if (PlatformInfos.isWeb) {
+      initConfig().then((_) => initSettings());
     } else {
-      client = widget.client;
-      client.connect();
+      initSettings();
     }
-    if (store != null) {
-      store
-          .getItem('chat.fluffy.jitsi_instance')
-          .then((final instance) => jitsiInstance = instance ?? jitsiInstance);
-      store.getItem('chat.fluffy.wallpaper').then((final path) async {
-        if (path == null) return;
-        final file = File(path);
-        if (await file.exists()) {
-          wallpaper = file;
+  }
+
+  Future<void> initConfig() async {
+    try {
+      var configJsonString =
+          utf8.decode((await http.get('config.json')).bodyBytes);
+      final configJson = json.decode(configJsonString);
+      AppConfig.loadFromJson(configJson);
+    } catch (e, s) {
+      Logs().v('[ConfigLoader] Failed to load config.json', e, s);
+    }
+  }
+
+  LoginState loginState;
+
+  void initMatrix() {
+    // Display the app lock
+    if (PlatformInfos.isMobile) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        FlutterSecureStorage().read(key: SettingKeys.appLockKey).then((lock) {
+          if (lock?.isNotEmpty ?? false) {
+            AppLock.of(context).enable();
+            AppLock.of(context).showLockScreen();
+          }
+        });
+      });
+    }
+    clientName =
+        '${AppConfig.applicationName} ${kIsWeb ? 'Web' : Platform.operatingSystem}';
+    final Set verificationMethods = <KeyVerificationMethod>{
+      KeyVerificationMethod.numbers
+    };
+    if (PlatformInfos.isMobile || (!kIsWeb && Platform.isLinux)) {
+      // emojis don't show in web somehow
+      verificationMethods.add(KeyVerificationMethod.emoji);
+    }
+    client = Client(
+      clientName,
+      enableE2eeRecovery: true,
+      verificationMethods: verificationMethods,
+      importantStateEvents: <String>{
+        'im.ponies.room_emotes', // we want emotes to work properly
+      },
+      databaseBuilder: getDatabase,
+      supportedLoginTypes: {
+        AuthenticationTypes.password,
+        if (PlatformInfos.isMobile) AuthenticationTypes.sso
+      },
+    );
+    LoadingDialog.defaultTitle = L10n.of(context).loadingPleaseWait;
+    LoadingDialog.defaultBackLabel = L10n.of(context).close;
+    LoadingDialog.defaultOnError = (Object e) => e.toLocalizedString(context);
+
+    onRoomKeyRequestSub ??=
+        client.onRoomKeyRequest.stream.listen((RoomKeyRequest request) async {
+      final room = request.room;
+      if (request.sender != room.client.userID) {
+        return; // ignore share requests by others
+      }
+      final sender = room.getUserByMXIDSync(request.sender);
+      if (await showOkCancelAlertDialog(
+            context: context,
+            title: L10n.of(context).requestToReadOlderMessages,
+            message:
+                '${sender.id}\n\n${L10n.of(context).device}:\n${request.requestingDevice.deviceId}\n\n${L10n.of(context).publicKey}:\n${request.requestingDevice.ed25519Key.beautified}',
+            okLabel: L10n.of(context).verify,
+            cancelLabel: L10n.of(context).deny,
+          ) ==
+          OkCancelResult.ok) {
+        await request.forwardKey();
+      }
+    });
+    onKeyVerificationRequestSub ??= client.onKeyVerificationRequest.stream
+        .listen((KeyVerification request) async {
+      var hidPopup = false;
+      request.onUpdate = () {
+        if (!hidPopup &&
+            {KeyVerificationState.done, KeyVerificationState.error}
+                .contains(request.state)) {
+          Navigator.of(context, rootNavigator: true).pop('dialog');
         }
-      });
-      store.getItem('chat.fluffy.renderHtml').then((final render) async {
-        renderHtml = render == '1';
-      });
-      store
-          .getItem('dev.inex.furrychat.swipeToEndAction')
-          .then((final action) async {
-        swipeToEndAction = action ?? swipeToEndAction;
-      });
-      store
-          .getItem('dev.inex.furrychat.swipeToStartAction')
-          .then((final action) async {
-        swipeToStartAction = action ?? swipeToStartAction;
-      });
-    }
+        hidPopup = true;
+      };
+      if (await showOkCancelAlertDialog(
+            context: context,
+            title: L10n.of(context).newVerificationRequest,
+            message: L10n.of(context).askVerificationRequest(request.userId),
+          ) ==
+          OkCancelResult.ok) {
+        request.onUpdate = null;
+        hidPopup = true;
+        await request.acceptVerification();
+        await KeyVerificationDialog(
+          request: request,
+          l10n: L10n.of(context),
+        ).show(context);
+      } else {
+        request.onUpdate = null;
+        hidPopup = true;
+        await request.rejectVerification();
+      }
+    });
+    _initWithStore();
+
     if (kIsWeb) {
       onFocusSub = html.window.onFocus.listen((_) => webHasFocus = true);
       onBlurSub = html.window.onBlur.listen((_) => webHasFocus = false);
     }
+    onLoginStateChanged ??= client.onLoginStateChanged.stream.listen((state) {
+      if (loginState != state) {
+        loginState = state;
+        widget.apl.currentState.pushNamedAndRemoveAllOthers('/');
+        if (loginState == LoginState.logged) {
+          FirebaseController.context = context;
+          FirebaseController.setupFirebase(
+            this,
+            clientName,
+          );
+        }
+      }
+    });
+    onUiaRequest ??= client.onUiaRequest.stream.listen(_onUiaRequest);
     if (kIsWeb || Platform.isLinux) {
       client.onSync.stream.first.then((s) {
         html.Notification.requestPermission();
@@ -330,14 +364,44 @@ class MatrixState extends State<Matrix> {
             .listen(_showLocalNotification);
       });
     }
-    super.initState();
+  }
+
+  void initSettings() {
+    if (store != null) {
+      store.getItem(SettingKeys.jitsiInstance).then((final instance) =>
+          AppConfig.jitsiInstance = instance ?? AppConfig.jitsiInstance);
+      store.getItem(SettingKeys.wallpaper).then((final path) async {
+        if (path == null) return;
+        final file = File(path);
+        if (await file.exists()) {
+          wallpaper = file;
+        }
+      });
+      store.getItem(SettingKeys.swipeToEndAction).then((final action) async {
+        swipeToEndAction = action ?? swipeToEndAction;
+      });
+      store.getItem(SettingKeys.swipeToStartAction).then((final action) async {
+        swipeToStartAction = action ?? swipeToStartAction;
+      });
+      store
+          .getItemBool(SettingKeys.renderHtml, AppConfig.renderHtml)
+          .then((value) => AppConfig.renderHtml = value);
+      store
+          .getItemBool(
+              SettingKeys.hideRedactedEvents, AppConfig.hideRedactedEvents)
+          .then((value) => AppConfig.hideRedactedEvents = value);
+      store
+          .getItemBool(
+              SettingKeys.hideUnknownEvents, AppConfig.hideUnknownEvents)
+          .then((value) => AppConfig.hideUnknownEvents = value);
+    }
   }
 
   @override
   void dispose() {
     onRoomKeyRequestSub?.cancel();
     onKeyVerificationRequestSub?.cancel();
-    onJitsiCallSub?.cancel();
+    onLoginStateChanged?.cancel();
     onNotification?.cancel();
     onFocusSub?.cancel();
     onBlurSub?.cancel();
@@ -346,26 +410,9 @@ class MatrixState extends State<Matrix> {
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedMatrix(
-      data: this,
+    return Provider(
+      create: (_) => this,
       child: widget.child,
     );
-  }
-}
-
-class _InheritedMatrix extends InheritedWidget {
-  final MatrixState data;
-
-  _InheritedMatrix({Key key, this.data, Widget child})
-      : super(key: key, child: child);
-
-  @override
-  bool updateShouldNotify(_InheritedMatrix old) {
-    var update = old.data.client.accessToken != data.client.accessToken ||
-        old.data.client.userID != data.client.userID ||
-        old.data.client.deviceID != data.client.deviceID ||
-        old.data.client.deviceName != data.client.deviceName ||
-        old.data.client.homeserver != data.client.homeserver;
-    return update;
   }
 }

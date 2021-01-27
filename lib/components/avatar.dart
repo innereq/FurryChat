@@ -12,19 +12,21 @@ class Avatar extends StatelessWidget {
   final double size;
   final Function onTap;
   static const double defaultSize = 44;
+  final Client client;
 
   const Avatar(
     this.mxContent,
     this.name, {
     this.size = defaultSize,
     this.onTap,
+    this.client,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var thumbnail = mxContent?.getThumbnail(
-      Matrix.of(context).client,
+      client ?? Matrix.of(context).client,
       width: size * MediaQuery.of(context).devicePixelRatio,
       height: size * MediaQuery.of(context).devicePixelRatio,
     );
@@ -39,7 +41,9 @@ class Avatar extends StatelessWidget {
       child: Text(
         fallbackLetters,
         style: TextStyle(
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.light
+              ? name?.darkColor
+              : name?.lightColor ?? Colors.white,
           fontSize: 18,
         ),
       ),
@@ -55,7 +59,9 @@ class Avatar extends StatelessWidget {
           width: size,
           height: size,
           color: noPic
-              ? name?.lightColor ?? Theme.of(context).secondaryHeaderColor
+              ? Theme.of(context).brightness == Brightness.light
+                  ? name?.lightColor
+                  : name?.darkColor ?? Theme.of(context).secondaryHeaderColor
               : Theme.of(context).secondaryHeaderColor,
           child: noPic
               ? textWidget

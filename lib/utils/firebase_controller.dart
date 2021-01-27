@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -11,94 +11,94 @@ import 'package:flutter_gen/gen_l10n/l10n_en.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../app_config.dart';
 import '../components/matrix.dart';
-import '../views/chat.dart';
-import 'app_route.dart';
+import '../config/setting_keys.dart';
 import 'famedlysdk_store.dart';
 import 'matrix_locals.dart';
+import 'platform_infos.dart';
 
 abstract class FirebaseController {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   static final FlutterLocalNotificationsPlugin
       _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   static BuildContext context;
-  static const String CHANNEL_ID = 'message';
-  static const String CHANNEL_NAME = 'FurryChat push channel';
-  static const String CHANNEL_DESCRIPTION = 'Push notifications for FurryChat';
-  static const String APP_ID = 'dev.inex.furrychat';
-  static const String GATEWAY_URL = 'https://push-gateway.inex.dev:443/';
-  static const String PUSHER_FORMAT = 'event_id_only';
+  static MatrixState matrix;
 
   static Future<void> setupFirebase(
       MatrixState matrix, String clientName) async {
+    FirebaseController.matrix = matrix;
+    if (!PlatformInfos.isMobile) return;
     final client = matrix.client;
     if (Platform.isIOS) iOS_Permission();
 
     String token;
     try {
       token = await _firebaseMessaging.getToken();
-    } catch (_) {
-      token = null;
-    }
-    if (token?.isEmpty ?? true) {
-      final storeItem =
-          await matrix.store.getItem('chat.fluffy.show_no_google');
+      if (token?.isEmpty ?? true) {
+        throw '_firebaseMessaging.getToken() has not thrown an exception but returned no token';
+      }
+    } catch (e, s) {
+      Logs().w('Unable to get firebase token', e, s);
+      final storeItem = await matrix.store.getItem(SettingKeys.showNoGoogle);
       final configOptionMissing = storeItem == null || storeItem.isEmpty;
       if (configOptionMissing || (!configOptionMissing && storeItem == '1')) {
-        BotToast.showText(
-          text: L10n.of(context).noGoogleServicesWarning,
+        await FlushbarHelper.createError(
+          message: L10n.of(context).noGoogleServicesWarning,
           duration: Duration(seconds: 15),
-        );
+        ).show(context);
         if (configOptionMissing) {
-          await matrix.store.setItem('chat.fluffy.show_no_google', '0');
+          await matrix.store.setItem(SettingKeys.showNoGoogle, '0');
         }
       }
       return;
     }
     final pushers = await client.requestPushers().catchError((e) {
-      debugPrint('[Push] Unable to request pushers: ${e.toString()}');
-      return [];
+      Logs().w('[Push] Unable to request pushers', e);
+      return <Pusher>[];
     });
     final currentPushers = pushers.where((pusher) => pusher.pushkey == token);
     if (currentPushers.length == 1 &&
         currentPushers.first.kind == 'http' &&
-        currentPushers.first.appId == APP_ID &&
+        currentPushers.first.appId == AppConfig.pushNotificationsAppId &&
         currentPushers.first.appDisplayName == clientName &&
         currentPushers.first.deviceDisplayName == client.deviceName &&
         currentPushers.first.lang == 'en' &&
-        currentPushers.first.data.url.toString() == GATEWAY_URL &&
-        currentPushers.first.data.format == PUSHER_FORMAT) {
-      debugPrint('[Push] Pusher already set');
+        currentPushers.first.data.url.toString() ==
+            AppConfig.pushNotificationsGatewayUrl &&
+        currentPushers.first.data.format ==
+            AppConfig.pushNotificationsPusherFormat) {
+      Logs().i('[Push] Pusher already set');
     } else {
       if (currentPushers.isNotEmpty) {
         for (final currentPusher in currentPushers) {
           currentPusher.pushkey = token;
-          currentPusher.kind = 'null';
+          currentPusher.kind = null;
           await client.setPusher(
             currentPusher,
             append: true,
           );
-          debugPrint('[Push] Remove legacy pusher for this device');
+          Logs().i('[Push] Remove legacy pusher for this device');
         }
       }
       await client
           .setPusher(
         Pusher(
           token,
-          APP_ID,
+          AppConfig.pushNotificationsAppId,
           clientName,
           client.deviceName,
           'en',
           PusherData(
-            url: Uri.parse(GATEWAY_URL),
-            format: PUSHER_FORMAT,
+            url: Uri.parse(AppConfig.pushNotificationsGatewayUrl),
+            format: AppConfig.pushNotificationsPusherFormat,
           ),
           kind: 'http',
         ),
         append: false,
       )
-          .catchError((e) {
-        debugPrint('[Push] Unable to set pushers: ${e.toString()}');
+          .catchError((e, s) {
+        Logs().e('[Push] Unable to set pushers', e, s);
         return [];
       });
     }
@@ -112,15 +112,12 @@ abstract class FirebaseController {
           roomId = (message['data'] ?? message)['room_id'];
         }
         if (roomId?.isEmpty ?? true) throw ('Bad roomId');
-        await Navigator.of(context).pushAndRemoveUntil(
-            AppRoute.defaultRoute(
-              context,
-              ChatView(roomId),
-            ),
-            (r) => r.isFirst);
+        await matrix.widget.apl.currentState
+            .pushNamedAndRemoveUntilIsFirst('/rooms/${roomId}');
       } catch (_) {
-        BotToast.showText(text: 'Failed to open chat...');
-        debugPrint(_);
+        await FlushbarHelper.createError(message: 'Failed to open chat...')
+            .show(context);
+        rethrow;
       }
     };
 
@@ -142,7 +139,7 @@ abstract class FirebaseController {
       onResume: goToRoom,
       onLaunch: goToRoom,
     );
-    debugPrint('[Push] Firebase initialized');
+    Logs().i('[Push] Firebase initialized');
     return;
   }
 
@@ -158,11 +155,11 @@ abstract class FirebaseController {
         await _flutterLocalNotificationsPlugin.cancelAll();
         return null;
       }
-      if (context != null && Matrix.of(context).activeRoomId == roomId) {
-        debugPrint('[Push] New clearing push');
+      if (context != null && matrix.activeRoomId == roomId) {
+        Logs().i('[Push] New clearing push');
         return null;
       }
-      debugPrint('[Push] New message received');
+      Logs().i('[Push] New message received');
       // FIXME unable to init without context currently https://github.com/flutter/flutter/issues/67092
       // Locked on EN until issue resolved
       final i18n = context == null ? L10nEn() : L10n.of(context);
@@ -171,7 +168,7 @@ abstract class FirebaseController {
       Client client;
       var tempClient = false;
       try {
-        client = Matrix.of(context).client;
+        client = matrix.client;
       } catch (_) {
         client = null;
       }
@@ -179,10 +176,8 @@ abstract class FirebaseController {
         tempClient = true;
         final platform = kIsWeb ? 'Web' : Platform.operatingSystem;
         final clientName = 'FurryChat $platform';
-        client = Client(clientName);
-        client.database = await getDatabase(client);
-        client.connect();
-        debugPrint('[Push] Use a temp client');
+        client = Client(clientName, databaseBuilder: getDatabase)..init();
+        Logs().i('[Push] Use a temp client');
         await client.onLoginStateChanged.stream
             .firstWhere((l) => l == LoginState.logged)
             .timeout(
@@ -193,12 +188,12 @@ abstract class FirebaseController {
       // Get the room
       var room = client.getRoomById(roomId);
       if (room == null) {
-        debugPrint('[Push] Wait for the room');
+        Logs().i('[Push] Wait for the room');
         await client.onRoomUpdate.stream
             .where((u) => u.id == roomId)
             .first
             .timeout(Duration(seconds: 5));
-        debugPrint('[Push] Room found');
+        Logs().i('[Push] Room found');
         room = client.getRoomById(roomId);
         if (room == null) return null;
       }
@@ -206,12 +201,12 @@ abstract class FirebaseController {
       // Get the event
       var event = await client.database.getEventById(client.id, eventId, room);
       if (event == null) {
-        debugPrint('[Push] Wait for the event');
+        Logs().i('[Push] Wait for the event');
         final eventUpdate = await client.onEvent.stream
             .where((u) => u.content['event_id'] == eventId)
             .first
             .timeout(Duration(seconds: 5));
-        debugPrint('[Push] Event found');
+        Logs().i('[Push] Event found');
         event = Event.fromJson(eventUpdate.content, room);
         if (room == null) return null;
       }
@@ -251,7 +246,9 @@ abstract class FirebaseController {
 
       // Show notification
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          CHANNEL_ID, CHANNEL_NAME, CHANNEL_DESCRIPTION,
+          AppConfig.pushNotificationsChannelId,
+          AppConfig.pushNotificationsChannelName,
+          AppConfig.pushNotificationsChannelDescription,
           styleInformation: MessagingStyleInformation(
             person,
             conversationTitle: title,
@@ -281,11 +278,10 @@ abstract class FirebaseController {
       if (tempClient) {
         await client.dispose();
         client = null;
-        debugPrint('[Push] Temp client disposed');
+        Logs().i('[Push] Temp client disposed');
       }
-    } catch (exception) {
-      debugPrint('[Push] Error while processing notification: ' +
-          exception.toString());
+    } catch (e, s) {
+      Logs().e('[Push] Error while processing notification', e, s);
       await _showDefaultNotification(message);
     }
     return null;
@@ -324,8 +320,11 @@ abstract class FirebaseController {
 
       // Display notification
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-          CHANNEL_ID, CHANNEL_NAME, CHANNEL_DESCRIPTION,
-          importance: Importance.max, priority: Priority.high);
+          AppConfig.pushNotificationsChannelId,
+          AppConfig.pushNotificationsChannelName,
+          AppConfig.pushNotificationsChannelDescription,
+          importance: Importance.max,
+          priority: Priority.high);
       var iOSPlatformChannelSpecifics = IOSNotificationDetails();
       var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
@@ -335,9 +334,8 @@ abstract class FirebaseController {
       await flutterLocalNotificationsPlugin.show(
           1, title, l10n.openAppToReadMessages, platformChannelSpecifics,
           payload: roomID);
-    } catch (exception) {
-      debugPrint('[Push] Error while processing background notification: ' +
-          exception.toString());
+    } catch (e, s) {
+      Logs().e('[Push] Error while processing background notification', e, s);
     }
     return Future<void>.value();
   }
@@ -368,7 +366,7 @@ abstract class FirebaseController {
         IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings settings) {
-      debugPrint('Settings registered: $settings');
+      Logs().i('Settings registered: $settings');
     });
   }
 }

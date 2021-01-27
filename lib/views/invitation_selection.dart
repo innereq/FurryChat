@@ -1,20 +1,19 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:famedlysdk/matrix_api.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
-import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
-import '../components/dialogs/simple_dialogs.dart';
+import '../components/default_app_bar_search_field.dart';
 import '../components/matrix.dart';
-import 'chat_list.dart';
+import '../utils/localized_exception_extension.dart';
 
 class InvitationSelection extends StatefulWidget {
-  final Room room;
-  const InvitationSelection(this.room, {Key key}) : super(key: key);
+  final String roomId;
+  const InvitationSelection(this.roomId, {Key key}) : super(key: key);
 
   @override
   _InvitationSelectionState createState() => _InvitationSelectionState();
@@ -26,11 +25,12 @@ class _InvitationSelectionState extends State<InvitationSelection> {
   bool loading = false;
   List<Profile> foundProfiles = [];
   Timer coolDown;
+  Room room;
 
   Future<List<User>> getContacts(BuildContext context) async {
     var client2 = Matrix.of(context).client;
     final client = client2;
-    var participants = await widget.room.requestParticipants();
+    var participants = await room.requestParticipants();
     participants.removeWhere(
       (u) => ![Membership.join, Membership.invite].contains(u.membership),
     );
@@ -56,11 +56,14 @@ class _InvitationSelectionState extends State<InvitationSelection> {
   }
 
   void inviteAction(BuildContext context, String id) async {
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      widget.room.invite(id),
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => room.invite(id),
     );
-    if (success != false) {
-      BotToast.showText(text: L10n.of(context).contactHasBeenInvitedToTheGroup);
+    if (success.error == null) {
+      await FlushbarHelper.createSuccess(
+              message: L10n.of(context).contactHasBeenInvitedToTheGroup)
+          .show(context);
     }
   }
 
@@ -75,30 +78,32 @@ class _InvitationSelectionState extends State<InvitationSelection> {
   void searchUser(BuildContext context, String text) async {
     coolDown?.cancel();
     if (text.isEmpty) {
-      setState(() {
-        foundProfiles = [];
-      });
+      setState(() => foundProfiles = []);
     }
     currentSearchTerm = text;
     if (currentSearchTerm.isEmpty) return;
     if (loading) return;
     setState(() => loading = true);
     final matrix = Matrix.of(context);
-    final response = await SimpleDialogs(context).tryRequestWithErrorToast(
-      matrix.client.searchUser(text, limit: 10),
-    );
-    setState(() => loading = false);
-    if (response == false || (response?.results == null)) return;
+    UserSearchResult response;
+    try {
+      response = await matrix.client.searchUser(text, limit: 10);
+    } catch (e) {
+      FlushbarHelper.createError(
+          message: (e as Object).toLocalizedString(context));
+      return;
+    } finally {
+      setState(() => loading = false);
+    }
     setState(() {
       foundProfiles = List<Profile>.from(response.results);
-      if ('@$text'.isValidMatrixId &&
-          foundProfiles.indexWhere((profile) => '@$text' == profile.userId) ==
-              -1) {
+      if (text.isValidMatrixId &&
+          foundProfiles.indexWhere((profile) => text == profile.userId) == -1) {
         setState(() => foundProfiles = [
-              Profile.fromJson({'user_id': '@$text'}),
+              Profile.fromJson({'user_id': text}),
             ]);
       }
-      final participants = widget.room
+      final participants = room
           .getParticipants()
           .where((user) =>
               [Membership.join, Membership.invite].contains(user.membership))
@@ -110,84 +115,58 @@ class _InvitationSelectionState extends State<InvitationSelection> {
 
   @override
   Widget build(BuildContext context) {
-    final groupName = widget.room.name?.isEmpty ?? false
-        ? L10n.of(context).group
-        : widget.room.name;
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(activeChat: widget.room.id),
-      secondScaffold: Scaffold(
-          appBar: AppBar(
-            title: Text(L10n.of(context).inviteContact),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(92),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: controller,
-                  autofocus: true,
-                  autocorrect: false,
-                  textInputAction: TextInputAction.search,
-                  onChanged: (String text) =>
-                      searchUserWithCoolDown(context, text),
-                  onSubmitted: (String text) => searchUser(context, text),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    prefixText: '@',
-                    hintText: L10n.of(context).username,
-                    labelText: L10n.of(context).inviteContactToGroup(groupName),
-                    suffixIcon: loading
-                        ? Container(
-                            padding: const EdgeInsets.all(8.0),
-                            width: 12,
-                            height: 12,
-                            child: CircularProgressIndicator(),
-                          )
-                        : Icon(Icons.search),
-                  ),
+    room ??= Matrix.of(context).client.getRoomById(widget.roomId);
+    final groupName =
+        room.name?.isEmpty ?? false ? L10n.of(context).group : room.name;
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        titleSpacing: 0,
+        title: DefaultAppBarSearchField(
+          autofocus: true,
+          hintText: L10n.of(context).inviteContactToGroup(groupName),
+          onChanged: (String text) => searchUserWithCoolDown(context, text),
+        ),
+      ),
+      body: foundProfiles.isNotEmpty
+          ? ListView.builder(
+              itemCount: foundProfiles.length,
+              itemBuilder: (BuildContext context, int i) => ListTile(
+                leading: Avatar(
+                  foundProfiles[i].avatarUrl,
+                  foundProfiles[i].displayname ?? foundProfiles[i].userId,
                 ),
+                title: Text(
+                  foundProfiles[i].displayname ??
+                      foundProfiles[i].userId.localpart,
+                ),
+                subtitle: Text(foundProfiles[i].userId),
+                onTap: () => inviteAction(context, foundProfiles[i].userId),
               ),
-            ),
-          ),
-          body: foundProfiles.isNotEmpty
-              ? ListView.builder(
-                  itemCount: foundProfiles.length,
+            )
+          : FutureBuilder<List<User>>(
+              future: getContacts(context),
+              builder: (BuildContext context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                var contacts = snapshot.data;
+                return ListView.builder(
+                  itemCount: contacts.length,
                   itemBuilder: (BuildContext context, int i) => ListTile(
                     leading: Avatar(
-                      foundProfiles[i].avatarUrl,
-                      foundProfiles[i].displayname ?? foundProfiles[i].userId,
+                      contacts[i].avatarUrl,
+                      contacts[i].calcDisplayname(),
                     ),
-                    title: Text(
-                      foundProfiles[i].displayname ??
-                          foundProfiles[i].userId.localpart,
-                    ),
-                    subtitle: Text(foundProfiles[i].userId),
-                    onTap: () => inviteAction(context, foundProfiles[i].userId),
+                    title: Text(contacts[i].calcDisplayname()),
+                    subtitle: Text(contacts[i].id),
+                    onTap: () => inviteAction(context, contacts[i].id),
                   ),
-                )
-              : FutureBuilder<List<User>>(
-                  future: getContacts(context),
-                  builder: (BuildContext context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    var contacts = snapshot.data;
-                    return ListView.builder(
-                      itemCount: contacts.length,
-                      itemBuilder: (BuildContext context, int i) => ListTile(
-                        leading: Avatar(
-                          contacts[i].avatarUrl,
-                          contacts[i].calcDisplayname(),
-                        ),
-                        title: Text(contacts[i].calcDisplayname()),
-                        subtitle: Text(contacts[i].id),
-                        onTap: () => inviteAction(context, contacts[i].id),
-                      ),
-                    );
-                  },
-                )),
+                );
+              },
+            ),
     );
   }
 }

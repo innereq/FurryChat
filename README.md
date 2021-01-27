@@ -64,14 +64,27 @@ sudo apt install ninja-build
 
 * Enable web support in Flutter: https://flutter.dev/docs/get-started/web
 
-* Build with: `flutter build web --release`
+* Optionally edit the file `lib/app_config.dart`. If you e.g. only want to change the default homeserver, then only modify the `defaultHomeserver` key.
+
+* Build with:
+```bash
+./scripts/prepare-web.sh
+flutter clean
+flutter pub get
+flutter build web --release --verbose
+```
+
+* Optionally configure by serving a `config.json` at the same path as fluffychat.
+  An example can be found at `config.sample.json`. None of these
+  values have to exist, the ones stated here are the default ones. If you e.g. only want
+  to change the default homeserver, then only modify the `default_homeserver` key.
 
 ### Desktop (Linux, Windows, macOS)
 
 * Enable Desktop support in Flutter: https://flutter.dev/desktop
 
-* Build with one of these: 
-```
+* Build with one of these:
+```bash
 flutter build linux --release
 flutter build windows --release
 flutter build macos --release
@@ -83,7 +96,8 @@ You can use Weblate to translate the app to your language:
 
 https://hosted.weblate.org/projects/fluffychat/
 
-
+If you want to get your translated strings approved, please ask in our
+<a href="https://matrix.to/#/#fluffychat:matrix.org" target="new">support room</a>!
 
 1. Replace the non-translated string in the codebase:
 ```
@@ -139,3 +153,5 @@ Example B:
 * Thanks to Mark for all his support and the chat background.
 
 * Also thanks to all translators and testers! With your help, fluffychat is now available in more than 12 languages.
+
+* <a href="https://github.com/googlefonts/noto-emoji/">Noto Emoji Font</a> for the awesome emojis.

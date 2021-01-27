@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:bot_toast/bot_toast.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flushbar/flushbar_helper.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
-import '../utils/app_route.dart';
-import '../views/chat_encryption_settings.dart';
-import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
 
 class EncryptionButton extends StatefulWidget {
@@ -22,30 +22,31 @@ class _EncryptionButtonState extends State<EncryptionButton> {
 
   void _enableEncryptionAction() async {
     if (widget.room.encrypted) {
-      BotToast.showText(text: L10n.of(context).warningEncryptionInBeta);
-      await Navigator.of(context).push(
-        AppRoute.defaultRoute(
-          context,
-          ChatEncryptionSettingsView(widget.room.id),
-        ),
-      );
+      await AdaptivePageLayout.of(context)
+          .pushNamed('/rooms/${widget.room.id}/encryption');
       return;
     }
     if (!widget.room.client.encryptionEnabled) {
-      BotToast.showText(text: L10n.of(context).needPantalaimonWarning);
+      await FlushbarHelper.createInformation(
+              message: L10n.of(context).needPantalaimonWarning)
+          .show(context);
       return;
     }
-    if (await SimpleDialogs(context).askConfirmation(
-          titleText: L10n.of(context).enableEncryptionWarning,
-          contentText: widget.room.client.encryptionEnabled
+    if (await showOkCancelAlertDialog(
+          context: context,
+          title: L10n.of(context).enableEncryptionWarning,
+          message: widget.room.client.encryptionEnabled
               ? L10n.of(context).warningEncryptionInBeta
               : L10n.of(context).needPantalaimonWarning,
-          confirmText: L10n.of(context).yes,
+          okLabel: L10n.of(context).yes,
         ) ==
-        true) {
-      await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        widget.room.enableEncryption(),
+        OkCancelResult.ok) {
+      await showFutureLoadingDialog(
+        context: context,
+        future: () => widget.room.enableEncryption(),
       );
+      // we want to enable the lock icon
+      setState(() => null);
     }
   }
 
@@ -57,32 +58,49 @@ class _EncryptionButtonState extends State<EncryptionButton> {
 
   @override
   Widget build(BuildContext context) {
-    _onSyncSub ??= Matrix.of(context)
-        .client
-        .onSync
-        .stream
-        .listen((s) => setState(() => null));
-    return FutureBuilder<List<DeviceKeys>>(
-        future: widget.room.encrypted ? widget.room.getUserDeviceKeys() : null,
+    if (widget.room.encrypted) {
+      _onSyncSub ??= Matrix.of(context)
+          .client
+          .onSync
+          .stream
+          .where((s) => s.deviceLists != null)
+          .listen((s) => setState(() => null));
+    }
+    return FutureBuilder<List<User>>(
+        future:
+            widget.room.encrypted ? widget.room.requestParticipants() : null,
         builder: (BuildContext context, snapshot) {
           Color color;
           if (widget.room.encrypted && snapshot.hasData) {
-            var data = snapshot.data;
-            final deviceKeysList = data;
-            color = Colors.orange;
-            if (deviceKeysList.indexWhere((DeviceKeys deviceKeys) =>
-                    deviceKeys.verified == false &&
-                    deviceKeys.blocked == false) ==
-                -1) {
-              color = Colors.black.withGreen(220).withOpacity(0.75);
+            final users = snapshot.data;
+            users.removeWhere((u) =>
+                !{Membership.invite, Membership.join}.contains(u.membership) ||
+                !widget.room.client.userDeviceKeys.containsKey(u.id));
+            var allUsersValid = true;
+            var oneUserInvalid = false;
+            for (final u in users) {
+              final status = widget.room.client.userDeviceKeys[u.id].verified;
+              if (status != UserVerifiedStatus.verified) {
+                allUsersValid = false;
+              }
+              if (status == UserVerifiedStatus.unknownDevice) {
+                oneUserInvalid = true;
+              }
             }
+            color = oneUserInvalid
+                ? Colors.red
+                : (allUsersValid ? Colors.green : Colors.orange);
           } else if (!widget.room.encrypted &&
               widget.room.joinRules != JoinRules.public) {
             color = null;
           }
           return IconButton(
-            icon: Icon(widget.room.encrypted ? Icons.lock : Icons.lock_open,
-                size: 20, color: color),
+            icon: Icon(
+                widget.room.encrypted
+                    ? Icons.lock_outlined
+                    : Icons.lock_open_outlined,
+                size: 20,
+                color: color),
             onPressed: _enableEncryptionAction,
           );
         });

@@ -1,36 +1,21 @@
 import 'dart:async';
 
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:famedlysdk/matrix_api.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/adaptive_page_layout.dart';
 import '../components/avatar.dart';
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
 import '../utils/fluffy_share.dart';
-import 'chat.dart';
-import 'chat_list.dart';
 
-class NewPrivateChatView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
-      secondScaffold: _NewPrivateChat(),
-    );
-  }
-}
-
-class _NewPrivateChat extends StatefulWidget {
+class NewPrivateChat extends StatefulWidget {
   @override
   _NewPrivateChatState createState() => _NewPrivateChatState();
 }
 
-class _NewPrivateChatState extends State<_NewPrivateChat> {
+class _NewPrivateChatState extends State<NewPrivateChat> {
   TextEditingController controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
@@ -46,35 +31,33 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
       -1;
 
   void submitAction(BuildContext context) async {
+    controller.text = controller.text.replaceAll('@', '').trim();
     if (controller.text.isEmpty) return;
     if (!_formKey.currentState.validate()) return;
     final matrix = Matrix.of(context);
 
-    if ('@' + controller.text.trim() == matrix.client.userID) return;
+    if ('@' + controller.text == matrix.client.userID) return;
 
     final user = User(
-      '@' + controller.text.trim(),
+      '@' + controller.text,
       room: Room(id: '', client: matrix.client),
     );
-    final String roomID = await SimpleDialogs(context)
-        .tryRequestWithLoadingDialog(user.startDirectChat());
-    Navigator.of(context).pop();
+    final roomID = await showFutureLoadingDialog(
+      context: context,
+      future: () => user.startDirectChat(),
+    );
 
-    if (roomID != null) {
-      await Navigator.of(context).push(
-        AppRoute.defaultRoute(
-          context,
-          ChatView(roomID),
-        ),
-      );
+    if (roomID.error == null) {
+      await AdaptivePageLayout.of(context)
+          .popAndPushNamed('/rooms/${roomID.result}');
     }
   }
 
-  void searchUserWithCoolDown(BuildContext context, String text) async {
+  void searchUserWithCoolDown(BuildContext context) async {
     coolDown?.cancel();
     coolDown = Timer(
-      Duration(seconds: 1),
-      () => searchUser(context, text),
+      Duration(milliseconds: 500),
+      () => searchUser(context, controller.text),
     );
   }
 
@@ -89,11 +72,12 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
     if (loading) return;
     setState(() => loading = true);
     final matrix = Matrix.of(context);
-    final response = await SimpleDialogs(context).tryRequestWithErrorToast(
-      matrix.client.searchUser(text, limit: 10),
-    );
+    UserSearchResult response;
+    try {
+      response = await matrix.client.searchUser(text, limit: 10);
+    } catch (_) {}
     setState(() => loading = false);
-    if (response == false || (response?.results?.isEmpty ?? true)) return;
+    if (response?.results?.isEmpty ?? true) return;
     setState(() {
       foundProfiles = List<Profile>.from(response.results);
     });
@@ -103,21 +87,21 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).newPrivateChat),
         elevation: 0,
       ),
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: Form(
               key: _formKey,
               child: TextFormField(
                 controller: controller,
                 autofocus: true,
                 autocorrect: false,
-                onChanged: (String text) =>
-                    searchUserWithCoolDown(context, text),
+                onChanged: (String text) => searchUserWithCoolDown(context),
                 textInputAction: TextInputAction.go,
                 onFieldSubmitted: (s) => submitAction(context),
                 validator: (value) {
@@ -138,7 +122,6 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
                   return null;
                 },
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
                   labelText: L10n.of(context).enterAUsername,
                   prefixIcon: loading
                       ? Container(
@@ -156,7 +139,7 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
                                 size: 12,
                               ),
                             )
-                          : Icon(Icons.account_circle),
+                          : Icon(Icons.account_circle_outlined),
                   prefixText: '@',
                   hintText: '${L10n.of(context).username.toLowerCase()}',
                 ),
@@ -200,10 +183,7 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
             ),
           if (foundProfiles.isEmpty || correctMxId)
             ListTile(
-              trailing: Icon(
-                Icons.share,
-                size: 16,
-              ),
+              trailing: Icon(Icons.share_outlined),
               onTap: () => FluffyShare.share(
                   L10n.of(context).inviteText(Matrix.of(context).client.userID,
                       'https://matrix.to/#/${Matrix.of(context).client.userID}'),
@@ -231,9 +211,7 @@ class _NewPrivateChatState extends State<_NewPrivateChat> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => submitAction(context),
-        child: Icon(Icons.arrow_forward),
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.arrow_forward_outlined),
       ),
     );
   }

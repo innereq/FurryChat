@@ -1,14 +1,12 @@
 import 'dart:math';
 
-import 'package:bot_toast/bot_toast.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
-import 'auth_web_view.dart';
-import 'chat_list.dart';
 
 class SignUpPassword extends StatefulWidget {
   final MatrixFile avatar;
@@ -24,10 +22,11 @@ class SignUpPassword extends StatefulWidget {
 class _SignUpPasswordState extends State<SignUpPassword> {
   final TextEditingController passwordController = TextEditingController();
   String passwordError;
+  String _lastAuthWebViewStage;
   bool loading = false;
   bool showPassword = true;
 
-  void _signUpAction(BuildContext context, {Map<String, dynamic> auth}) async {
+  void _signUpAction(BuildContext context, {AuthenticationData auth}) async {
     var matrix = Matrix.of(context);
     if (passwordController.text.isEmpty) {
       setState(() => passwordError = L10n.of(context).pleaseEnterYourPassword);
@@ -45,7 +44,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
       await matrix.client.register(
         username: widget.username,
         password: passwordController.text,
-        initialDeviceDisplayName: matrix.widget.clientName,
+        initialDeviceDisplayName: matrix.clientName,
         auth: auth,
       );
       await waitForLogin;
@@ -62,21 +61,26 @@ class _SignUpPasswordState extends State<SignUpPassword> {
                 true);
 
         if (currentStage == 'm.login.dummy') {
-          _signUpAction(context, auth: {
-            'type': currentStage,
-            'session': exception.session,
-          });
+          _signUpAction(
+            context,
+            auth: AuthenticationData(
+              type: currentStage,
+              session: exception.session,
+            ),
+          );
         } else {
-          await Navigator.of(context).push(
-            AppRoute.defaultRoute(
+          if (_lastAuthWebViewStage == currentStage) {
+            _lastAuthWebViewStage = null;
+            setState(
+                () => passwordError = L10n.of(context).oopsSomethingWentWrong);
+            return setState(() => loading = false);
+          }
+          _lastAuthWebViewStage = currentStage;
+          await AdaptivePageLayout.of(context).pushNamed(
+            '/authwebview/$currentStage/${exception.session}',
+            arguments: () => _signUpAction(
               context,
-              AuthWebView(
-                currentStage,
-                exception.session,
-                () => _signUpAction(context, auth: {
-                  'session': exception.session,
-                }),
-              ),
+              auth: AuthenticationData(session: exception.session),
             ),
           );
           return;
@@ -86,7 +90,6 @@ class _SignUpPasswordState extends State<SignUpPassword> {
         return setState(() => loading = false);
       }
     } catch (exception) {
-      debugPrint(exception);
       setState(() => passwordError = exception.toString());
       return setState(() => loading = false);
     }
@@ -96,15 +99,21 @@ class _SignUpPasswordState extends State<SignUpPassword> {
       await matrix.client
           .setDisplayname(matrix.client.userID, widget.displayname);
     } catch (exception) {
-      BotToast.showText(text: L10n.of(context).couldNotSetDisplayname);
+      await FlushbarHelper.createError(
+              message: L10n.of(context).couldNotSetDisplayname)
+          .show(context);
     }
     if (widget.avatar != null) {
       try {
         await matrix.client.setAvatar(widget.avatar);
       } catch (exception) {
-        BotToast.showText(text: L10n.of(context).couldNotSetAvatar);
+        await FlushbarHelper.createError(
+                message: L10n.of(context).couldNotSetAvatar)
+            .show(context);
       }
     }
+    // TODO: Restore Jitsi well-known
+    /*
     if (widget.wellknown != null) {
       if (widget.wellknown.jitsiHomeserver?.baseUrl != null) {
         if (!widget.wellknown.jitsiHomeserver.baseUrl.startsWith('https://')) {
@@ -116,10 +125,9 @@ class _SignUpPasswordState extends State<SignUpPassword> {
         Matrix.of(context).jitsiInstance =
             'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/';
       }
-    }
-    await Navigator.of(context).pushAndRemoveUntil(
-        AppRoute.defaultRoute(context, ChatListView()), (r) => false);
-    setState(() => loading = false);
+    }*/
+
+    if (mounted) setState(() => loading = false);
   }
 
   @override
@@ -127,7 +135,7 @@ class _SignUpPasswordState extends State<SignUpPassword> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: loading ? Container() : null,
+        leading: loading ? Container() : BackButton(),
         title: Text(
           L10n.of(context).chooseAStrongPassword,
         ),
@@ -149,8 +157,9 @@ class _SignUpPasswordState extends State<SignUpPassword> {
                 hintText: '****',
                 errorText: passwordError,
                 suffixIcon: IconButton(
-                  icon: Icon(
-                      showPassword ? Icons.visibility_off : Icons.visibility),
+                  icon: Icon(showPassword
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined),
                   onPressed: () => setState(() => showPassword = !showPassword),
                 ),
                 labelText: L10n.of(context).password,
@@ -158,20 +167,20 @@ class _SignUpPasswordState extends State<SignUpPassword> {
               ),
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 12),
           Hero(
             tag: 'loginButton',
             child: Container(
-              height: 50,
+              height: 56,
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: RaisedButton(
                 elevation: 7,
                 color: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: loading
-                    ? CircularProgressIndicator()
+                    ? LinearProgressIndicator()
                     : Text(
                         L10n.of(context).createAccountNow.toUpperCase(),
                         style: TextStyle(color: Colors.white, fontSize: 16),

@@ -1,32 +1,14 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:file_picker_cross/file_picker_cross.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../components/adaptive_page_layout.dart';
-import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
 import '../../utils/platform_infos.dart';
-import '../settings.dart';
-
-class EmotesSettingsView extends StatelessWidget {
-  final Room room;
-  final String stateKey;
-
-  EmotesSettingsView({this.room, this.stateKey});
-
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.emotes),
-      secondScaffold: EmotesSettings(room: room, stateKey: stateKey),
-    );
-  }
-}
 
 class EmotesSettings extends StatefulWidget {
   final Room room;
@@ -56,7 +38,6 @@ class _EmotesSettingsState extends State<EmotesSettings> {
     if (readonly) {
       return;
     }
-    debugPrint('Saving....');
     final client = Matrix.of(context).client;
     // be sure to preserve any data not in "short"
     Map<String, dynamic> content;
@@ -69,7 +50,6 @@ class _EmotesSettingsState extends State<EmotesSettings> {
       content = client.accountData['im.ponies.user_emotes']?.content ??
           <String, dynamic>{};
     }
-    debugPrint(content.toString());
     if (!(content['emoticons'] is Map)) {
       content['emoticons'] = <String, dynamic>{};
     }
@@ -92,15 +72,17 @@ class _EmotesSettingsState extends State<EmotesSettings> {
     }
     // remove the old "short" key
     content.remove('short');
-    debugPrint(content.toString());
     if (widget.room != null) {
-      await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        client.sendState(widget.room.id, 'im.ponies.room_emotes', content,
-            widget.stateKey ?? ''),
+      await showFutureLoadingDialog(
+        context: context,
+        future: () => client.sendState(widget.room.id, 'im.ponies.room_emotes',
+            content, widget.stateKey ?? ''),
       );
     } else {
-      await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        client.setAccountData(client.userID, 'im.ponies.user_emotes', content),
+      await showFutureLoadingDialog(
+        context: context,
+        future: () => client.setAccountData(
+            client.userID, 'im.ponies.user_emotes', content),
       );
     }
   }
@@ -128,8 +110,10 @@ class _EmotesSettingsState extends State<EmotesSettings> {
       content['rooms'][widget.room.id].remove(widget.stateKey ?? '');
     }
     // and save
-    await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      client.setAccountData(client.userID, 'im.ponies.emote_rooms', content),
+    await showFutureLoadingDialog(
+      context: context,
+      future: () => client.setAccountData(
+          client.userID, 'im.ponies.emote_rooms', content),
     );
   }
 
@@ -182,18 +166,18 @@ class _EmotesSettingsState extends State<EmotesSettings> {
     }
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).emoteSettings),
       ),
       floatingActionButton: showSave
           ? FloatingActionButton(
-              child: Icon(Icons.save, color: Colors.white),
+              child: Icon(Icons.save_outlined, color: Colors.white),
               onPressed: () async {
                 await _save(context);
                 setState(() {
                   showSave = false;
                 });
               },
-              backgroundColor: Theme.of(context).primaryColor,
             )
           : null,
       body: StreamBuilder(
@@ -236,7 +220,7 @@ class _EmotesSettingsState extends State<EmotesSettings> {
                       title: _EmoteImagePicker(newMxcController),
                       trailing: InkWell(
                         child: Icon(
-                          Icons.add,
+                          Icons.add_outlined,
                           color: Colors.green,
                           size: 32.0,
                         ),
@@ -245,9 +229,9 @@ class _EmotesSettingsState extends State<EmotesSettings> {
                               newEmoteController.text.isEmpty ||
                               newMxcController.text == null ||
                               newMxcController.text.isEmpty) {
-                            await SimpleDialogs(context).inform(
-                                contentText:
-                                    L10n.of(context).emoteWarnNeedToPick);
+                            await showOkAlertDialog(
+                                context: context,
+                                message: L10n.of(context).emoteWarnNeedToPick);
                             return;
                           }
                           final emoteCode = ':${newEmoteController.text}:';
@@ -255,13 +239,15 @@ class _EmotesSettingsState extends State<EmotesSettings> {
                           if (emotes.indexWhere((e) =>
                                   e.emote == emoteCode && e.mxc != mxc) !=
                               -1) {
-                            await SimpleDialogs(context).inform(
-                                contentText: L10n.of(context).emoteExists);
+                            await showOkAlertDialog(
+                                context: context,
+                                message: L10n.of(context).emoteExists);
                             return;
                           }
                           if (!RegExp(r'^:[-\w]+:$').hasMatch(emoteCode)) {
-                            await SimpleDialogs(context).inform(
-                                contentText: L10n.of(context).emoteInvalid);
+                            await showOkAlertDialog(
+                                context: context,
+                                message: L10n.of(context).emoteInvalid);
                             return;
                           }
                           emotes.add(_EmoteEntry(emote: emoteCode, mxc: mxc));
@@ -355,16 +341,18 @@ class _EmotesSettingsState extends State<EmotesSettings> {
                                             e.mxc != emote.mxc) !=
                                         -1) {
                                       controller.text = emote.emoteClean;
-                                      SimpleDialogs(context).inform(
-                                          contentText:
+                                      showOkAlertDialog(
+                                          context: context,
+                                          message:
                                               L10n.of(context).emoteExists);
                                       return;
                                     }
                                     if (!RegExp(r'^:[-\w]+:$')
                                         .hasMatch(emoteCode)) {
                                       controller.text = emote.emoteClean;
-                                      SimpleDialogs(context).inform(
-                                          contentText:
+                                      showOkAlertDialog(
+                                          context: context,
+                                          message:
                                               L10n.of(context).emoteInvalid);
                                       return;
                                     }
@@ -380,7 +368,7 @@ class _EmotesSettingsState extends State<EmotesSettings> {
                                   ? null
                                   : InkWell(
                                       child: Icon(
-                                        Icons.delete_forever,
+                                        Icons.delete_forever_outlined,
                                         color: Colors.red,
                                         size: 32.0,
                                       ),
@@ -467,13 +455,16 @@ class _EmoteImagePickerState extends State<_EmoteImagePicker> {
               name: result.fileName,
             );
           }
-          final uploadResp =
-              await SimpleDialogs(context).tryRequestWithLoadingDialog(
-            Matrix.of(context).client.upload(file.bytes, file.name),
+          final uploadResp = await showFutureLoadingDialog(
+            context: context,
+            future: () =>
+                Matrix.of(context).client.upload(file.bytes, file.name),
           );
-          setState(() {
-            widget.controller.text = uploadResp;
-          });
+          if (uploadResp.error == null) {
+            setState(() {
+              widget.controller.text = uploadResp.result;
+            });
+          }
         },
       );
     } else {

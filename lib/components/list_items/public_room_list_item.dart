@@ -1,12 +1,10 @@
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:famedlysdk/matrix_api.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../../utils/app_route.dart';
-import '../../views/chat.dart';
 import '../avatar.dart';
-import '../dialogs/simple_dialogs.dart';
 import '../matrix.dart';
 
 class PublicRoomListItem extends StatelessWidget {
@@ -15,15 +13,13 @@ class PublicRoomListItem extends StatelessWidget {
   const PublicRoomListItem(this.publicRoomEntry, {Key key}) : super(key: key);
 
   void joinAction(BuildContext context) async {
-    final success = await SimpleDialogs(context)
-        .tryRequestWithLoadingDialog(_joinRoomAndWait(context));
-    if (success != false) {
-      await Navigator.of(context).push(
-        AppRoute.defaultRoute(
-          context,
-          ChatView(success),
-        ),
-      );
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => _joinRoomAndWait(context),
+    );
+    if (success.error == null) {
+      await AdaptivePageLayout.of(context)
+          .pushNamed('/rooms/${success.result}');
     }
   }
 

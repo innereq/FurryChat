@@ -1,40 +1,33 @@
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../../components/adaptive_page_layout.dart';
 import '../../components/avatar.dart';
-import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
-import '../settings.dart';
-
-class SettingsIgnoreListView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.account),
-      secondScaffold: SettingsIgnoreList(),
-    );
-  }
-}
 
 class SettingsIgnoreList extends StatelessWidget {
-  final controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   void _ignoreUser(BuildContext context) {
-    if (controller.text.isEmpty) return;
-    SimpleDialogs(context).tryRequestWithLoadingDialog(
-      Matrix.of(context).client.ignoreUser('@${controller.text}'),
+    if (_controller.text.isEmpty) return;
+    final userId = '@${_controller.text}';
+
+    showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context).client.ignoreUser(userId),
     );
-    controller.clear();
+    _controller.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     final client = Matrix.of(context).client;
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).ignoredUsers)),
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(L10n.of(context).ignoredUsers),
+      ),
       body: Column(
         children: [
           Padding(
@@ -43,7 +36,7 @@ class SettingsIgnoreList extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
-                  controller: controller,
+                  controller: _controller,
                   autocorrect: false,
                   textInputAction: TextInputAction.done,
                   onSubmitted: (_) => _ignoreUser(context),
@@ -53,7 +46,7 @@ class SettingsIgnoreList extends StatelessWidget {
                     prefixText: '@',
                     labelText: L10n.of(context).ignoreUsername,
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.done),
+                      icon: Icon(Icons.done_outlined),
                       onPressed: () => _ignoreUser(context),
                     ),
                   ),
@@ -85,10 +78,11 @@ class SettingsIgnoreList extends StatelessWidget {
                         title:
                             Text(s.data?.displayname ?? client.ignoredUsers[i]),
                         trailing: IconButton(
-                          icon: Icon(Icons.delete_forever),
-                          onPressed: () => SimpleDialogs(context)
-                              .tryRequestWithLoadingDialog(
-                            client.unignoreUser(client.ignoredUsers[i]),
+                          icon: Icon(Icons.delete_forever_outlined),
+                          onPressed: () => showFutureLoadingDialog(
+                            context: context,
+                            future: () =>
+                                client.unignoreUser(client.ignoredUsers[i]),
                           ),
                         ),
                       ),

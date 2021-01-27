@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
 import '../utils/firebase_controller.dart';
-import 'chat_list.dart';
 
 class Login extends StatefulWidget {
   Login({Key key, this.username, this.wellknown}) : super(key: key);
@@ -53,7 +53,7 @@ class _LoginState extends State<Login> {
       await matrix.client.login(
           user: usernameController.text,
           password: passwordController.text,
-          initialDeviceDisplayName: matrix.widget.clientName);
+          initialDeviceDisplayName: matrix.clientName);
     } on MatrixException catch (exception) {
       setState(() => passwordError = exception.errorMessage);
       return setState(() => loading = false);
@@ -61,20 +61,14 @@ class _LoginState extends State<Login> {
       setState(() => passwordError = exception.toString());
       return setState(() => loading = false);
     }
-    if (!kIsWeb) {
-      try {
-        await FirebaseController.setupFirebase(
-          matrix,
-          matrix.widget.clientName,
-        );
-      } catch (exception) {
-        await matrix.client.logout();
-        matrix.clean();
-        setState(() => passwordError = exception.toString());
-        return setState(() => loading = false);
-      }
-    }
+    await FirebaseController.setupFirebase(
+      matrix,
+      matrix.clientName,
+    );
+
     setState(() => loading = false);
+    // TODO: Restore Jitsi
+    /*
     if (newWellknown != null) {
       if (newWellknown.jitsiHomeserver?.baseUrl != null) {
         if (!newWellknown.jitsiHomeserver.baseUrl.startsWith('https://')) {
@@ -97,9 +91,8 @@ class _LoginState extends State<Login> {
         Matrix.of(context).jitsiInstance =
             'https://${Uri.parse(widget.wellknown.jitsiHomeserver.baseUrl).host}/';
       }
-    }
-    await Navigator.of(context).pushAndRemoveUntil(
-        AppRoute.defaultRoute(context, ChatListView()), (r) => false);
+    }*/
+    if (mounted) setState(() => loading = false);
   }
 
   Timer _coolDown;
@@ -122,8 +115,10 @@ class _LoginState extends State<Login> {
       final newDomain = wellKnownInformations.mHomeserver?.baseUrl;
       if ((newDomain?.isNotEmpty ?? false) &&
           newDomain != Matrix.of(context).client.homeserver.toString()) {
-        await SimpleDialogs(context).tryRequestWithErrorToast(
-            Matrix.of(context).client.checkHomeserver(newDomain));
+        await showFutureLoadingDialog(
+          context: context,
+          future: () => Matrix.of(context).client.checkHomeserver(newDomain),
+        );
         setState(() => usernameError = null);
       }
       newWellknown = wellKnownInformations;
@@ -132,6 +127,71 @@ class _LoginState extends State<Login> {
       newWellknown = null;
     }
   }
+
+  void _passwordForgotten(BuildContext context) async {
+    final input = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).enterAnEmailAddress,
+      textFields: [
+        DialogTextField(
+          hintText: L10n.of(context).enterAnEmailAddress,
+          keyboardType: TextInputType.emailAddress,
+        ),
+      ],
+    );
+    if (input == null) return;
+    final clientSecret = DateTime.now().millisecondsSinceEpoch.toString();
+    final response = await showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context).client.resetPasswordUsingEmail(
+            input.single,
+            clientSecret,
+            sendAttempt++,
+          ),
+    );
+    if (response.error != null) return;
+    final ok = await showOkAlertDialog(
+      context: context,
+      title: L10n.of(context).weSentYouAnEmail,
+      message: L10n.of(context).pleaseClickOnLink,
+      okLabel: L10n.of(context).iHaveClickedOnLink,
+    );
+    if (ok == null) return;
+    final password = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).chooseAStrongPassword,
+      textFields: [
+        DialogTextField(
+          hintText: '******',
+          obscureText: true,
+          minLines: 1,
+          maxLines: 1,
+        ),
+      ],
+    );
+    if (password == null) return;
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context).client.changePassword(
+            password.single,
+            auth: AuthenticationThreePidCreds(
+              type: AuthenticationTypes.emailIdentity,
+              threepidCreds: [
+                ThreepidCreds(
+                  sid: (response as RequestTokenResponse).sid,
+                  clientSecret: clientSecret,
+                ),
+              ],
+            ),
+          ),
+    );
+    if (success.error == null) {
+      FlushbarHelper.createSuccess(
+          message: L10n.of(context).passwordHasBeenChanged);
+    }
+  }
+
+  static int sendAttempt = 0;
 
   @override
   void initState() {
@@ -150,7 +210,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: loading ? Container() : null,
+        leading: loading ? Container() : BackButton(),
         elevation: 0,
         title: Text(
           L10n.of(context).logInTo(Matrix.of(context)
@@ -199,8 +259,9 @@ class _LoginState extends State<Login> {
                   hintText: '****',
                   errorText: passwordError,
                   suffixIcon: IconButton(
-                    icon: Icon(
-                        showPassword ? Icons.visibility_off : Icons.visibility),
+                    icon: Icon(showPassword
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined),
                     onPressed: () =>
                         setState(() => showPassword = !showPassword),
                   ),
@@ -209,26 +270,38 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 12),
             Hero(
               tag: 'loginButton',
               child: Container(
-                height: 50,
+                height: 56,
                 padding: EdgeInsets.symmetric(horizontal: 12),
                 child: RaisedButton(
                   elevation: 7,
                   color: Theme.of(context).primaryColor,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: loading
-                      ? CircularProgressIndicator()
+                      ? LinearProgressIndicator()
                       : Text(
                           L10n.of(context).login.toUpperCase(),
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                   onPressed: loading ? null : () => login(context),
                 ),
+              ),
+            ),
+            Center(
+              child: FlatButton(
+                child: Text(
+                  L10n.of(context).passwordForgotten,
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+                onPressed: () => _passwordForgotten(context),
               ),
             ),
           ],

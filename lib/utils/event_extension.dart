@@ -1,10 +1,10 @@
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
-import '../components/dialogs/simple_dialogs.dart';
 import '../views/image_view.dart';
-import 'app_route.dart';
 import 'matrix_file_extension.dart';
 
 extension LocalizedBody on Event {
@@ -12,17 +12,15 @@ extension LocalizedBody on Event {
     if (!downloadOnly &&
         [MessageTypes.Image, MessageTypes.Sticker].contains(messageType)) {
       await Navigator.of(context).push(
-        AppRoute(
-          ImageView(this),
-        ),
+        MaterialPageRoute(builder: (_) => ImageView(this)),
       );
       return;
     }
-    final MatrixFile matrixFile =
-        await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      downloadAndDecryptAttachment(),
+    final matrixFile = await showFutureLoadingDialog(
+      context: context,
+      future: () => downloadAndDecryptAttachmentCached(),
     );
-    matrixFile.open();
+    matrixFile.result?.open();
   }
 
   IconData get statusIcon {
@@ -30,27 +28,28 @@ extension LocalizedBody on Event {
       case -1:
         return Icons.error_outline;
       case 0:
-        return Icons.timer;
+        return Icons.timer_outlined;
       case 1:
-        return Icons.done;
+        return Icons.done_outlined;
       case 2:
-        return Icons.done_all;
+        return Icons.done_all_outlined;
       default:
-        return Icons.done;
+        return Icons.done_outlined;
     }
   }
+
+  bool get isAttachmentSmallEnough =>
+      infoMap['size'] is int &&
+      infoMap['size'] < room.client.database.maxFileSize;
+  bool get isThumbnailSmallEnough =>
+      thumbnailInfoMap['size'] is int &&
+      thumbnailInfoMap['size'] < room.client.database.maxFileSize;
 
   bool get showThumbnail =>
       [MessageTypes.Image, MessageTypes.Sticker].contains(messageType) &&
       (kIsWeb ||
-          (content['info'] is Map &&
-              content['info']['size'] is int &&
-              content['info']['size'] < room.client.database.maxFileSize) ||
-          (hasThumbnail &&
-              content['info']['thumbnail_info'] is Map &&
-              content['info']['thumbnail_info']['size'] is int &&
-              content['info']['thumbnail_info']['size'] <
-                  room.client.database.maxFileSize) ||
+          isAttachmentSmallEnough ||
+          isThumbnailSmallEnough ||
           (content['url'] is String));
 
   String get sizeString {
@@ -73,5 +72,37 @@ extension LocalizedBody on Event {
     } else {
       return null;
     }
+  }
+
+  static final _downloadAndDecryptFutures = <String, Future<MatrixFile>>{};
+
+  Future<bool> isAttachmentCached({bool getThumbnail = false}) async {
+    final mxcUrl = attachmentOrThumbnailMxcUrl(getThumbnail: getThumbnail);
+    // check if we have it in-memory
+    if (_downloadAndDecryptFutures.containsKey(mxcUrl)) {
+      return true;
+    }
+    // check if it is stored
+    if (await isAttachmentInLocalStore(getThumbnail: getThumbnail)) {
+      return true;
+    }
+    // check if the url is cached
+    final url = Uri.parse(mxcUrl).getDownloadLink(room.client);
+    final file = await DefaultCacheManager().getFileFromCache(url);
+    return file != null;
+  }
+
+  Future<MatrixFile> downloadAndDecryptAttachmentCached(
+      {bool getThumbnail = false}) async {
+    final mxcUrl = attachmentOrThumbnailMxcUrl(getThumbnail: getThumbnail);
+    _downloadAndDecryptFutures[mxcUrl] ??= downloadAndDecryptAttachment(
+      getThumbnail: getThumbnail,
+      downloadCallback: (String url) async {
+        final file = await DefaultCacheManager().getSingleFile(url);
+        return await file.readAsBytes();
+      },
+    );
+    final res = await _downloadAndDecryptFutures[mxcUrl];
+    return res;
   }
 }

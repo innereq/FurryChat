@@ -1,20 +1,24 @@
-import 'package:bot_toast/bot_toast.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:pedantic/pedantic.dart';
 
-import '../../utils/app_route.dart';
+import '../../config/themes.dart';
 import '../../utils/date_time_extension.dart';
+import '../../utils/event_extension.dart';
 import '../../utils/matrix_locals.dart';
-import '../../views/chat.dart';
+import '../../utils/room_status_extension.dart';
 import '../avatar.dart';
 import '../dialogs/send_file_dialog.dart';
-import '../dialogs/simple_dialogs.dart';
 import '../matrix.dart';
 import '../mouse_over_builder.dart';
-import '../theme_switcher.dart';
+
+enum ArchivedRoomAction { delete, rejoin }
 
 class ChatListItem extends StatelessWidget {
   final Room room;
@@ -35,49 +39,50 @@ class ChatListItem extends StatelessWidget {
     if (onTap != null) return onTap();
     if (!activeChat) {
       if (room.membership == Membership.invite &&
-          await SimpleDialogs(context)
-                  .tryRequestWithLoadingDialog(room.join()) ==
-              false) {
+          (await showFutureLoadingDialog(
+                      context: context, future: () => room.join()))
+                  .error !=
+              null) {
         return;
       }
 
       if (room.membership == Membership.ban) {
-        BotToast.showText(text: L10n.of(context).youHaveBeenBannedFromThisChat);
+        await FlushbarHelper.createError(
+                message: L10n.of(context).youHaveBeenBannedFromThisChat)
+            .show(context);
         return;
       }
 
       if (room.membership == Membership.leave) {
-        await showDialog(
+        final action = await showModalActionSheet<ArchivedRoomAction>(
           context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: Text(L10n.of(context).archivedRoom),
-            content: Text(L10n.of(context).thisRoomHasBeenArchived),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(L10n.of(context).close.toUpperCase(),
-                    style: TextStyle(color: Colors.blueGrey)),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              FlatButton(
-                child: Text(L10n.of(context).delete.toUpperCase(),
-                    style: TextStyle(color: Colors.red)),
-                onPressed: () async {
-                  await archiveAction(context);
-                  await Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Text(L10n.of(context).rejoin.toUpperCase(),
-                    style: TextStyle(color: Colors.blue)),
-                onPressed: () async {
-                  await SimpleDialogs(context)
-                      .tryRequestWithLoadingDialog(room.join());
-                  await Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
+          title: L10n.of(context).archivedRoom,
+          message: L10n.of(context).thisRoomHasBeenArchived,
+          actions: [
+            SheetAction(
+              label: L10n.of(context).rejoin,
+              key: ArchivedRoomAction.rejoin,
+            ),
+            SheetAction(
+              label: L10n.of(context).delete,
+              key: ArchivedRoomAction.delete,
+              isDestructiveAction: true,
+            ),
+          ],
         );
+        if (action != null) {
+          switch (action) {
+            case ArchivedRoomAction.delete:
+              await archiveAction(context);
+              break;
+            case ArchivedRoomAction.rejoin:
+              await showFutureLoadingDialog(
+                context: context,
+                future: () => room.join(),
+              );
+              break;
+          }
+        }
       }
 
       if (room.membership == Membership.join) {
@@ -86,20 +91,18 @@ class ChatListItem extends StatelessWidget {
               'chat.fluffy.shared_file') {
             await showDialog(
                 context: context,
-                builder: (context) => SendFileDialog(
+                builder: (c) => SendFileDialog(
                       file: Matrix.of(context).shareContent['file'],
                       room: room,
+                      l10n: L10n.of(context),
                     ));
           } else {
             unawaited(room.sendEvent(Matrix.of(context).shareContent));
           }
           Matrix.of(context).shareContent = null;
         }
-        await Navigator.pushAndRemoveUntil(
-          context,
-          AppRoute.defaultRoute(context, ChatView(room.id)),
-          (r) => r.isFirst,
-        );
+        await AdaptivePageLayout.of(context)
+            .pushNamedAndRemoveUntilIsFirst('/rooms/${room.id}');
       }
     }
   }
@@ -107,16 +110,22 @@ class ChatListItem extends StatelessWidget {
   Future<void> archiveAction(BuildContext context) async {
     {
       if ([Membership.leave, Membership.ban].contains(room.membership)) {
-        final success = await SimpleDialogs(context)
-            .tryRequestWithLoadingDialog(room.forget());
-        if (success != false) {
+        final success = await showFutureLoadingDialog(
+          context: context,
+          future: () => room.forget(),
+        );
+        if (success.error == null) {
           if (onForget != null) onForget();
         }
         return success;
       }
-      final confirmed = await SimpleDialogs(context).askConfirmation();
-      if (!confirmed) return;
-      await SimpleDialogs(context).tryRequestWithLoadingDialog(room.leave());
+      final confirmed = await showOkCancelAlertDialog(
+        context: context,
+        title: L10n.of(context).areYouSure,
+      );
+      if (confirmed == OkCancelResult.cancel) return;
+      await showFutureLoadingDialog(
+          context: context, future: () => room.leave());
       return;
     }
   }
@@ -124,9 +133,12 @@ class ChatListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isMuted = room.pushRuleState != PushRuleState.notify;
+    final typingText = room.getLocalizedTypingText(context);
+    final ownMessage =
+        room.lastEvent?.senderId == Matrix.of(context).client.userID;
     return Center(
       child: Material(
-        color: chatListItemColor(context, activeChat, selected),
+        color: FluffyThemes.chatListItemColor(context, activeChat, selected),
         child: ListTile(
           onLongPress: onLongPress,
           leading: MouseOverBuilder(
@@ -153,30 +165,23 @@ class ChatListItem extends StatelessWidget {
                   softWrap: false,
                 ),
               ),
-              room.isFavourite
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 4.0),
-                      child: Icon(
-                        Icons.favorite_outline_rounded,
-                        size: 16,
-                      ),
-                    )
-                  : Container(),
-              isMuted
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 4.0),
-                      child: Icon(
-                        Icons.notifications_off_outlined,
-                        size: 16,
-                      ),
-                    )
-                  : Container(),
+              if (isMuted)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: Icon(
+                    Icons.notifications_off_outlined,
+                    size: 16,
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.only(left: 4.0),
                 child: Text(
                   room.timeCreated.localizedTimeShort(context),
                   style: TextStyle(
                     fontSize: 13,
+                    color: room.notificationCount > 0
+                        ? Theme.of(context).primaryColor
+                        : null,
                   ),
                 ),
               ),
@@ -185,52 +190,88 @@ class ChatListItem extends StatelessWidget {
           subtitle: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              if (typingText.isEmpty && ownMessage) ...{
+                Icon(
+                  room.lastEvent.statusIcon,
+                  size: 14,
+                ),
+                SizedBox(width: 4),
+              },
+              if (typingText.isNotEmpty) ...{
+                Icon(
+                  Icons.edit_outlined,
+                  color: Theme.of(context).primaryColor,
+                  size: 14,
+                ),
+                SizedBox(width: 4),
+              },
               Expanded(
-                child: room.membership == Membership.invite
+                child: typingText.isNotEmpty
                     ? Text(
-                        L10n.of(context).youAreInvitedToThisChat,
+                        typingText,
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
                         ),
                         softWrap: false,
                       )
-                    : Text(
-                        room.lastEvent?.getLocalizedBody(
-                              MatrixLocals(L10n.of(context)),
-                              withSenderNamePrefix: !room.isDirectChat ||
-                                  room.lastEvent.senderId == room.client.userID,
-                              hideReply: true,
-                            ) ??
-                            '',
-                        softWrap: false,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          decoration: room.lastEvent?.redacted == true
-                              ? TextDecoration.lineThrough
-                              : null,
-                        ),
-                      ),
+                    : room.membership == Membership.invite
+                        ? Text(
+                            L10n.of(context).youAreInvitedToThisChat,
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            softWrap: false,
+                          )
+                        : Text(
+                            room.lastEvent?.getLocalizedBody(
+                                  MatrixLocals(L10n.of(context)),
+                                  withSenderNamePrefix:
+                                      !ownMessage && !room.isDirectChat,
+                                  hideReply: true,
+                                ) ??
+                                '',
+                            softWrap: false,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              decoration: room.lastEvent?.redacted == true
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                            ),
+                          ),
               ),
               SizedBox(width: 8),
-              room.notificationCount > 0
-                  ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      height: 20,
-                      decoration: BoxDecoration(
-                        color: room.highlightCount > 0
-                            ? Colors.red
-                            : Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Text(
-                          room.notificationCount.toString(),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    )
-                  : Text(' '),
+              if (room.isFavourite)
+                Padding(
+                  padding: EdgeInsets.only(
+                      right: room.notificationCount > 0 ? 4.0 : 0.0),
+                  child: Icon(
+                    Icons.push_pin_outlined,
+                    size: 20,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              if (room.isUnread)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 7),
+                  height: room.notificationCount > 0 ? 20 : 14,
+                  decoration: BoxDecoration(
+                    color: room.highlightCount > 0 || room.markedUnread
+                        ? Colors.red
+                        : Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: room.notificationCount > 0
+                        ? Text(
+                            room.notificationCount.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          )
+                        : Container(),
+                  ),
+                ),
             ],
           ),
           onTap: () => clickAction(context),

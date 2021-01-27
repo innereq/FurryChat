@@ -1,24 +1,37 @@
+// @dart=2.9
 import 'dart:async';
-import 'dart:io';
 
-import 'package:bot_toast/bot_toast.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
 
+import 'app_config.dart';
 import 'components/matrix.dart';
-import 'components/theme_switcher.dart';
-import 'views/chat_list.dart';
-import 'views/homeserver_picker.dart';
+import 'config/routes.dart';
+import 'config/themes.dart';
+import 'utils/platform_infos.dart';
+import 'views/lock_screen.dart';
 
-void main() {
+void main() async {
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  FlutterError.onError = (FlutterErrorDetails details) =>
+      Zone.current.handleUncaughtError(details.exception, details.stack);
   runZonedGuarded(
-    () => runApp(App()),
+    () => runApp(PlatformInfos.isMobile
+        ? AppLock(
+            builder: (args) => App(),
+            lockScreen: LockScreen(),
+            enabled: false,
+          )
+        : App()),
     (error, stackTrace) async {
       debugPrint(error.toString());
       debugPrint(stackTrace.toString());
@@ -27,40 +40,37 @@ void main() {
 }
 
 class App extends StatelessWidget {
-  final String platform = kIsWeb ? 'Web' : Platform.operatingSystem;
+  static final GlobalKey<AdaptivePageLayoutState> _apl =
+      GlobalKey<AdaptivePageLayoutState>();
   @override
   Widget build(BuildContext context) {
-    return Matrix(
-      clientName: 'FurryChat $platform',
-      child: Builder(
-        builder: (BuildContext context) => ThemeSwitcherWidget(
-          child: Builder(
-            builder: (BuildContext context) => MaterialApp(
-              title: 'FurryChat',
-              builder: BotToastInit(),
-              navigatorObservers: [BotToastNavigatorObserver()],
-              theme: ThemeSwitcherWidget.of(context).themeData,
-              localizationsDelegates: L10n.localizationsDelegates,
-              supportedLocales: L10n.supportedLocales,
-              locale: kIsWeb
-                  ? Locale(html.window.navigator.language.split('-').first)
-                  : null,
-              home: FutureBuilder<LoginState>(
-                future:
-                    Matrix.of(context).client.onLoginStateChanged.stream.first,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Scaffold(
-                      body: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                  if (Matrix.of(context).client.isLogged()) {
-                    return ChatListView();
-                  }
-                  return HomeserverPicker();
-                },
+    return AdaptiveTheme(
+      light: FluffyThemes.light,
+      dark: FluffyThemes.dark,
+      initial: AdaptiveThemeMode.system,
+      builder: (theme, darkTheme) => MaterialApp(
+        title: '${AppConfig.applicationName}',
+        theme: theme,
+        darkTheme: darkTheme,
+        localizationsDelegates: L10n.localizationsDelegates,
+        supportedLocales: L10n.supportedLocales,
+        locale: kIsWeb
+            ? Locale(html.window.navigator.language.split('-').first)
+            : null,
+        home: Builder(
+          builder: (context) => Matrix(
+            context: context,
+            apl: _apl,
+            child: Builder(
+              builder: (context) => AdaptivePageLayout(
+                key: _apl,
+                onGenerateRoute: FluffyRoutes(context).onGenerateRoute,
+                dividerColor: Theme.of(context).dividerColor,
+                columnWidth: FluffyThemes.columnWidth,
+                routeBuilder: (builder, settings) =>
+                    Matrix.of(context).loginState == LoginState.logged
+                        ? CupertinoPageRoute(builder: builder)
+                        : FadeRoute(page: builder(context)),
               ),
             ),
           ),

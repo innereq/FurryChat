@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../../components/adaptive_page_layout.dart';
+import '../../app_config.dart';
 import '../../components/matrix.dart';
-import '../settings.dart';
-
-class ChatSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.chat),
-      secondScaffold: ChatSettings(),
-    );
-  }
-}
+import '../../components/settings_switch_list_tile.dart';
+import '../../config/setting_keys.dart';
 
 class ChatSettings extends StatefulWidget {
   @override
@@ -40,13 +30,13 @@ class _ChatSettingsState extends State<ChatSettings> {
       Matrix.of(context).swipeToEndAction = action;
       await Matrix.of(context)
           .store
-          .setItem('dev.inex.furrychat.swipeToEndAction', action);
+          .setItem(SettingKeys.swipeToEndAction, action);
       setState(() => null);
     } else {
       Matrix.of(context).swipeToStartAction = action;
       await Matrix.of(context)
           .store
-          .setItem('dev.inex.furrychat.swipeToStartAction', action);
+          .setItem(SettingKeys.swipeToStartAction, action);
       setState(() => null);
     }
   }
@@ -93,22 +83,14 @@ class _ChatSettingsState extends State<ChatSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).chat)),
+      appBar: AppBar(leading: BackButton(), title: Text(L10n.of(context).chat)),
       body: ListView(
         children: [
-          ListTile(
-            title: Text(L10n.of(context).renderRichContent),
-            trailing: Switch(
-              value: Matrix.of(context).renderHtml,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (bool newValue) async {
-                Matrix.of(context).renderHtml = newValue;
-                await Matrix.of(context)
-                    .store
-                    .setItem('chat.fluffy.renderHtml', newValue ? '1' : '0');
-                setState(() => null);
-              },
-            ),
+          SettingsSwitchListTile(
+            title: L10n.of(context).renderRichContent,
+            onChanged: (b) => AppConfig.renderHtml = b,
+            storeKey: SettingKeys.renderHtml,
+            defaultValue: AppConfig.renderHtml,
           ),
           Divider(thickness: 1),
           ListTile(
@@ -130,6 +112,19 @@ class _ChatSettingsState extends State<ChatSettings> {
             ),
             subtitle: Text(
                 _getActionDescription(Matrix.of(context).swipeToStartAction)),
+          ),
+          Divider(thickness: 1),
+          SettingsSwitchListTile(
+            title: L10n.of(context).hideRedactedEvents,
+            onChanged: (b) => AppConfig.hideRedactedEvents = b,
+            storeKey: SettingKeys.hideRedactedEvents,
+            defaultValue: AppConfig.hideRedactedEvents,
+          ),
+          SettingsSwitchListTile(
+            title: L10n.of(context).hideUnknownEvents,
+            onChanged: (b) => AppConfig.hideUnknownEvents = b,
+            storeKey: SettingKeys.hideUnknownEvents,
+            defaultValue: AppConfig.hideUnknownEvents,
           ),
         ],
       ),

@@ -1,24 +1,12 @@
 import 'dart:io';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../components/adaptive_page_layout.dart';
 import '../../components/matrix.dart';
-import '../../components/theme_switcher.dart';
-import '../settings.dart';
-
-class ThemesSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.themes),
-      secondScaffold: ThemesSettings(),
-    );
-  }
-}
+import '../../config/setting_keys.dart';
 
 class ThemesSettings extends StatefulWidget {
   @override
@@ -26,93 +14,65 @@ class ThemesSettings extends StatefulWidget {
 }
 
 class _ThemesSettingsState extends State<ThemesSettings> {
-  Themes _selectedTheme;
-  bool _amoledEnabled;
-
   void setWallpaperAction(BuildContext context) async {
     final wallpaper = await ImagePicker().getImage(source: ImageSource.gallery);
     if (wallpaper == null) return;
     Matrix.of(context).wallpaper = File(wallpaper.path);
     await Matrix.of(context)
         .store
-        .setItem('chat.fluffy.wallpaper', wallpaper.path);
+        .setItem(SettingKeys.wallpaper, wallpaper.path);
     setState(() => null);
   }
 
   void deleteWallpaperAction(BuildContext context) async {
     Matrix.of(context).wallpaper = null;
-    await Matrix.of(context).store.deleteItem('chat.fluffy.wallpaper');
+    await Matrix.of(context).store.deleteItem(SettingKeys.wallpaper);
     setState(() => null);
+  }
+
+  AdaptiveThemeMode _currentTheme;
+
+  void _switchTheme(AdaptiveThemeMode newTheme, BuildContext context) {
+    switch (newTheme) {
+      case AdaptiveThemeMode.light:
+        AdaptiveTheme.of(context).setLight();
+        break;
+      case AdaptiveThemeMode.dark:
+        AdaptiveTheme.of(context).setDark();
+        break;
+      case AdaptiveThemeMode.system:
+        AdaptiveTheme.of(context).setSystem();
+        break;
+    }
+    setState(() => _currentTheme = newTheme);
   }
 
   @override
   Widget build(BuildContext context) {
-    final matrix = Matrix.of(context);
-    final themeEngine = ThemeSwitcherWidget.of(context);
-    _selectedTheme = themeEngine.selectedTheme;
-    _amoledEnabled = themeEngine.amoledEnabled;
-
+    _currentTheme ??= AdaptiveTheme.of(context).mode;
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).changeTheme)),
+      appBar: AppBar(
+          leading: BackButton(), title: Text(L10n.of(context).changeTheme)),
       body: ListView(children: [
         Column(
           children: <Widget>[
-            RadioListTile<Themes>(
-              title: Text(
-                L10n.of(context).systemTheme,
-              ),
-              value: Themes.system,
-              groupValue: _selectedTheme,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (Themes value) {
-                setState(() {
-                  _selectedTheme = value;
-                  themeEngine.switchTheme(matrix, value, _amoledEnabled);
-                });
-              },
+            RadioListTile<AdaptiveThemeMode>(
+              groupValue: _currentTheme,
+              value: AdaptiveThemeMode.system,
+              title: Text(L10n.of(context).systemTheme),
+              onChanged: (t) => _switchTheme(t, context),
             ),
-            RadioListTile<Themes>(
-              title: Text(
-                L10n.of(context).lightTheme,
-              ),
-              value: Themes.light,
-              groupValue: _selectedTheme,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (Themes value) {
-                setState(() {
-                  _selectedTheme = value;
-                  themeEngine.switchTheme(matrix, value, _amoledEnabled);
-                });
-              },
+            RadioListTile<AdaptiveThemeMode>(
+              groupValue: _currentTheme,
+              value: AdaptiveThemeMode.light,
+              title: Text(L10n.of(context).lightTheme),
+              onChanged: (t) => _switchTheme(t, context),
             ),
-            RadioListTile<Themes>(
-              title: Text(
-                L10n.of(context).darkTheme,
-              ),
-              value: Themes.dark,
-              groupValue: _selectedTheme,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (Themes value) {
-                setState(() {
-                  _selectedTheme = value;
-                  themeEngine.switchTheme(matrix, value, _amoledEnabled);
-                });
-              },
-            ),
-            ListTile(
-              title: Text(
-                L10n.of(context).useAmoledTheme,
-              ),
-              trailing: Switch(
-                value: _amoledEnabled,
-                activeColor: Theme.of(context).primaryColor,
-                onChanged: (bool value) {
-                  setState(() {
-                    _amoledEnabled = value;
-                    themeEngine.switchTheme(matrix, _selectedTheme, value);
-                  });
-                },
-              ),
+            RadioListTile<AdaptiveThemeMode>(
+              groupValue: _currentTheme,
+              value: AdaptiveThemeMode.dark,
+              title: Text(L10n.of(context).darkTheme),
+              onChanged: (t) => _switchTheme(t, context),
             ),
           ],
         ),

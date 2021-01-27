@@ -1,68 +1,39 @@
-import 'package:famedlysdk/matrix_api.dart' as api;
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
+import 'package:famedlysdk/famedlysdk.dart' as sdk;
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:pedantic/pedantic.dart';
 
-import '../components/adaptive_page_layout.dart';
-import '../components/dialogs/simple_dialogs.dart';
 import '../components/matrix.dart';
-import '../utils/app_route.dart';
-import 'chat.dart';
-import 'chat_list.dart';
-import 'invitation_selection.dart';
 
-class NewGroupView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: ChatList(),
-      secondScaffold: _NewGroup(),
-    );
-  }
-}
-
-class _NewGroup extends StatefulWidget {
+class NewGroup extends StatefulWidget {
   @override
   _NewGroupState createState() => _NewGroupState();
 }
 
-class _NewGroupState extends State<_NewGroup> {
+class _NewGroupState extends State<NewGroup> {
   TextEditingController controller = TextEditingController();
   bool publicGroup = false;
 
   void submitAction(BuildContext context) async {
     final matrix = Matrix.of(context);
-    final String roomID =
-        await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      matrix.client.createRoom(
+    final roomID = await showFutureLoadingDialog(
+      context: context,
+      future: () => matrix.client.createRoom(
         preset: publicGroup
-            ? api.CreateRoomPreset.public_chat
-            : api.CreateRoomPreset.private_chat,
-        visibility: publicGroup ? api.Visibility.public : null,
+            ? sdk.CreateRoomPreset.public_chat
+            : sdk.CreateRoomPreset.private_chat,
+        visibility: publicGroup ? sdk.Visibility.public : null,
         roomAliasName:
             publicGroup && controller.text.isNotEmpty ? controller.text : null,
         name: controller.text.isNotEmpty ? controller.text : null,
       ),
     );
-    Navigator.of(context).pop();
+    AdaptivePageLayout.of(context).popUntilIsFirst();
     if (roomID != null) {
-      unawaited(
-        Navigator.of(context).push(
-          AppRoute.defaultRoute(
-            context,
-            ChatView(roomID),
-          ),
-        ),
-      );
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => InvitationSelection(
-            matrix.client.getRoomById(roomID),
-          ),
-        ),
-      );
+      await AdaptivePageLayout.of(context).pushNamed('/rooms/${roomID.result}');
+      await AdaptivePageLayout.of(context)
+          .pushNamed('/rooms/${roomID.result}/invite');
     }
   }
 
@@ -70,6 +41,7 @@ class _NewGroupState extends State<_NewGroup> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(),
         title: Text(L10n.of(context).createNewGroup),
         elevation: 0,
       ),
@@ -77,7 +49,7 @@ class _NewGroupState extends State<_NewGroup> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: TextField(
               controller: controller,
               autofocus: true,
@@ -85,9 +57,8 @@ class _NewGroupState extends State<_NewGroup> {
               textInputAction: TextInputAction.go,
               onSubmitted: (s) => submitAction(context),
               decoration: InputDecoration(
-                  border: OutlineInputBorder(),
                   labelText: L10n.of(context).optionalGroupName,
-                  prefixIcon: Icon(Icons.people),
+                  prefixIcon: Icon(Icons.people_outlined),
                   hintText: L10n.of(context).enterAGroupName),
             ),
           ),
@@ -102,10 +73,8 @@ class _NewGroupState extends State<_NewGroup> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).primaryColor,
         onPressed: () => submitAction(context),
-        child: Icon(Icons.arrow_forward),
+        child: Icon(Icons.arrow_forward_outlined),
       ),
     );
   }

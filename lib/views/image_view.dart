@@ -1,23 +1,27 @@
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 
 import '../components/image_bubble.dart';
 import '../components/matrix.dart';
 import '../utils/event_extension.dart';
+import '../utils/platform_infos.dart';
 
 class ImageView extends StatelessWidget {
   final Event event;
+  final void Function() onLoaded;
 
-  const ImageView(this.event, {Key key}) : super(key: key);
+  const ImageView(this.event, {Key key, this.onLoaded}) : super(key: key);
 
   void _forwardAction(BuildContext context) async {
     Matrix.of(context).shareContent = event.content;
-    Navigator.of(context).popUntil((r) => r.isFirst);
+    AdaptivePageLayout.of(context).popUntilIsFirst();
   }
 
   @override
   Widget build(BuildContext context) {
+    var calcVelocity = MediaQuery.of(context).size.height * 1.50;
+
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
@@ -31,29 +35,39 @@ class ImageView extends StatelessWidget {
         backgroundColor: Color(0x44000000),
         actions: [
           IconButton(
-            icon: Icon(Icons.reply),
+            icon: Icon(Icons.reply_outlined),
             onPressed: () => _forwardAction(context),
             color: Colors.white,
           ),
           IconButton(
-            icon: Icon(Icons.file_download),
+            icon: Icon(Icons.download_outlined),
             onPressed: () => event.openFile(context, downloadOnly: true),
             color: Colors.white,
           ),
         ],
       ),
-      body: PhotoView.customChild(
+      body: InteractiveViewer(
+        child: Center(
+          child: ImageBubble(
+            event,
+            tapToView: false,
+            onLoaded: onLoaded,
+            fit: BoxFit.contain,
+            backgroundColor: Colors.black,
+            maxSize: false,
+            radius: 0.0,
+            thumbnailOnly: false,
+          ),
+        ),
         minScale: 1.0,
         maxScale: 10.0,
-        child: ImageBubble(
-          event,
-          tapToView: false,
-          fit: BoxFit.contain,
-          backgroundColor: Colors.black,
-          maxSize: false,
-          radius: 0.0,
-          thumbnailOnly: false,
-        ),
+        onInteractionEnd: (ScaleEndDetails endDetails) {
+          if (PlatformInfos.usesTouchscreen == false) {
+            if (endDetails.velocity.pixelsPerSecond.dy > calcVelocity) {
+              Navigator.of(context).pop();
+            }
+          }
+        },
       ),
     );
   }

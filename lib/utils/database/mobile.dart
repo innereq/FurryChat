@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:famedlysdk/famedlysdk.dart';
-import 'package:flutter/material.dart';
 import 'package:moor/ffi.dart' as moor;
 import 'package:moor/isolate.dart';
 import 'package:moor/moor.dart';
@@ -55,7 +54,7 @@ Future<Database> constructDb(
     String filename = 'database.sqlite',
     String password = ''}) async {
   if (PlatformInfos.isMobile || Platform.isMacOS) {
-    debugPrint('[Moor] using encrypted moor');
+    Logs().v('[Moor] using encrypted moor');
     final dbFolder = await getDatabasesPath();
     final targetPath = p.join(dbFolder, filename);
     final receivePort = ReceivePort();
@@ -67,11 +66,11 @@ Future<Database> constructDb(
     final isolate = (await receivePort.first as MoorIsolate);
     return Database.connect(await isolate.connect());
   } else if (Platform.isLinux) {
-    debugPrint('[Moor] using Linux desktop moor');
+    Logs().v('[Moor] using Linux desktop moor');
     final appDocDir = await getApplicationSupportDirectory();
     return Database(moor.VmDatabase(File('${appDocDir.path}/$filename')));
   } else if (Platform.isWindows) {
-    debugPrint('[Moor] using Windows desktop moor');
+    Logs().v('[Moor] using Windows desktop moor');
     open.overrideFor(OperatingSystem.windows, _openOnWindows);
     return Database(moor.VmDatabase.memory());
   }
@@ -79,8 +78,9 @@ Future<Database> constructDb(
 }
 
 DynamicLibrary _openOnWindows() {
-  final script = File(Platform.script.toFilePath());
-  final libraryNextToScript = File('${script.path}/sqlite3.dll');
+  final exePath =
+      File(Platform.resolvedExecutable.replaceAll('fluffychat.exe', ''));
+  final libraryNextToScript = File('${exePath.path}/sqlite3.dll');
   return DynamicLibrary.open(libraryNextToScript.path);
 }
 

@@ -50,7 +50,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "alreadyHaveAnAccount": "Vous avez déjà un compte ?",
+  "alreadyHaveAnAccount": "Vous avez déjà un compte ?",
   "@alreadyHaveAnAccount": {
     "type": "text",
     "placeholders": {}
@@ -82,7 +82,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "areYouSure": "Êtes-vous sûr ?",
+  "areYouSure": "Êtes-vous sûr·e ?",
   "@areYouSure": {
     "type": "text",
     "placeholders": {}
@@ -102,7 +102,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "askVerificationRequest": "Accepter cette demande de vérification de {username} ?",
+  "askVerificationRequest": "Accepter cette demande de vérification de la part de {username} ?",
   "@askVerificationRequest": {
     "type": "text",
     "placeholders": {
@@ -149,7 +149,7 @@
       "homeserver": {}
     }
   },
-  "cachedKeys": "Clés mises en cache avec succès !",
+  "cachedKeys": "Clés mises en cache",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -166,7 +166,7 @@
       "username": {}
     }
   },
-  "changedTheChatDescriptionTo": "{username} a changé la description de la discussion en : '{description}'",
+  "changedTheChatDescriptionTo": "{username} a changé la description de la discussion en : « {description} »",
   "@changedTheChatDescriptionTo": {
     "type": "text",
     "placeholders": {
@@ -174,7 +174,7 @@
       "description": {}
     }
   },
-  "changedTheChatNameTo": "{username} a renommé la discussion en : '{chatname}'",
+  "changedTheChatNameTo": "{username} a renommé la discussion en : « {chatname} »",
   "@changedTheChatNameTo": {
     "type": "text",
     "placeholders": {
@@ -189,7 +189,7 @@
       "username": {}
     }
   },
-  "changedTheDisplaynameTo": "{username} s'est renommé en : {displayname}",
+  "changedTheDisplaynameTo": "{username} s'est renommé·e en : {displayname}",
   "@changedTheDisplaynameTo": {
     "type": "text",
     "placeholders": {
@@ -263,7 +263,7 @@
       "username": {}
     }
   },
-  "changelog": "Journal des changements",
+  "changelog": "Journal des modifications",
   "@changelog": {
     "type": "text",
     "placeholders": {}
@@ -293,7 +293,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "changeWallpaper": "Changer d'image de fond",
+  "changeWallpaper": "Changer l'image de fond",
   "@changeWallpaper": {
     "type": "text",
     "placeholders": {}
@@ -318,7 +318,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "chooseAUsername": "Choisissez un nom d'utilisateur",
+  "chooseAUsername": "Choisissez un nom d'utilisateur·ice",
   "@chooseAUsername": {
     "type": "text",
     "placeholders": {}
@@ -328,12 +328,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "compareEmojiMatch": "Comparez et assurez-vous que les emojis suivants correspondent à ceux de l'autre appareil :",
+  "compareEmojiMatch": "Comparez les emojis suivants avec ceux de l'autre appareil et assurez-vous qu'ils correspondent :",
   "@compareEmojiMatch": {
     "type": "text",
     "placeholders": {}
   },
-  "compareNumbersMatch": "Comparez et assurez-vous que les chiffres suivants correspondent à ceux de l'autre appareil :",
+  "compareNumbersMatch": "Comparez les chiffres suivants avec ceux de l'autre appareil et assurez-vous qu'ils correspondent :",
   "@compareNumbersMatch": {
     "type": "text",
     "placeholders": {}
@@ -385,7 +385,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "couldNotSetDisplayname": "Impossible de changer de nom",
+  "couldNotSetDisplayname": "Impossible de changer de nom d'affichage",
   "@couldNotSetDisplayname": {
     "type": "text",
     "placeholders": {}
@@ -464,7 +464,7 @@
       "day": {}
     }
   },
-  "deactivateAccountWarning": "Cela désactivera votre compte et ne peut pas être annulé ! Êtes-vous sûr(e) ?",
+  "deactivateAccountWarning": "Cette opération va désactiver votre compte. Une fois cette action effectuée, aucun retour en arrière n'est possible ! Êtes-vous sûr·e ?",
   "@deactivateAccountWarning": {
     "type": "text",
     "placeholders": {}
@@ -489,12 +489,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "device": "Périphérique",
+  "device": "Appareil",
   "@device": {
     "type": "text",
     "placeholders": {}
   },
-  "devices": "Périphériques",
+  "devices": "Appareils",
   "@devices": {
     "type": "text",
     "placeholders": {}
@@ -519,22 +519,22 @@
     "type": "text",
     "placeholders": {}
   },
-  "editDisplayname": "Changer de nom",
+  "editDisplayname": "Changer de nom d'affichage",
   "@editDisplayname": {
     "type": "text",
     "placeholders": {}
   },
-  "editJitsiInstance": "Changer l'instance Jitsi",
+  "editJitsiInstance": "Changer d'instance Jitsi",
   "@editJitsiInstance": {
     "type": "text",
     "placeholders": {}
   },
-  "emoteExists": "Cette émoticône existe déjà !",
+  "emoteExists": "Cette émoticône existe déjà !",
   "@emoteExists": {
     "type": "text",
     "placeholders": {}
   },
-  "emoteInvalid": "Raccourci d'émoticône invalide !",
+  "emoteInvalid": "Raccourci d'émoticône invalide !",
   "@emoteInvalid": {
     "type": "text",
     "placeholders": {}
@@ -544,12 +544,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "emoteShortcode": "Raccourci d'émoticône",
+  "emoteShortcode": "Raccourci de l'émoticône",
   "@emoteShortcode": {
     "type": "text",
     "placeholders": {}
   },
-  "emoteWarnNeedToPick": "Vous devez sélectionner un raccourci d'émoticône et une image !",
+  "emoteWarnNeedToPick": "Vous devez sélectionner un raccourci d'émoticône et une image !",
   "@emoteWarnNeedToPick": {
     "type": "text",
     "placeholders": {}
@@ -559,7 +559,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "enableEncryptionWarning": "Vous ne pourrez plus désactiver le chiffrement. Êtes-vous sûr(e) ?",
+  "enableEncryptionWarning": "Vous ne pourrez plus désactiver le chiffrement. Êtes-vous sûr(e) ?",
   "@enableEncryptionWarning": {
     "type": "text",
     "placeholders": {}
@@ -574,7 +574,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "encryptionNotEnabled": "Le chiffrement n'est pas actif",
+  "encryptionNotEnabled": "Le chiffrement n'est pas activé",
   "@encryptionNotEnabled": {
     "type": "text",
     "placeholders": {}
@@ -596,7 +596,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "enterAUsername": "Entrez un nom d'utilisateur",
+  "enterAUsername": "Entrez un nom d'utilisateur·ice",
   "@enterAUsername": {
     "type": "text",
     "placeholders": {}
@@ -651,7 +651,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "groupDescriptionHasBeenChanged": "La description du groupe a été changée",
+  "groupDescriptionHasBeenChanged": "La description du groupe a été modifiée",
   "@groupDescriptionHasBeenChanged": {
     "type": "text",
     "placeholders": {}
@@ -678,7 +678,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "hasWithdrawnTheInvitationFor": "{username} a retiré l'invitation de {targetName}",
+  "hasWithdrawnTheInvitationFor": "{username} a annulé l'invitation de {targetName}",
   "@hasWithdrawnTheInvitationFor": {
     "type": "text",
     "placeholders": {
@@ -706,17 +706,17 @@
     "type": "text",
     "placeholders": {}
   },
-  "ignoredUsers": "Utilisateurs/trices ignoré(e)s",
+  "ignoredUsers": "Utilisateur·ices ignoré·es",
   "@ignoredUsers": {
     "type": "text",
     "placeholders": {}
   },
-  "ignoreListDescription": "Vous pouvez ignorer les utilisateurs/trices qui vous dérangent. Vous ne pourrez pas recevoir de messages ou d'invitations à participer à un salon de discussion de la part des utilisateurs/trices figurant sur votre liste personnelle.",
+  "ignoreListDescription": "Vous pouvez ignorer les utilisateur·ices qui vous dérangent. Vous ne pourrez pas recevoir de messages ou d'invitations à participer à un salon de discussion de la part des utilisateur·ices figurant sur votre liste personnelle.",
   "@ignoreListDescription": {
     "type": "text",
     "placeholders": {}
   },
-  "ignoreUsername": "Ignorer l'utilisateur/trice",
+  "ignoreUsername": "Ignorer l'utilisateur·ice",
   "@ignoreUsername": {
     "type": "text",
     "placeholders": {}
@@ -738,7 +738,7 @@
       "groupName": {}
     }
   },
-  "invited": "Invité",
+  "invited": "Invité·e",
   "@invited": {
     "type": "text",
     "placeholders": {}
@@ -751,12 +751,12 @@
       "targetName": {}
     }
   },
-  "invitedUsersOnly": "Uniquement les utilisateurs invités",
+  "invitedUsersOnly": "Uniquement les utilisateur·ices invité·es",
   "@invitedUsersOnly": {
     "type": "text",
     "placeholders": {}
   },
-  "inviteText": "{username} vous a invité sur FluffyChat. \n1. Installez FluffyChat : https://fluffychat.im \n2. Inscrivez-vous ou connectez-vous \n3. Ouvrez le lien d'invitation : {link}",
+  "inviteText": "{username} vous a invité·e sur FluffyChat. \n1. Installez FluffyChat : https://fluffychat.im \n2. Inscrivez-vous ou connectez-vous \n3. Ouvrez le lien d'invitation : {link}",
   "@inviteText": {
     "type": "text",
     "placeholders": {
@@ -769,7 +769,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "isTyping": "écrit...",
+  "isTyping": "est en train d'écrire…",
   "@isTyping": {
     "type": "text",
     "placeholders": {}
@@ -781,7 +781,7 @@
       "username": {}
     }
   },
-  "joinRoom": "Rejoindre la réunion",
+  "joinRoom": "Rejoindre le salon",
   "@joinRoom": {
     "type": "text",
     "placeholders": {}
@@ -817,7 +817,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "lastActiveAgo": "Vu pour la dernière fois : {localizedTimeShort}",
+  "lastActiveAgo": "Vu·e pour la dernière fois : {localizedTimeShort}",
   "@lastActiveAgo": {
     "type": "text",
     "placeholders": {
@@ -854,24 +854,24 @@
     "type": "text",
     "placeholders": {}
   },
-  "loadCountMoreParticipants": "Charger {count} participants de plus",
+  "loadCountMoreParticipants": "Charger {count} participant·es de plus",
   "@loadCountMoreParticipants": {
     "type": "text",
     "placeholders": {
       "count": {}
     }
   },
-  "loadingPleaseWait": "Chargement... Veuillez patienter",
+  "loadingPleaseWait": "Chargement… Veuillez patienter.",
   "@loadingPleaseWait": {
     "type": "text",
     "placeholders": {}
   },
-  "loadMore": "Charger plus...",
+  "loadMore": "Charger plus…",
   "@loadMore": {
     "type": "text",
     "placeholders": {}
   },
-  "login": "Connexion",
+  "login": "Se connecter",
   "@login": {
     "type": "text",
     "placeholders": {}
@@ -888,12 +888,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "makeAModerator": "Promouvoir comme modérateur",
+  "makeAModerator": "Promouvoir comme modérateur·ice",
   "@makeAModerator": {
     "type": "text",
     "placeholders": {}
   },
-  "makeAnAdmin": "Promouvoir comme administrateur",
+  "makeAnAdmin": "Promouvoir comme administrateur·ice",
   "@makeAnAdmin": {
     "type": "text",
     "placeholders": {}
@@ -908,7 +908,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "moderator": "Moderateur",
+  "moderator": "Moderateur·ice",
   "@moderator": {
     "type": "text",
     "placeholders": {}
@@ -923,7 +923,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "needPantalaimonWarning": "Sachez que vous avez besoin de Pantalaimon pour utiliser le chiffrement de bout en bout pour l'instant.",
+  "needPantalaimonWarning": "Pour l'instant, vous avez besoin de Pantalaimon pour utiliser le chiffrement de bout en bout.",
   "@needPantalaimonWarning": {
     "type": "text",
     "placeholders": {}
@@ -948,22 +948,22 @@
     "type": "text",
     "placeholders": {}
   },
-  "noCrossSignBootstrap": "FurryChat ne permet pas actuellement d'activer la signature croisée. Veuillez l'activer à partir de Riot.",
+  "noCrossSignBootstrap": "Fluffychat ne prend actuellement pas en charge l'activation de la signature croisée. Veuillez l'activer depuis Element.",
   "@noCrossSignBootstrap": {
     "type": "text",
     "placeholders": {}
   },
-  "noEmotesFound": "Aucun émote trouvé. 😕",
+  "noEmotesFound": "Aucune émoticône émote trouvé. 😕",
   "@noEmotesFound": {
     "type": "text",
     "placeholders": {}
   },
-  "noGoogleServicesWarning": "Il semblerait que vous n'ayez pas de services Google sur votre téléphone. C'est une bonne décision pour votre vie privée ! Pour recevoir des notifications dans FurryChat, nous vous recommandons d'utiliser microG : https://microg.org/",
+  "noGoogleServicesWarning": "Il semble que vous n'ayez aucun service Google sur votre téléphone. C'est une bonne décision pour votre vie privée ! Pour recevoir des notifications push dans FluffyChat, nous vous recommandons d'utiliser microG : https://microg.org/",
   "@noGoogleServicesWarning": {
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "FurryChat ne prend pas actuellement en charge l'activation de la sauvegarde des clés en ligne. Veuillez l'activer à partir de Riot.",
+  "noMegolmBootstrap": "FurryChat ne prend pas actuellement en charge l'activation de la sauvegarde des clés en ligne. Veuillez l'activer à partir d'Element.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -978,7 +978,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noRoomsFound": "Aucun salon trouvé...",
+  "noRoomsFound": "Aucun salon trouvé…",
   "@noRoomsFound": {
     "type": "text",
     "placeholders": {}
@@ -988,19 +988,19 @@
     "type": "text",
     "placeholders": {}
   },
-  "numberSelected": "{number} selectionné(s)",
+  "numberSelected": "{number} sélectionné(s)",
   "@numberSelected": {
     "type": "text",
     "placeholders": {
       "number": {}
     }
   },
-  "ok": "ok",
+  "ok": "Valider",
   "@ok": {
     "type": "text",
     "placeholders": {}
   },
-  "onlineKeyBackupDisabled": "La sauvegarde en ligne des clés est désactivée",
+  "onlineKeyBackupDisabled": "La sauvegarde des clés en ligne est désactivée",
   "@onlineKeyBackupDisabled": {
     "type": "text",
     "placeholders": {}
@@ -1010,7 +1010,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "oopsSomethingWentWrong": "Oups, un problème s'est produit...",
+  "oopsSomethingWentWrong": "Oups, un problème est survenu…",
   "@oopsSomethingWentWrong": {
     "type": "text",
     "placeholders": {}
@@ -1030,7 +1030,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "participatingUserDevices": "Périphériques participants",
+  "participatingUserDevices": "Appareils participants",
   "@participatingUserDevices": {
     "type": "text",
     "placeholders": {}
@@ -1067,12 +1067,12 @@
       "fileName": {}
     }
   },
-  "pleaseChooseAUsername": "Choisissez un nom d'utilisateur",
+  "pleaseChooseAUsername": "Choisissez un nom d'utilisateur·ice",
   "@pleaseChooseAUsername": {
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterAMatrixIdentifier": "Renseignez un identifiant Matrix",
+  "pleaseEnterAMatrixIdentifier": "Renseignez un identifiant Matrix.",
   "@pleaseEnterAMatrixIdentifier": {
     "type": "text",
     "placeholders": {}
@@ -1082,7 +1082,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterYourUsername": "Renseignez votre nom d'utilisateur",
+  "pleaseEnterYourUsername": "Renseignez votre nom d'utilisateur·ice",
   "@pleaseEnterYourUsername": {
     "type": "text",
     "placeholders": {}
@@ -1097,7 +1097,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "redactedAnEvent": "{username} a supprimé un message",
+  "redactedAnEvent": "{username} a supprimé un évènement",
   "@redactedAnEvent": {
     "type": "text",
     "placeholders": {
@@ -1126,7 +1126,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "removeAllOtherDevices": "Supprimer tous les autres périphériques",
+  "removeAllOtherDevices": "Supprimer tous les autres appareils",
   "@removeAllOtherDevices": {
     "type": "text",
     "placeholders": {}
@@ -1138,7 +1138,7 @@
       "username": {}
     }
   },
-  "removeDevice": "Supprimer le périphérique",
+  "removeDevice": "Supprimer l'appareil",
   "@removeDevice": {
     "type": "text",
     "placeholders": {}
@@ -1277,7 +1277,7 @@
       "username": {}
     }
   },
-  "sentASticker": "{username} a envoyé un sticker",
+  "sentASticker": "{username} a envoyé un autocollant",
   "@sentASticker": {
     "type": "text",
     "placeholders": {
@@ -1367,7 +1367,7 @@
       "senderName": {}
     }
   },
-  "startYourFirstChat": "Démarrez votre première discussion :-)",
+  "startYourFirstChat": "Commencez votre première conversation dès maintenant ! 🙂\n- Appuyez sur « + »\n- Entrez le nom d’utilisateur·ice d’un·e ami·e\n- Bonne discussion !",
   "@startYourFirstChat": {
     "type": "text",
     "placeholders": {}
@@ -1443,7 +1443,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "unbannedUser": "{username} a dé-banni {targetName}",
+  "unbannedUser": "{username} a annulé le bannissement de {targetName}",
   "@unbannedUser": {
     "type": "text",
     "placeholders": {
@@ -1451,12 +1451,12 @@
       "targetName": {}
     }
   },
-  "unblockDevice": "Débloquer l'appareil",
+  "unblockDevice": "Retirer le blocage sur l'appareil",
   "@unblockDevice": {
     "type": "text",
     "placeholders": {}
   },
-  "unknownDevice": "Périphérique inconnu",
+  "unknownDevice": "Appareil inconnu",
   "@unknownDevice": {
     "type": "text",
     "placeholders": {}
@@ -1466,7 +1466,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "unknownEvent": "Événement de type inconnu '{type}'",
+  "unknownEvent": "Évènement de type inconnu « {type} »",
   "@unknownEvent": {
     "type": "text",
     "placeholders": {
@@ -1483,7 +1483,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "unpin": "Détacher",
+  "unpin": "Désépingler",
   "@unpin": {
     "type": "text",
     "placeholders": {}
@@ -1510,12 +1510,12 @@
       "unreadChats": {}
     }
   },
-  "useAmoledTheme": "Utiliser des couleurs compatibles Amoled ?",
+  "useAmoledTheme": "Utiliser des couleurs compatibles AMOLED ?",
   "@useAmoledTheme": {
     "type": "text",
     "placeholders": {}
   },
-  "userAndOthersAreTyping": "{username} et {count} autres sont en train d'écrire...",
+  "userAndOthersAreTyping": "{username} et {count} autres sont en train d'écrire…",
   "@userAndOthersAreTyping": {
     "type": "text",
     "placeholders": {
@@ -1523,7 +1523,7 @@
       "count": {}
     }
   },
-  "userAndUserAreTyping": "{username} et {username2} sont en train d'écrire...",
+  "userAndUserAreTyping": "{username} et {username2} sont en train d'écrire…",
   "@userAndUserAreTyping": {
     "type": "text",
     "placeholders": {
@@ -1531,7 +1531,7 @@
       "username2": {}
     }
   },
-  "userIsTyping": "{username} est en train d'écrire...",
+  "userIsTyping": "{username} est en train d'écrire…",
   "@userIsTyping": {
     "type": "text",
     "placeholders": {
@@ -1545,12 +1545,12 @@
       "username": {}
     }
   },
-  "username": "Nom d'utilisateur",
+  "username": "Nom d'utilisateur·ice",
   "@username": {
     "type": "text",
     "placeholders": {}
   },
-  "userSentUnknownEvent": "{username} a envoyé un événement de type {type}",
+  "userSentUnknownEvent": "{username} a envoyé un évènement de type {type}",
   "@userSentUnknownEvent": {
     "type": "text",
     "placeholders": {
@@ -1578,7 +1578,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "verifySuccess": "Vous avez vérifié avec succès !",
+  "verifySuccess": "La vérification a été effectuée avec succès !",
   "@verifySuccess": {
     "type": "text",
     "placeholders": {}
@@ -1588,7 +1588,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "verifyUser": "Vérifier l'utilisateur/trice",
+  "verifyUser": "Vérifier l'utilisateur·ice",
   "@verifyUser": {
     "type": "text",
     "placeholders": {}
@@ -1603,7 +1603,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "visibleForAllParticipants": "Visible pour tous les participants",
+  "visibleForAllParticipants": "Visible pour tous les participant·es",
   "@visibleForAllParticipants": {
     "type": "text",
     "placeholders": {}
@@ -1618,17 +1618,17 @@
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerAcceptRequest": "En attente de la vérification de la demande par le partenaire...",
+  "waitingPartnerAcceptRequest": "En attente de l'acceptation de la demande par le partenaire…",
   "@waitingPartnerAcceptRequest": {
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerEmoji": "En attente de l'acceptation de l'émoji par le partenaire...",
+  "waitingPartnerEmoji": "En attente de l'acceptation de l'émoji par le partenaire…",
   "@waitingPartnerEmoji": {
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerNumbers": "En attente de l'acceptation des nombres par le partenaire...",
+  "waitingPartnerNumbers": "En attente de l'acceptation des nombres par le partenaire…",
   "@waitingPartnerNumbers": {
     "type": "text",
     "placeholders": {}
@@ -1638,12 +1638,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "warning": "Attention !",
+  "warning": "Attention !",
   "@warning": {
     "type": "text",
     "placeholders": {}
   },
-  "warningEncryptionInBeta": "Le chiffrement de bout en bout est actuellement en béta ! Utilisez cette fonctionnalité à vos propres risques !",
+  "warningEncryptionInBeta": "Le chiffrement de bout en bout est actuellement en bêta ! Utilisez cette fonctionnalité à vos propres risques !",
   "@warningEncryptionInBeta": {
     "type": "text",
     "placeholders": {}
@@ -1658,12 +1658,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "whoIsAllowedToJoinThisGroup": "Qui est autorisé à rejoindre ce groupe",
+  "whoIsAllowedToJoinThisGroup": "Qui est autorisé·e à rejoindre ce groupe",
   "@whoIsAllowedToJoinThisGroup": {
     "type": "text",
     "placeholders": {}
   },
-  "writeAMessage": "Écrit un message...",
+  "writeAMessage": "Écrivez un message…",
   "@writeAMessage": {
     "type": "text",
     "placeholders": {}
@@ -1678,7 +1678,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "youAreInvitedToThisChat": "Vous êtes invité à cette discussion",
+  "youAreInvitedToThisChat": "Vous êtes invité·e à cette discussion",
   "@youAreInvitedToThisChat": {
     "type": "text",
     "placeholders": {}
@@ -1693,12 +1693,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "youHaveBeenBannedFromThisChat": "Vous avez été banni de cette discussion",
+  "youHaveBeenBannedFromThisChat": "Vous avez été banni·e de cette discussion",
   "@youHaveBeenBannedFromThisChat": {
     "type": "text",
     "placeholders": {}
   },
-  "yourOwnUsername": "Votre propre nom d'utilisateur",
+  "yourOwnUsername": "Votre propre nom d'utilisateur·ice",
   "@yourOwnUsername": {
     "type": "text",
     "placeholders": {}
@@ -1722,5 +1722,284 @@
   "@changeDeviceName": {
     "type": "text",
     "placeholders": {}
+  },
+  "unavailable": "Indisponible",
+  "@unavailable": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "offline": "Hors ligne",
+  "@offline": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "online": "En ligne",
+  "@online": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "mention": "Mention",
+  "@mention": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hideUnknownEvents": "Cacher les événements inconnus",
+  "@hideUnknownEvents": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hideRedactedEvents": "Cacher les événements supprimés",
+  "@hideRedactedEvents": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "changePassword": "Changer de mot de passe",
+  "@changePassword": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Chiffré",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceId": "Identifiant de l'appareil",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "Grâce à ces adresses, vous pouvez récupérer votre mot de passe si vous en avez besoin.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Nous vous avons envoyé un courriel",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Veuillez cliquer sur le lien contenu dans le courriel puis continuez.",
+  "@pleaseClickOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Mot de passe oublié",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Récupération du mot de passe",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Vous n'avez pas encore ajouté de moyen pour récupérer votre mot de passe.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "J'ai cliqué sur le lien",
+  "@iHaveClickedOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Modifier",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterAnEmailAddress": "Saisissez une adresse de courriel",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Contient un nom d'utilisateur·ice",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Contient un nom d'affichage",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Notifications activées pour ce compte",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Messages de bot",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Discussions directes",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Règles de notifications",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Changements de membres",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Inviter pour moi",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Son, vibration, couleur diode",
+  "@soundVibrationLedColor": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setPermissionsLevel": "Définir le niveau de permissions",
+  "@setPermissionsLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setCustomEmotes": "Définir des émoticônes personnalisées",
+  "@setCustomEmotes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editChatPermissions": "Modifier les permissions de la conversation",
+  "@editChatPermissions": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "whoCanPerformWhichAction": "Qui peur faire quelle action",
+  "@whoCanPerformWhichAction": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "participant": "Participant(e)",
+  "@participant": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "configureChat": "Configurer la conversation",
+  "@configureChat": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "sendMessages": "Envoyer des messages",
+  "@sendMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "defaultPermissionLevel": "Niveau d'autorisation par défaut",
+  "@defaultPermissionLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editRoomAvatar": "Modifier l'avatar du salon",
+  "@editRoomAvatar": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "replaceRoomWithNewerVersion": "Remplacer le salon par une nouvelle version",
+  "@replaceRoomWithNewerVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enableEncryption": "Activer le chiffrement",
+  "@enableEncryption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editBlockedServers": "Modifier les serveurs bloqués",
+  "@editBlockedServers": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noDescription": "Pas de description",
+  "@noDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "discoverGroups": "Découvrez des groupes",
+  "@discoverGroups": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleUnread": "Marquer comme lu / non lu",
+  "@toggleUnread": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleMuted": "Activer/désactiver la sourdine",
+  "@toggleMuted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleFavorite": "Activer/désactiver en favori",
+  "@toggleFavorite": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "numUsersTyping": "{count} utilisateur·ices écrivent…",
+  "@numUsersTyping": {
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "yourPublicKey": "Votre clé publique",
+  "@yourPublicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "publicKey": "Clé publique",
+  "@publicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tooManyRequestsWarning": "Trop de requêtes. Veuillez réessayer plus tard !",
+  "@tooManyRequestsWarning": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noConnectionToTheServer": "Aucune connexion au serveur",
+  "@noConnectionToTheServer": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "security": "Sécurité",
+  "@security": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "appLock": "Verrouillage de l’application",
+  "@appLock": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseChooseAPasscode": "Veuillez choisir un code d’accès",
+  "@pleaseChooseAPasscode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnter4Digits": "Veuillez saisir 4 chiffres ou laisser vide pour désactiver le verrouillage de l’application.",
+  "@pleaseEnter4Digits": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "youWillBeConnectedTo": "Vous serez connecté·e à {homeserver}",
+  "@youWillBeConnectedTo": {
+    "type": "text",
+    "placeholders": {
+      "homeserver": {}
+    }
   }
 }

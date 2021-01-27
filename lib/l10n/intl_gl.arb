@@ -149,7 +149,7 @@
       "homeserver": {}
     }
   },
-  "cachedKeys": "Almacenaches as chaves correctamente!",
+  "cachedKeys": "Chaves almacenadas",
   "@cachedKeys": {
     "type": "text",
     "placeholders": {}
@@ -419,7 +419,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "crossSigningDisabled": "A Sinatura-Cruzada está desactivada",
+  "crossSigningDisabled": "Sinatura-Cruzada desactivada",
   "@crossSigningDisabled": {
     "type": "text",
     "placeholders": {}
@@ -574,7 +574,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "encryptionNotEnabled": "Cifrado desactivado",
+  "encryptionNotEnabled": "O cifrado non está activado",
   "@encryptionNotEnabled": {
     "type": "text",
     "placeholders": {}
@@ -651,7 +651,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "groupDescriptionHasBeenChanged": "Mudou a descrición do grupo",
+  "groupDescriptionHasBeenChanged": "Cambiouse a descrición do grupo",
   "@groupDescriptionHasBeenChanged": {
     "type": "text",
     "placeholders": {}
@@ -769,7 +769,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "isTyping": "está escribindo...",
+  "isTyping": "está escribindo…",
   "@isTyping": {
     "type": "text",
     "placeholders": {}
@@ -861,17 +861,17 @@
       "count": {}
     }
   },
-  "loadingPleaseWait": "Cargando... Agarda",
+  "loadingPleaseWait": "Cargando... Agarda.",
   "@loadingPleaseWait": {
     "type": "text",
     "placeholders": {}
   },
-  "loadMore": "Cargar máis...",
+  "loadMore": "Cargar máis…",
   "@loadMore": {
     "type": "text",
     "placeholders": {}
   },
-  "login": "Conexión",
+  "login": "Conectar",
   "@login": {
     "type": "text",
     "placeholders": {}
@@ -903,7 +903,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "messageWillBeRemovedWarning": "A mensaxe eliminarase para todas as participantes",
+  "messageWillBeRemovedWarning": "Vai ser eliminada a mensaxe para todas as participantes",
   "@messageWillBeRemovedWarning": {
     "type": "text",
     "placeholders": {}
@@ -963,7 +963,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noMegolmBootstrap": "Actualmente FurryChat non soporta a activación da Copia En Liña das Chaves. Actívaa desde Element.",
+  "noMegolmBootstrap": "No seu lugar activa a copia de apoio en liña desde Element.",
   "@noMegolmBootstrap": {
     "type": "text",
     "placeholders": {}
@@ -978,7 +978,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "noRoomsFound": "Non se atoparon salas...",
+  "noRoomsFound": "Non se atoparon salas…",
   "@noRoomsFound": {
     "type": "text",
     "placeholders": {}
@@ -995,7 +995,7 @@
       "number": {}
     }
   },
-  "ok": "OK",
+  "ok": "ok",
   "@ok": {
     "type": "text",
     "placeholders": {}
@@ -1005,12 +1005,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "onlineKeyBackupEnabled": "Copia de Apoio das Chaves activada",
+  "onlineKeyBackupEnabled": "Copia de Apoio en liña das Chaves activada",
   "@onlineKeyBackupEnabled": {
     "type": "text",
     "placeholders": {}
   },
-  "oopsSomethingWentWrong": "Ooooi, algo fallou...",
+  "oopsSomethingWentWrong": "Ooooi, algo fallou…",
   "@oopsSomethingWentWrong": {
     "type": "text",
     "placeholders": {}
@@ -1045,12 +1045,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "passwordHasBeenChanged": "Cambiaches o contrasinal",
+  "passwordHasBeenChanged": "Cambiouse o contrasinal",
   "@passwordHasBeenChanged": {
     "type": "text",
     "placeholders": {}
   },
-  "pickImage": "Escolle unha imaxe",
+  "pickImage": "Elixe unha imaxe",
   "@pickImage": {
     "type": "text",
     "placeholders": {}
@@ -1072,7 +1072,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "pleaseEnterAMatrixIdentifier": "Escribe un identificador matrix",
+  "pleaseEnterAMatrixIdentifier": "Escribe un ID Matrix.",
   "@pleaseEnterAMatrixIdentifier": {
     "type": "text",
     "placeholders": {}
@@ -1367,7 +1367,7 @@
       "senderName": {}
     }
   },
-  "startYourFirstChat": "Abre a primeira conversa :-)",
+  "startYourFirstChat": "Inicia unha conversa! 🙂\n- Toca en \"+\"\n- Escribe o nome de usuaria dunha amizade\n- Desfruta da conversa",
   "@startYourFirstChat": {
     "type": "text",
     "placeholders": {}
@@ -1510,12 +1510,12 @@
       "unreadChats": {}
     }
   },
-  "useAmoledTheme": "¿Usar cores compatibles con Amoled?",
+  "useAmoledTheme": "¿Usar cores compatibles con AMOLED?",
   "@useAmoledTheme": {
     "type": "text",
     "placeholders": {}
   },
-  "userAndOthersAreTyping": "{username} e {count} máis están escribindo...",
+  "userAndOthersAreTyping": "{username} e {count} máis están escribindo…",
   "@userAndOthersAreTyping": {
     "type": "text",
     "placeholders": {
@@ -1523,7 +1523,7 @@
       "count": {}
     }
   },
-  "userAndUserAreTyping": "{username} e {username2} están escribindo...",
+  "userAndUserAreTyping": "{username} e {username2} están escribindo…",
   "@userAndUserAreTyping": {
     "type": "text",
     "placeholders": {
@@ -1531,7 +1531,7 @@
       "username2": {}
     }
   },
-  "userIsTyping": "{username} está escribindo...",
+  "userIsTyping": "{username} está escribindo…",
   "@userIsTyping": {
     "type": "text",
     "placeholders": {
@@ -1628,7 +1628,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerNumbers": "Agardando a que a outra parte acepte os números...",
+  "waitingPartnerNumbers": "Agardando a que a outra parte acepte os números…",
   "@waitingPartnerNumbers": {
     "type": "text",
     "placeholders": {}
@@ -1653,7 +1653,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "welcomeText": "Benvida á mensaxería instantánea más cuquiña da rede matrix.",
+  "welcomeText": "Benvida á mensaxería instantánea más cuquiña da rede Matrix.",
   "@welcomeText": {
     "type": "text",
     "placeholders": {}
@@ -1663,7 +1663,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "writeAMessage": "Escribe unha mensaxe...",
+  "writeAMessage": "Escribe unha mensaxe…",
   "@writeAMessage": {
     "type": "text",
     "placeholders": {}
@@ -1722,5 +1722,284 @@
   "@changeDeviceName": {
     "type": "text",
     "placeholders": {}
+  },
+  "unavailable": "Non dispoñible",
+  "@unavailable": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "offline": "Desconectada",
+  "@offline": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "online": "En liña",
+  "@online": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "mention": "Mención",
+  "@mention": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hideUnknownEvents": "Agochar eventos descoñecidos",
+  "@hideUnknownEvents": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "hideRedactedEvents": "Agochar eventos redactados",
+  "@hideRedactedEvents": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "changePassword": "Cambiar contrasinal",
+  "@changePassword": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "encrypted": "Cifrado",
+  "@encrypted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "deviceId": "ID do dispositivo",
+  "@deviceId": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "withTheseAddressesRecoveryDescription": "Con estos enderezos podes recuperar o contrasinal.",
+  "@withTheseAddressesRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "weSentYouAnEmail": "Enviamosche un email",
+  "@weSentYouAnEmail": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseClickOnLink": "Preme na ligazón do email e segue as instrucións.",
+  "@pleaseClickOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordForgotten": "Contrasinal esquecido",
+  "@passwordForgotten": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "passwordRecovery": "Recuperación do contrasinal",
+  "@passwordRecovery": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noPasswordRecoveryDescription": "Aínda non engaiches ningún xeito de recuperar o contrasinal.",
+  "@noPasswordRecoveryDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "iHaveClickedOnLink": "Premín na ligazón",
+  "@iHaveClickedOnLink": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "edit": "Editar",
+  "@edit": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enterAnEmailAddress": "Escribe un enderezo de email",
+  "@enterAnEmailAddress": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notificationsEnabledForThisAccount": "Notificacións activadas para a conta",
+  "@notificationsEnabledForThisAccount": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "notifications": "Notificacións",
+  "@notifications": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pushRules": "Regras de envío",
+  "@pushRules": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "botMessages": "Mensaxes de Bot",
+  "@botMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "memberChanges": "Cambios de participantes",
+  "@memberChanges": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "inviteForMe": "Convite para min",
+  "@inviteForMe": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsUserName": "Contén nome de usuaria",
+  "@containsUserName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "containsDisplayName": "Contén nome público",
+  "@containsDisplayName": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "directChats": "Chats Directos",
+  "@directChats": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "soundVibrationLedColor": "Son, vibración, cor LED",
+  "@soundVibrationLedColor": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setPermissionsLevel": "Establecer nivel de permisos",
+  "@setPermissionsLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "setCustomEmotes": "Establecer emotes personalizados",
+  "@setCustomEmotes": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editChatPermissions": "Editar permisos do chat",
+  "@editChatPermissions": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "whoCanPerformWhichAction": "Quen pode realizar determinada acción",
+  "@whoCanPerformWhichAction": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "participant": "Participante",
+  "@participant": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "configureChat": "Configurar chat",
+  "@configureChat": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "sendMessages": "Enviar mensaxes",
+  "@sendMessages": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "defaultPermissionLevel": "Nivel de permisos por omisión",
+  "@defaultPermissionLevel": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editRoomAvatar": "Editar avatar da sala",
+  "@editRoomAvatar": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "replaceRoomWithNewerVersion": "Substituír sala pola nova versión",
+  "@replaceRoomWithNewerVersion": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "enableEncryption": "Activar cifrado",
+  "@enableEncryption": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "editBlockedServers": "Editar servidores bloqueados",
+  "@editBlockedServers": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noDescription": "Sen descrición",
+  "@noDescription": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "discoverGroups": "Descubrir grupos",
+  "@discoverGroups": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleUnread": "Marcar como Lido/Non lido",
+  "@toggleUnread": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleMuted": "Activar Acalar",
+  "@toggleMuted": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "toggleFavorite": "Marcar Favorito",
+  "@toggleFavorite": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "numUsersTyping": "{count} usuarias están escribindo…",
+  "@numUsersTyping": {
+    "type": "text",
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "yourPublicKey": "A túa chave pública",
+  "@yourPublicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "publicKey": "Chave pública",
+  "@publicKey": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "tooManyRequestsWarning": "Demasiadas solicitudes. Inténtao máis tarde!",
+  "@tooManyRequestsWarning": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "noConnectionToTheServer": "Sen conexión co servidor",
+  "@noConnectionToTheServer": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "security": "Seguridade",
+  "@security": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "appLock": "Bloqueo da app",
+  "@appLock": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseChooseAPasscode": "Escolle un código de acceso",
+  "@pleaseChooseAPasscode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnter4Digits": "Escribe 4 díxitos ou deíxao baleiro para non activar o bloqueo.",
+  "@pleaseEnter4Digits": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "youWillBeConnectedTo": "Vaste conectar a {homeserver}",
+  "@youWillBeConnectedTo": {
+    "type": "text",
+    "placeholders": {
+      "homeserver": {}
+    }
   }
 }

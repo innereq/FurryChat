@@ -1,14 +1,12 @@
 import 'dart:async';
 
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:adaptive_page_layout/adaptive_page_layout.dart';
 import 'package:famedlysdk/famedlysdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
-import '../utils/app_route.dart';
-import '../views/chat_details.dart';
-import '../views/chat_list.dart';
-import 'dialogs/simple_dialogs.dart';
 import 'matrix.dart';
 
 class ChatSettingsPopupMenu extends StatefulWidget {
@@ -28,18 +26,6 @@ class _ChatSettingsPopupMenuState extends State<ChatSettingsPopupMenu> {
   void dispose() {
     notificationChangeSub?.cancel();
     super.dispose();
-  }
-
-  void startCallAction(BuildContext context) async {
-    final url =
-        '${Matrix.of(context).jitsiInstance}${Uri.encodeComponent(widget.room.id.localpart)}';
-    final success = await SimpleDialogs(context)
-        .tryRequestWithLoadingDialog(widget.room.sendEvent({
-      'msgtype': Matrix.callNamespace,
-      'body': url,
-    }));
-    if (success == false) return;
-    await launch(url);
   }
 
   @override
@@ -63,10 +49,6 @@ class _ChatSettingsPopupMenuState extends State<ChatSettingsPopupMenu> {
               child: Text(L10n.of(context).unmuteChat),
             ),
       PopupMenuItem<String>(
-        value: 'call',
-        child: Text(L10n.of(context).videoCall),
-      ),
-      PopupMenuItem<String>(
         value: 'leave',
         child: Text(L10n.of(context).leave),
       ),
@@ -84,35 +66,37 @@ class _ChatSettingsPopupMenuState extends State<ChatSettingsPopupMenu> {
       onSelected: (String choice) async {
         switch (choice) {
           case 'leave':
-            var confirmed = await SimpleDialogs(context).askConfirmation();
-            if (confirmed) {
-              final success = await SimpleDialogs(context)
-                  .tryRequestWithLoadingDialog(widget.room.leave());
-              if (success != false) {
-                await Navigator.of(context).pushAndRemoveUntil(
-                    AppRoute.defaultRoute(context, ChatListView()),
-                    (Route r) => false);
+            var confirmed = await showOkCancelAlertDialog(
+              context: context,
+              title: L10n.of(context).areYouSure,
+            );
+            if (confirmed == OkCancelResult.ok) {
+              final success = await showFutureLoadingDialog(
+                  context: context, future: () => widget.room.leave());
+              if (success.error == null) {
+                await AdaptivePageLayout.of(context)
+                    .pushNamedAndRemoveAllOthers('/');
               }
             }
             break;
           case 'mute':
-            await SimpleDialogs(context).tryRequestWithLoadingDialog(
-                widget.room.setPushRuleState(PushRuleState.mentions_only));
+            await showFutureLoadingDialog(
+                context: context,
+                future: () =>
+                    widget.room.setPushRuleState(PushRuleState.mentions_only));
             break;
           case 'unmute':
-            await SimpleDialogs(context).tryRequestWithLoadingDialog(
-                widget.room.setPushRuleState(PushRuleState.notify));
-            break;
-          case 'call':
-            startCallAction(context);
+            await showFutureLoadingDialog(
+                context: context,
+                future: () =>
+                    widget.room.setPushRuleState(PushRuleState.notify));
             break;
           case 'details':
-            await Navigator.of(context).push(
-              AppRoute.defaultRoute(
-                context,
-                ChatDetails(widget.room),
-              ),
-            );
+            if (AdaptivePageLayout.of(context).viewDataStack.length < 3) {
+              await AdaptivePageLayout.of(context)
+                  .pushNamed('/rooms/${widget.room.id}/details');
+            }
+
             break;
         }
       },

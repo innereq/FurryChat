@@ -10,7 +10,6 @@ class StateMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (event.type == EventTypes.Redaction) return Container();
     return Padding(
       padding: const EdgeInsets.only(
         left: 8.0,
@@ -19,9 +18,9 @@ class StateMessage extends StatelessWidget {
       ),
       child: Center(
         child: Container(
-          padding: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor.withOpacity(0.8),
+            color: Theme.of(context).secondaryHeaderColor.withOpacity(0.9),
             borderRadius: BorderRadius.circular(7),
           ),
           child: Text(

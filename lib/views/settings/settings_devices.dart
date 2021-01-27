@@ -1,23 +1,11 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/famedlysdk.dart';
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
-import '../../components/adaptive_page_layout.dart';
-import '../../components/dialogs/simple_dialogs.dart';
 import '../../components/matrix.dart';
 import '../../utils/date_time_extension.dart';
-import '../settings.dart';
-
-class DevicesSettingsView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return AdaptivePageLayout(
-      primaryPage: FocusPage.SECOND,
-      firstScaffold: Settings(currentSetting: SettingsViews.devices),
-      secondScaffold: DevicesSettings(),
-    );
-  }
-}
 
 class DevicesSettings extends StatefulWidget {
   @override
@@ -34,40 +22,59 @@ class DevicesSettingsState extends State<DevicesSettings> {
 
   void reload() => setState(() => devices = null);
 
+  bool _loadingDeletingDevices = false;
+  String _errorDeletingDevices;
+
   void _removeDevicesAction(BuildContext context, List<Device> devices) async {
-    if (await SimpleDialogs(context).askConfirmation() == false) return;
+    if (await showOkCancelAlertDialog(
+          context: context,
+          title: L10n.of(context).areYouSure,
+        ) ==
+        OkCancelResult.cancel) return;
     var matrix = Matrix.of(context);
     var deviceIds = <String>[];
     for (var userDevice in devices) {
       deviceIds.add(userDevice.deviceId);
     }
-    final password = await SimpleDialogs(context).enterText(
-        titleText: L10n.of(context).pleaseEnterYourPassword,
-        labelText: L10n.of(context).pleaseEnterYourPassword,
-        hintText: '******',
-        password: true);
-    if (password == null) return;
 
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-        matrix.client.deleteDevices(deviceIds,
-            auth: matrix.getAuthByPassword(password)));
-    if (success != false) {
+    try {
+      setState(() {
+        _loadingDeletingDevices = true;
+        _errorDeletingDevices = null;
+      });
+      await matrix.client.uiaRequestBackground(
+        (auth) => matrix.client.deleteDevices(
+          deviceIds,
+          auth: auth,
+        ),
+      );
       reload();
+    } catch (e, s) {
+      Logs().v('Error while deleting devices', e, s);
+      setState(() => _errorDeletingDevices = e.toString());
+    } finally {
+      setState(() => _loadingDeletingDevices = false);
     }
   }
 
   void _renameDeviceAction(BuildContext context, Device device) async {
-    final displayName = await SimpleDialogs(context).enterText(
-      hintText: device.displayName,
-      labelText: L10n.of(context).changeDeviceName,
+    final displayName = await showTextInputDialog(
+      context: context,
+      title: L10n.of(context).changeDeviceName,
+      textFields: [
+        DialogTextField(
+          hintText: device.displayName,
+        )
+      ],
     );
     if (displayName == null) return;
-    final success = await SimpleDialogs(context).tryRequestWithLoadingDialog(
-      Matrix.of(context)
+    final success = await showFutureLoadingDialog(
+      context: context,
+      future: () => Matrix.of(context)
           .client
-          .setDeviceMetadata(device.deviceId, displayName: displayName),
+          .setDeviceMetadata(device.deviceId, displayName: displayName.single),
     );
-    if (success != false) {
+    if (success.error == null) {
       reload();
     }
   }
@@ -75,7 +82,10 @@ class DevicesSettingsState extends State<DevicesSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(L10n.of(context).devices)),
+      appBar: AppBar(
+        leading: BackButton(),
+        title: Text(L10n.of(context).devices),
+      ),
       body: FutureBuilder<bool>(
         future: _loadUserDevices(context),
         builder: (BuildContext context, snapshot) {
@@ -84,7 +94,7 @@ class DevicesSettingsState extends State<DevicesSettings> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Icon(Icons.error),
+                  Icon(Icons.error_outlined),
                   Text(snapshot.error.toString()),
                 ],
               ),
@@ -111,11 +121,16 @@ class DevicesSettingsState extends State<DevicesSettings> {
               if (devices.isNotEmpty)
                 ListTile(
                   title: Text(
-                    L10n.of(context).removeAllOtherDevices,
+                    _errorDeletingDevices ??
+                        L10n.of(context).removeAllOtherDevices,
                     style: TextStyle(color: Colors.red),
                   ),
-                  leading: Icon(Icons.delete_outline_outlined),
-                  onTap: () => _removeDevicesAction(context, devices),
+                  leading: _loadingDeletingDevices
+                      ? CircularProgressIndicator()
+                      : Icon(Icons.delete_outline),
+                  onTap: _loadingDeletingDevices
+                      ? null
+                      : () => _removeDevicesAction(context, devices),
                 ),
               Divider(height: 1),
               Expanded(

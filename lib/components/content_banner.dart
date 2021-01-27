@@ -11,12 +11,14 @@ class ContentBanner extends StatelessWidget {
   final IconData defaultIcon;
   final bool loading;
   final Function onEdit;
+  final Client client;
 
   const ContentBanner(this.mxContent,
       {this.height = 400,
       this.defaultIcon = Icons.people_outline,
       this.loading = false,
       this.onEdit,
+      this.client,
       Key key})
       : super(key: key);
 
@@ -26,10 +28,11 @@ class ContentBanner extends StatelessWidget {
     final bannerSize =
         (mediaQuery.size.width * mediaQuery.devicePixelRatio).toInt();
     final src = mxContent?.getThumbnail(
-      Matrix.of(context).client,
+      client ?? Matrix.of(context).client,
       width: bannerSize,
       height: bannerSize,
       method: ThumbnailMethod.scale,
+      animated: true,
     );
     return Container(
       height: 300,
@@ -63,8 +66,7 @@ class ContentBanner extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
                 mini: true,
-                backgroundColor: Theme.of(context).primaryColor,
-                child: Icon(Icons.camera_alt),
+                child: Icon(Icons.camera_alt_outlined),
                 onPressed: onEdit,
               ),
             ),
