@@ -1,19 +1,30 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:famedlysdk/encryption.dart';
 import 'package:famedlysdk/encryption/utils/bootstrap.dart';
+import 'package:famedlysdk/famedlysdk.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../../utils/platform_infos.dart';
-import '../matrix.dart';
 import 'adaptive_flat_button.dart';
 
 class BootstrapDialog extends StatefulWidget {
+  const BootstrapDialog({
+    Key key,
+    @required this.l10n,
+    @required this.client,
+    this.easyMode = false,
+  }) : super(key: key);
+
   Future<bool> show(BuildContext context) => PlatformInfos.isCupertinoStyle
       ? showCupertinoDialog(context: context, builder: (context) => this)
       : showDialog(context: context, builder: (context) => this);
+
+  final L10n l10n;
+  final Client client;
+  final bool easyMode;
 
   @override
   _BootstrapDialogState createState() => _BootstrapDialogState();
@@ -24,51 +35,51 @@ class _BootstrapDialogState extends State<BootstrapDialog> {
 
   @override
   Widget build(BuildContext context) {
-    bootstrap ??= Matrix.of(context)
-        .client
-        .encryption
+    bootstrap ??= widget.client.encryption
         .bootstrap(onUpdate: () => setState(() => null));
 
     final buttons = <AdaptiveFlatButton>[];
     Widget body;
+    var titleText = widget.l10n.cachedKeys;
 
     switch (bootstrap.state) {
       case BootstrapState.loading:
         body = LinearProgressIndicator();
+        titleText = widget.l10n.loadingPleaseWait;
         break;
       case BootstrapState.askWipeSsss:
         body = Text('Wipe chat backup?');
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).yes),
+          child: Text(widget.l10n.yes),
           onPressed: () => bootstrap.wipeSsss(true),
         ));
         buttons.add(AdaptiveFlatButton(
           textColor: Theme.of(context).textTheme.bodyText1.color,
-          child: Text(L10n.of(context).no),
+          child: Text(widget.l10n.no),
           onPressed: () => bootstrap.wipeSsss(false),
         ));
         break;
       case BootstrapState.askUseExistingSsss:
         body = Text('Use existing chat backup?');
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).yes),
+          child: Text(widget.l10n.yes),
           onPressed: () => bootstrap.useExistingSsss(true),
         ));
         buttons.add(AdaptiveFlatButton(
           textColor: Theme.of(context).textTheme.bodyText1.color,
-          child: Text(L10n.of(context).no),
+          child: Text(widget.l10n.no),
           onPressed: () => bootstrap.useExistingSsss(false),
         ));
         break;
       case BootstrapState.askBadSsss:
         body = Text('SSSS bad - continue nevertheless? DATALOSS!!!');
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).yes),
+          child: Text(widget.l10n.yes),
           onPressed: () => bootstrap.ignoreBadSecrets(true),
         ));
         buttons.add(AdaptiveFlatButton(
           textColor: Theme.of(context).textTheme.bodyText1.color,
-          child: Text(L10n.of(context).no),
+          child: Text(widget.l10n.no),
           onPressed: () => bootstrap.ignoreBadSecrets(false),
         ));
         break;
@@ -77,14 +88,15 @@ class _BootstrapDialogState extends State<BootstrapDialog> {
         for (final entry in bootstrap.oldSsssKeys.entries) {
           final keyId = entry.key;
           final key = entry.value;
-          widgets.add(Flexible(child: _AskUnlockOldSsss(keyId, key)));
+          widgets
+              .add(Flexible(child: _AskUnlockOldSsss(keyId, key, widget.l10n)));
         }
         body = Column(
           children: widgets,
           mainAxisSize: MainAxisSize.min,
         );
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).confirm),
+          child: Text(widget.l10n.confirm),
           onPressed: () => bootstrap.unlockedSsss(),
         ));
         break;
@@ -130,19 +142,19 @@ class _BootstrapDialogState extends State<BootstrapDialog> {
       case BootstrapState.askWipeCrossSigning:
         body = Text('Wipe cross-signing?');
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).yes),
+          child: Text(widget.l10n.yes),
           onPressed: () => bootstrap.wipeCrossSigning(true),
         ));
         buttons.add(AdaptiveFlatButton(
           textColor: Theme.of(context).textTheme.bodyText1.color,
-          child: Text(L10n.of(context).no),
+          child: Text(widget.l10n.no),
           onPressed: () => bootstrap.wipeCrossSigning(false),
         ));
         break;
       case BootstrapState.askSetupCrossSigning:
         body = Text('Set up cross-signing?');
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).yes),
+          child: Text(widget.l10n.yes),
           onPressed: () => bootstrap.askSetupCrossSigning(
             setupMasterKey: true,
             setupSelfSigningKey: true,
@@ -151,31 +163,31 @@ class _BootstrapDialogState extends State<BootstrapDialog> {
         ));
         buttons.add(AdaptiveFlatButton(
           textColor: Theme.of(context).textTheme.bodyText1.color,
-          child: Text(L10n.of(context).no),
+          child: Text(widget.l10n.no),
           onPressed: () => bootstrap.askSetupCrossSigning(),
         ));
         break;
       case BootstrapState.askWipeOnlineKeyBackup:
         body = Text('Wipe chat backup?');
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).yes),
+          child: Text(widget.l10n.yes),
           onPressed: () => bootstrap.wipeOnlineKeyBackup(true),
         ));
         buttons.add(AdaptiveFlatButton(
           textColor: Theme.of(context).textTheme.bodyText1.color,
-          child: Text(L10n.of(context).no),
+          child: Text(widget.l10n.no),
           onPressed: () => bootstrap.wipeOnlineKeyBackup(false),
         ));
         break;
       case BootstrapState.askSetupOnlineKeyBackup:
         body = Text('Set up chat backup?');
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).yes),
+          child: Text(widget.l10n.yes),
           onPressed: () => bootstrap.askSetupOnlineKeyBackup(true),
         ));
         buttons.add(AdaptiveFlatButton(
           textColor: Theme.of(context).textTheme.bodyText1.color,
-          child: Text(L10n.of(context).no),
+          child: Text(widget.l10n.no),
           onPressed: () => bootstrap.askSetupOnlineKeyBackup(false),
         ));
         break;
@@ -183,10 +195,10 @@ class _BootstrapDialogState extends State<BootstrapDialog> {
         body = ListTile(
           contentPadding: EdgeInsets.zero,
           leading: Icon(Icons.error_outline, color: Colors.red),
-          title: Text(L10n.of(context).oopsSomethingWentWrong),
+          title: Text(widget.l10n.oopsSomethingWentWrong),
         );
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).close),
+          child: Text(widget.l10n.close),
           onPressed: () => Navigator.of(context).pop<bool>(false),
         ));
         break;
@@ -197,13 +209,13 @@ class _BootstrapDialogState extends State<BootstrapDialog> {
           title: Text('Chat backup has been initialized!'),
         );
         buttons.add(AdaptiveFlatButton(
-          child: Text(L10n.of(context).close),
+          child: Text(widget.l10n.close),
           onPressed: () => Navigator.of(context).pop<bool>(false),
         ));
         break;
     }
 
-    final title = Text('Chat backup');
+    final title = Text(titleText);
     if (PlatformInfos.isCupertinoStyle) {
       return CupertinoAlertDialog(
         title: title,
@@ -222,7 +234,8 @@ class _BootstrapDialogState extends State<BootstrapDialog> {
 class _AskUnlockOldSsss extends StatefulWidget {
   final String keyId;
   final OpenSSSS ssssKey;
-  _AskUnlockOldSsss(this.keyId, this.ssssKey);
+  final L10n l10n;
+  _AskUnlockOldSsss(this.keyId, this.ssssKey, this.l10n);
 
   @override
   _AskUnlockOldSsssState createState() => _AskUnlockOldSsssState();
@@ -274,7 +287,7 @@ class _AskUnlockOldSsssState extends State<_AskUnlockOldSsss> {
             maxLines: 1,
             obscureText: true,
             decoration: InputDecoration(
-              hintText: L10n.of(context).passphraseOrKey,
+              hintText: widget.l10n.passphraseOrKey,
               prefixStyle: TextStyle(color: Theme.of(context).primaryColor),
               suffixStyle: TextStyle(color: Theme.of(context).primaryColor),
               border: OutlineInputBorder(),
@@ -285,7 +298,7 @@ class _AskUnlockOldSsssState extends State<_AskUnlockOldSsss> {
           color: Theme.of(context).primaryColor,
           elevation: 5,
           textColor: Colors.white,
-          child: Text(L10n.of(context).submit),
+          child: Text(widget.l10n.submit),
           onPressed: () {
             input = textEditingController.text;
             checkInput(context);

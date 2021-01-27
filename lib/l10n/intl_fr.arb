@@ -189,7 +189,7 @@
       "username": {}
     }
   },
-  "changedTheDisplaynameTo": "{username} s'est renommé en : {displayname}",
+  "changedTheDisplaynameTo": "{username} s'est renommé·e en : {displayname}",
   "@changedTheDisplaynameTo": {
     "type": "text",
     "placeholders": {
@@ -1618,12 +1618,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerAcceptRequest": "En attente de la vérification de la demande par le partenaire...",
+  "waitingPartnerAcceptRequest": "En attente de l'acceptation de la demande par le partenaire…",
   "@waitingPartnerAcceptRequest": {
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerEmoji": "En attente de l'acceptation de l'émoji par le partenaire...",
+  "waitingPartnerEmoji": "En attente de l'acceptation de l'émoji par le partenaire…",
   "@waitingPartnerEmoji": {
     "type": "text",
     "placeholders": {}
@@ -1994,5 +1994,12 @@
   "@pleaseEnter4Digits": {
     "type": "text",
     "placeholders": {}
+  },
+  "youWillBeConnectedTo": "Vous serez connecté·e à {homeserver}",
+  "@youWillBeConnectedTo": {
+    "type": "text",
+    "placeholders": {
+      "homeserver": {}
+    }
   }
 }

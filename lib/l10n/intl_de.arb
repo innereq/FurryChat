@@ -1588,12 +1588,12 @@
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerAcceptRequest": "Warte darauf, dass der Partner die Verifikationsanfrage annimmt...",
+  "waitingPartnerAcceptRequest": "Warte darauf, dass der Partner die Anfrage annimmt …",
   "@waitingPartnerAcceptRequest": {
     "type": "text",
     "placeholders": {}
   },
-  "waitingPartnerEmoji": "Warte darauf, dass der Partner die Emoji annimmt...",
+  "waitingPartnerEmoji": "Warte darauf, dass der Partner die Emoji annimmt …",
   "@waitingPartnerEmoji": {
     "type": "text",
     "placeholders": {}
@@ -1974,5 +1974,32 @@
   "@noConnectionToTheServer": {
     "type": "text",
     "placeholders": {}
+  },
+  "security": "Sicherheit",
+  "@security": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "appLock": "Anwendungssperre",
+  "@appLock": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseChooseAPasscode": "Bitte einen Code festlegen",
+  "@pleaseChooseAPasscode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnter4Digits": "Bitte 4 Ziffern eingeben oder leer lassen, um die Anwendungssperre zu deaktivieren.",
+  "@pleaseEnter4Digits": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "youWillBeConnectedTo": "Du wirst mit {homeserver} verbunden",
+  "@youWillBeConnectedTo": {
+    "type": "text",
+    "placeholders": {
+      "homeserver": {}
+    }
   }
 }

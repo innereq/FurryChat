@@ -1962,5 +1962,42 @@
   "@noConnectionToTheServer": {
     "type": "text",
     "placeholders": {}
+  },
+  "appLock": "Blocco dell'app",
+  "@appLock": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseChooseAPasscode": "Si prega di scegliere un codice di accesso",
+  "@pleaseChooseAPasscode": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "security": "Sicurezza",
+  "@security": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "pleaseEnter4Digits": "Inserisci 4 cifre o lascia vuoto per disabilitare il blocco dell'app.",
+  "@pleaseEnter4Digits": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "youWillBeConnectedTo": "Verrai connesso/a a {homeserver}",
+  "@youWillBeConnectedTo": {
+    "type": "text",
+    "placeholders": {
+      "homeserver": {}
+    }
+  },
+  "waitingPartnerEmoji": "In attesa che il partner accetti l'emoji…",
+  "@waitingPartnerEmoji": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "waitingPartnerAcceptRequest": "In attesa che il partner accetti la richiesta…",
+  "@waitingPartnerAcceptRequest": {
+    "type": "text",
+    "placeholders": {}
   }
 }

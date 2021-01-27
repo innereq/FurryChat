@@ -216,7 +216,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "4597ea344553e78a0817d7cdad16ac72079c8034"
+      resolved-ref: "6badbc327e74ed814a3d8da410b1b5c5ce2596c0"
       url: "https://gitlab.com/famedly/famedlysdk.git"
     source: git
     version: "0.0.1"
@@ -426,13 +426,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.7"
-  flutter_sound:
+  flutter_sound_lite:
     dependency: "direct main"
     description:
-      name: flutter_sound
+      name: flutter_sound_lite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "7.5.3+1"
+  flutter_sound_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_sound_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.5.3+1"
+  flutter_sound_web:
+    dependency: transitive
+    description:
+      name: flutter_sound_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.5.3+1"
+  flutter_spinkit:
+    dependency: transitive
+    description:
+      name: flutter_spinkit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.2+1"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -603,7 +624,7 @@ packages:
       name: matrix_api_lite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.4"
+    version: "0.1.6"
   matrix_file_e2ee:
     dependency: transitive
     description:
@@ -815,14 +836,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
-  photo_view:
-    dependency: "direct main"
-    description:
-      name: photo_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.10.3"
+    version: "3.0.4"
   platform:
     dependency: transitive
     description:
@@ -886,6 +900,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   receive_sharing_intent:
     dependency: "direct main"
     description:

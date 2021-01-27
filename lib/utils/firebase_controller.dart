@@ -23,9 +23,11 @@ abstract class FirebaseController {
   static final FlutterLocalNotificationsPlugin
       _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   static BuildContext context;
+  static MatrixState matrix;
 
   static Future<void> setupFirebase(
       MatrixState matrix, String clientName) async {
+    FirebaseController.matrix = matrix;
     if (!PlatformInfos.isMobile) return;
     final client = matrix.client;
     if (Platform.isIOS) iOS_Permission();
@@ -153,7 +155,7 @@ abstract class FirebaseController {
         await _flutterLocalNotificationsPlugin.cancelAll();
         return null;
       }
-      if (context != null && Matrix.of(context).activeRoomId == roomId) {
+      if (context != null && matrix.activeRoomId == roomId) {
         Logs().i('[Push] New clearing push');
         return null;
       }
@@ -166,7 +168,7 @@ abstract class FirebaseController {
       Client client;
       var tempClient = false;
       try {
-        client = Matrix.of(context).client;
+        client = matrix.client;
       } catch (_) {
         client = null;
       }

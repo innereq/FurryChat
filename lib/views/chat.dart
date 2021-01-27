@@ -16,6 +16,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipe_to_action/swipe_to_action.dart';
@@ -260,12 +261,16 @@ class _ChatState extends State<Chat> {
   }
 
   void voiceMessageAction(BuildContext context) async {
-    String result;
-    await showDialog(
-        context: context,
-        builder: (context) => RecordingDialog(
-              onFinished: (r) => result = r,
-            ));
+    if (await Permission.microphone.isGranted != true) {
+      final status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) return;
+    }
+    final result = await showDialog<String>(
+      context: context,
+      builder: (c) => RecordingDialog(
+        l10n: L10n.of(context),
+      ),
+    );
     if (result == null) return;
     final audioFile = File(result);
     // as we already explicitly say send in the recording dialog,
@@ -651,7 +656,8 @@ class _ChatState extends State<Chat> {
                       onTap: room.isDirectChat
                           ? () => showModalBottomSheet(
                                 context: context,
-                                builder: (context) => UserBottomSheet(
+                                builder: (c) => UserBottomSheet(
+                                  l10n: L10n.of(context),
                                   user: room.getUserByMXIDSync(
                                       room.directChatMatrixID),
                                   onMention: () => sendController.text +=
@@ -894,8 +900,9 @@ class _ChatState extends State<Chat> {
                                               onAvatarTab: (Event event) =>
                                                   showModalBottomSheet(
                                                     context: context,
-                                                    builder: (context) =>
+                                                    builder: (c) =>
                                                         UserBottomSheet(
+                                                      l10n: L10n.of(context),
                                                       user: event.sender,
                                                       onMention: () =>
                                                           sendController.text +=

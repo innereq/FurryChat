@@ -7,6 +7,8 @@ class DefaultAppBarSearchField extends StatefulWidget {
   final bool autofocus;
   final String prefixText;
   final String hintText;
+  final EdgeInsets padding;
+  final bool readOnly;
 
   const DefaultAppBarSearchField({
     Key key,
@@ -16,6 +18,8 @@ class DefaultAppBarSearchField extends StatefulWidget {
     this.autofocus = false,
     this.prefixText,
     this.hintText,
+    this.padding,
+    this.readOnly = false,
   }) : super(key: key);
 
   @override
@@ -59,7 +63,7 @@ class _DefaultAppBarSearchFieldState extends State<DefaultAppBarSearchField> {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      padding: EdgeInsets.only(right: 12),
+      padding: widget.padding ?? EdgeInsets.only(right: 12),
       child: Material(
         color: Theme.of(context).secondaryHeaderColor,
         borderRadius: BorderRadius.circular(32),
@@ -69,6 +73,7 @@ class _DefaultAppBarSearchFieldState extends State<DefaultAppBarSearchField> {
           controller: _searchController,
           onChanged: widget.onChanged,
           focusNode: _focusNode,
+          readOnly: widget.readOnly,
           decoration: InputDecoration(
             prefixText: widget.prefixText,
             contentPadding: EdgeInsets.only(
@@ -80,9 +85,10 @@ class _DefaultAppBarSearchFieldState extends State<DefaultAppBarSearchField> {
               borderRadius: BorderRadius.circular(32),
             ),
             hintText: widget.hintText,
-            suffixIcon: _focusNode.hasFocus ||
-                    (widget.suffix == null &&
-                        (_searchController.text?.isNotEmpty ?? false))
+            suffixIcon: !widget.readOnly &&
+                    (_focusNode.hasFocus ||
+                        (widget.suffix == null &&
+                            (_searchController.text?.isNotEmpty ?? false)))
                 ? IconButton(
                     icon: Icon(Icons.backspace_outlined),
                     onPressed: () {

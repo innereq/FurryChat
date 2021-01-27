@@ -96,7 +96,8 @@ You can use Weblate to translate the app to your language:
 
 https://hosted.weblate.org/projects/fluffychat/
 
-
+If you want to get your translated strings approved, please ask in our
+<a href="https://matrix.to/#/#fluffychat:matrix.org" target="new">support room</a>!
 
 1. Replace the non-translated string in the codebase:
 ```
@@ -152,3 +153,5 @@ Example B:
 * Thanks to Mark for all his support and the chat background.
 
 * Also thanks to all translators and testers! With your help, fluffychat is now available in more than 12 languages.
+
+* <a href="https://github.com/googlefonts/noto-emoji/">Noto Emoji Font</a> for the awesome emojis.

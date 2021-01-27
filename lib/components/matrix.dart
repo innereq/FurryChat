@@ -143,13 +143,18 @@ class MatrixState extends State<Matrix> {
     final stage = uiaRequest.nextStages.first;
     switch (stage) {
       case AuthenticationTypes.password:
-        final input = await showTextInputDialog(context: context, textFields: [
-          DialogTextField(
-            minLines: 1,
-            maxLines: 1,
-            obscureText: true,
-          )
-        ]);
+        final input = await showTextInputDialog(
+          context: context,
+          title: L10n.of(context).pleaseEnterYourPassword,
+          textFields: [
+            DialogTextField(
+              minLines: 1,
+              maxLines: 1,
+              obscureText: true,
+              hintText: '******',
+            )
+          ],
+        );
         if (input?.isEmpty ?? true) return;
         return uiaRequest.completeStage(
           AuthenticationPassword(
@@ -277,7 +282,11 @@ class MatrixState extends State<Matrix> {
   void initState() {
     super.initState();
     initMatrix();
-    if (PlatformInfos.isWeb) initConfig().then((_) => initSettings());
+    if (PlatformInfos.isWeb) {
+      initConfig().then((_) => initSettings());
+    } else {
+      initSettings();
+    }
   }
 
   Future<void> initConfig() async {
@@ -310,7 +319,7 @@ class MatrixState extends State<Matrix> {
     final Set verificationMethods = <KeyVerificationMethod>{
       KeyVerificationMethod.numbers
     };
-    if (PlatformInfos.isMobile) {
+    if (PlatformInfos.isMobile || (!kIsWeb && Platform.isLinux)) {
       // emojis don't show in web somehow
       verificationMethods.add(KeyVerificationMethod.emoji);
     }
@@ -322,6 +331,10 @@ class MatrixState extends State<Matrix> {
         'im.ponies.room_emotes', // we want emotes to work properly
       },
       databaseBuilder: getDatabase,
+      supportedLoginTypes: {
+        AuthenticationTypes.password,
+        if (PlatformInfos.isMobile) AuthenticationTypes.sso
+      },
     );
     LoadingDialog.defaultTitle = L10n.of(context).loadingPleaseWait;
     LoadingDialog.defaultBackLabel = L10n.of(context).close;
@@ -366,7 +379,10 @@ class MatrixState extends State<Matrix> {
         request.onUpdate = null;
         hidPopup = true;
         await request.acceptVerification();
-        await KeyVerificationDialog(request: request).show(context);
+        await KeyVerificationDialog(
+          request: request,
+          l10n: L10n.of(context),
+        ).show(context);
       } else {
         request.onUpdate = null;
         hidPopup = true;

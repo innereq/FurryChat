@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/l10n.dart';
 
 import '../../app_config.dart';
 import '../../components/matrix.dart';
+import '../../components/settings_switch_list_tile.dart';
 import '../../config/setting_keys.dart';
 
 class ChatSettings extends StatefulWidget {
@@ -85,19 +86,11 @@ class _ChatSettingsState extends State<ChatSettings> {
       appBar: AppBar(leading: BackButton(), title: Text(L10n.of(context).chat)),
       body: ListView(
         children: [
-          ListTile(
-            title: Text(L10n.of(context).renderRichContent),
-            trailing: Switch(
-              value: AppConfig.renderHtml,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (bool newValue) async {
-                AppConfig.renderHtml = newValue;
-                await Matrix.of(context)
-                    .store
-                    .setItem(SettingKeys.renderHtml, newValue.toString());
-                setState(() => null);
-              },
-            ),
+          SettingsSwitchListTile(
+            title: L10n.of(context).renderRichContent,
+            onChanged: (b) => AppConfig.renderHtml = b,
+            storeKey: SettingKeys.renderHtml,
+            defaultValue: AppConfig.renderHtml,
           ),
           Divider(thickness: 1),
           ListTile(
@@ -121,31 +114,17 @@ class _ChatSettingsState extends State<ChatSettings> {
                 _getActionDescription(Matrix.of(context).swipeToStartAction)),
           ),
           Divider(thickness: 1),
-          ListTile(
-            title: Text(L10n.of(context).hideRedactedEvents),
-            trailing: Switch(
-              value: AppConfig.hideRedactedEvents,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (bool newValue) async {
-                AppConfig.hideRedactedEvents = newValue;
-                await Matrix.of(context).store.setItem(
-                    SettingKeys.hideRedactedEvents, newValue.toString());
-                setState(() => null);
-              },
-            ),
+          SettingsSwitchListTile(
+            title: L10n.of(context).hideRedactedEvents,
+            onChanged: (b) => AppConfig.hideRedactedEvents = b,
+            storeKey: SettingKeys.hideRedactedEvents,
+            defaultValue: AppConfig.hideRedactedEvents,
           ),
-          ListTile(
-            title: Text(L10n.of(context).hideUnknownEvents),
-            trailing: Switch(
-              value: AppConfig.hideUnknownEvents,
-              activeColor: Theme.of(context).primaryColor,
-              onChanged: (bool newValue) async {
-                AppConfig.hideUnknownEvents = newValue;
-                await Matrix.of(context).store.setItem(
-                    SettingKeys.hideUnknownEvents, newValue.toString());
-                setState(() => null);
-              },
-            ),
+          SettingsSwitchListTile(
+            title: L10n.of(context).hideUnknownEvents,
+            onChanged: (b) => AppConfig.hideUnknownEvents = b,
+            storeKey: SettingKeys.hideUnknownEvents,
+            defaultValue: AppConfig.hideUnknownEvents,
           ),
         ],
       ),

@@ -29,6 +29,9 @@ abstract class AppConfig {
   static const String pushNotificationsGatewayUrl =
       'https://push-gateway.inex.dev:443/_matrix/push/v1/notify';
   static const String pushNotificationsPusherFormat = 'event_id_only';
+  static const String emojiFontName = 'Noto Emoji';
+  static const String emojiFontUrl =
+      'https://github.com/googlefonts/noto-emoji/';
 
   static void loadFromJson(Map<String, dynamic> json) {
     if (json['application_name'] is String) {
