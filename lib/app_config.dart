@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 abstract class AppConfig {
   static String _applicationName = 'FurryChat';
   static String get applicationName => _applicationName;
@@ -8,6 +10,8 @@ abstract class AppConfig {
   static String jitsiInstance = 'https://meet.jit.si/';
   static const bool allowOtherHomeservers = true;
   static const bool enableRegistration = true;
+  static const Color primaryColor = Color(0xFF5625BA);
+  static const Color primaryColorLight = Color(0xFFF5B4D2);
   static String _privacyUrl = 'https://fluffychat.im/en/privacy.html';
   static String get privacyUrl => _privacyUrl;
   static const String sourceCodeUrl = 'https://github.com/innereq/FurryChat';

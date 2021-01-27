@@ -270,17 +270,17 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 12),
             Hero(
               tag: 'loginButton',
               child: Container(
-                height: 50,
+                height: 56,
                 padding: EdgeInsets.symmetric(horizontal: 12),
                 child: RaisedButton(
                   elevation: 7,
                   color: Theme.of(context).primaryColor,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: loading
                       ? LinearProgressIndicator()

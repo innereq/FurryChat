@@ -94,7 +94,7 @@ class _NewPrivateChatState extends State<NewPrivateChat> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: Form(
               key: _formKey,
               child: TextFormField(
@@ -122,7 +122,6 @@ class _NewPrivateChatState extends State<NewPrivateChat> {
                   return null;
                 },
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
                   labelText: L10n.of(context).enterAUsername,
                   prefixIcon: loading
                       ? Container(
@@ -213,8 +212,6 @@ class _NewPrivateChatState extends State<NewPrivateChat> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => submitAction(context),
         child: Icon(Icons.arrow_forward_outlined),
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).primaryColor,
       ),
     );
   }

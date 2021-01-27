@@ -16,7 +16,6 @@ import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:universal_html/prefer_universal/html.dart' as html;
-import 'package:url_launcher/url_launcher.dart';
 
 import '../app_config.dart';
 import '../config/setting_keys.dart';
@@ -31,7 +30,6 @@ import '../utils/firebase_controller.dart';
 import '../utils/localized_exception_extension.dart';
 import '../utils/matrix_locals.dart';
 import '../utils/platform_infos.dart';
-import 'avatar.dart';
 import 'dialogs/key_verification_dialog.dart';
 
 class Matrix extends StatefulWidget {
@@ -173,61 +171,6 @@ class MatrixState extends State<Matrix> {
           AuthenticationData(session: uiaRequest.session),
         );
     }
-  }
-
-  void onJitsiCall(EventUpdate eventUpdate) {
-    final event = Event.fromJson(
-        eventUpdate.content, client.getRoomById(eventUpdate.roomID));
-    if (DateTime.now().millisecondsSinceEpoch -
-            event.originServerTs.millisecondsSinceEpoch >
-        1000 * 60 * 5) {
-      return;
-    }
-    final senderName = event.sender.calcDisplayname();
-    final senderAvatar = event.sender.avatarUrl;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(L10n.of(context).videoCall),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              contentPadding: EdgeInsets.all(0),
-              leading: Avatar(senderAvatar, senderName),
-              title: Text(
-                senderName,
-                style: TextStyle(fontSize: 18),
-              ),
-              subtitle:
-                  event.room.isDirectChat ? null : Text(event.room.displayname),
-            ),
-            Divider(),
-            Row(
-              children: <Widget>[
-                Spacer(),
-                FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  child: Icon(Icons.phone_missed_outlined),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                Spacer(),
-                FloatingActionButton(
-                  backgroundColor: Colors.green,
-                  child: Icon(Icons.phone_outlined),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    launch(event.body);
-                  },
-                ),
-                Spacer(),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-    return;
   }
 
   bool webHasFocus = true;
